@@ -50,4 +50,8 @@ export class MainLayout implements OnInit {
   getAdminTable(){
       this.router.navigate(['/main/admin-table']);
   }
+
+  getEmployeeTable(){
+      this.router.navigate(['/main/employee-table']);
+  }
 }
