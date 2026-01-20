@@ -54,4 +54,8 @@ export class MainLayout implements OnInit {
   getEmployeeTable(){
       this.router.navigate(['/main/employee-table']);
   }
+
+  logout(){
+    this.router.navigate(['']);
+  }
 }
