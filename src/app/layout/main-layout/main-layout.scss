@@ -1,0 +1,324 @@
+router-outlet + * {
+    display: block;
+    margin-top: 30px;
+    padding: 24px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e8e8e8;
+    min-height: 400px;
+}
+
+:host ::ng-deep .ant-layout {
+    height: 100vh;
+    min-height: 100vh;
+    background-color: #e3e0e3;
+}
+
+.trigger {
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+    color: #D3DAD9;
+}
+
+.trigger:hover {
+    color: #e6a008;
+}
+
+:host ::ng-deep .ant-layout-sider {
+    height: 100vh;
+    overflow: auto;
+    position: fixed;
+    left: 0;
+    z-index: 100;
+    background-color: #715A5A !important;
+    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);;
+}
+
+:host ::ng-deep .ant-layout-sider .ant-menu {
+    background-color: transparent;
+    color:White;
+    border-right: none;
+}
+
+:host ::ng-deep .ant-layout-sider .ant-menu-item {
+    color:white;
+}
+
+:host ::ng-deep .ant-layout-sider .ant-menu-item:hover {
+    color: #000;
+    background-color: #fff;
+}
+
+:host ::ng-deep .ant-layout-sider .ant-menu-submenu-title {
+    color: white;
+}
+
+:host ::ng-deep .ant-layout-sider .ant-menu-submenu-title:hover {
+    color: #e6a008;
+}
+.logo {
+    height: 32px;
+    margin: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    background: white;
+    border-radius: 4px;
+}
+
+nz-header {
+    background: #715A5A;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    width: 100%;
+    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);;
+    border-bottom: 1px solid black;
+}
+
+:host ::ng-deep .ant-layout.ant-layout-has-sider {
+    height: 100vh;
+    min-height: 100vh;
+}
+
+nz-content {
+    flex: 5;
+    overflow-y: hidden; 
+    overflow-x: hidden; 
+    background-color: #e3e0e3;
+    transition: margin-left 0.2s;
+    margin-left: 50px;
+    width: 95%;
+}
+
+:host ::ng-deep .ant-layout-sider:not(.ant-layout-sider-collapsed) ~ .ant-layout {
+    margin-left: 200px;
+}
+
+:host ::ng-deep .ant-layout-sider.ant-layout-sider-collapsed ~ .ant-layout {
+    margin-left: 80px;
+}
+
+nz-breadcrumb {
+    margin: 16px 0;
+}
+
+.inner-content {
+    padding: 24px;
+    background: #fff;
+    min-height: calc(100vh - 160px);
+    height: 100%;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e8e8e8;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+.dashboard-container {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+h1{
+    border-bottom: 2px solid #715A5A;
+     width: fit-content; 
+}
+
+
+.stat-card {
+    flex: 1;
+    min-width: 280px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e8e8e8;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.card-icon {
+    margin-right: 20px;
+    padding: 16px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-icon .icon {
+    font-size: 32px;
+}
+
+.card-content {
+    flex: 1;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #666;
+    margin: 0 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card-count {
+    font-size: 36px;
+    font-weight: 700;
+    color: #715A5A;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+}
+
+.card-subtitle {
+    font-size: 14px;
+    color: #999;
+    margin: 0;
+}
+
+.card-datetime {
+    font-size: 24px;
+    font-weight: 600;
+    color: #715A5A;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+}
+
+.card-date {
+    font-size: 14px;
+    color: #999;
+    margin: 0;
+}
+
+.card-btn{
+   background-color: #715A5A;
+   color: #fff;
+   border: none;
+   outline: none;
+   height: 40px;
+   width: 80px;
+   border-radius: 8px;
+   font-weight: bold;
+   cursor: pointer;
+}
+
+.admin-card .card-icon {
+    background-color: rgba(113, 90, 90, 0.1);
+    color: #715A5A;
+}
+
+.employee-card .card-icon {
+    background-color: rgba(230, 160, 8, 0.1);
+    color: #e6a008;
+}
+
+.datetime-card .card-icon {
+    background-color: rgba(55, 53, 62, 0.1);
+    color: #37353E;
+}
+
+nz-footer {
+    text-align: center;
+    padding: 24px 50px;
+    background: #e8e8e8;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    :host ::ng-deep .ant-layout-sider {
+        position: fixed;
+        z-index: 1000;
+    }
+    
+    :host ::ng-deep .ant-layout-sider:not(.ant-layout-sider-collapsed) ~ .ant-layout,
+    :host ::ng-deep .ant-layout-sider.ant-layout-sider-collapsed ~ .ant-layout {
+        margin-left: 0;
+    }
+    
+    nz-content {
+        margin: 0;
+    }
+    
+    .inner-content {
+        padding: 16px;
+        min-height: calc(100vh - 140px);
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+    }
+    
+    nz-footer {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .stat-card {
+        min-width: calc(50% - 12px);
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        gap: 16px;
+    }
+    
+    .stat-card {
+        min-width: 100%;
+        padding: 20px;
+    }
+    
+    .card-icon {
+        padding: 14px;
+        margin-right: 16px;
+    }
+    
+    .card-icon .icon {
+        font-size: 28px;
+    }
+    
+    .card-count {
+        font-size: 32px;
+    }
+    
+    .card-datetime {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 16px;
+    }
+    
+    .card-icon {
+        margin-right: 0;
+        margin-bottom: 16px;
+    }
+    
+    .card-count {
+        font-size: 28px;
+    }
+    
+    .card-datetime {
+        font-size: 18px;
+    }
+}

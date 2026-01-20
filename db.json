@@ -1,0 +1,70 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "firstName": "lorenz",
+      "middleName": "caluag",
+      "lastName": "fuentes",
+      "contact": "09123456789",
+      "department": "CEU",
+      "position": "Student",
+      "username": "lorenz",
+      "email": "lorenzcfuentes@gmail.com",
+      "password": "admin123"
+    },
+    {
+      "id": "2",
+      "firstName": "seb",
+      "middleName": "caluag",
+      "lastName": "fuentes",
+      "contact": "9123456789",
+      "department": "CEU",
+      "position": "student",
+      "username": "seb",
+      "email": "seb@gmail.com",
+      "password": "asdfgh"
+    },
+    {
+      "id": "3",
+      "firstName": "derrick",
+      "middleName": "",
+      "lastName": "rose",
+      "contact": "09123456789",
+      "department": "QA",
+      "position": "Intern",
+      "username": "drose",
+      "email": "drose@gmail.com",
+      "password": "admin123"
+    },
+    {
+      "id": 4,
+      "firstName": "Marc",
+      "middleName": "",
+      "lastName": "Zapata",
+      "contact": "09123456789",
+      "department": "IT",
+      "position": "Intern",
+      "username": "zapt",
+      "email": "zap@gmail.com",
+      "password": "admin123"
+    }
+  ],
+  "admin": [
+    {
+      "id": "1",
+      "username": "lorenz",
+      "password": "admin123",
+      "email": "email@gmail.com",
+      "fullname": "lorzse",
+      "access": "admin"
+    },
+    {
+      "id": "2",
+      "username": "jairo",
+      "password": "admin123",
+      "email": "email@gmail.com",
+      "fullname": "jairo garcia",
+      "access": "admin"
+    }
+  ]
+}
