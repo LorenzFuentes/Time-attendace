@@ -35,18 +35,6 @@
       "username": "drose",
       "email": "drose@gmail.com",
       "password": "admin123"
-    },
-    {
-      "id": 4,
-      "firstName": "Marc",
-      "middleName": "",
-      "lastName": "Zapata",
-      "contact": "09123456789",
-      "department": "IT",
-      "position": "Intern",
-      "username": "zapt",
-      "email": "zap@gmail.com",
-      "password": "admin123"
     }
   ],
   "admin": [
