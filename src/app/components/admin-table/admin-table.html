@@ -1,30 +1,79 @@
- <nz-table #editRowTable nzBordered [nzData]="listOfData" nzTableLayout="fixed">
+<div class="table-container">
+    <div class="header-container">
+      <div class="header-left">
+        <h2>Admin Table</h2>
+      </div>
+      <div class="header-right">
+        <button class="refresh-btn" (click)="refreshData()">
+          <nz-icon nzType="reload" nzTheme="outline" class="reload" />
+        </button>
+        <button class="addUser-btn" (click)="addNewUser()">
+         + Add New Admin
+        </button>
+      </div>
+  </div>
+  <nz-table #userTable nzBordered [nzData]="listOfData" nzTableLayout="fixed"[nzLoading]="isLoading">
     <thead>
-    <tr>
-        <th nzWidth="25%">Name</th>
-        <th nzWidth="15%">Age</th>
-        <th nzWidth="40%">Address</th>
-        <th>Action</th>
-    </tr>
+      <tr>
+        <th>Username</th>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Password</th>
+        <th>Access Level</th>
+        <th>Actions</th>
+      </tr>
     </thead>
     <tbody>
-    @for (data of editRowTable.data; track data) {
-        <tr>
-        @if (!editCache[data.id].edit) {
-            <td>{{ data.name }}</td>
-            <td>{{ data.age }}</td>
-            <td>{{ data.address }}</td>
-            <td><a (click)="startEdit(data.id)">Edit</a></td>
-        } @else {
-            <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.name" /></td>
-            <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.age" /></td>
-            <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.address" /></td>
-            <td>
-            <a (click)="saveEdit(data.id)" class="save">Save</a>
-            <a nz-popconfirm nzPopconfirmTitle="Sure to cancel?" (nzOnConfirm)="cancelEdit(data.id)">Cancel</a>
-            </td>
-        }
-        </tr>
-    }
+      <tr *ngFor="let data of userTable.data">
+        <ng-container *ngIf="!editCache[data.id]?.edit; else editTemplate">
+          <td>{{ data.username }}</td>
+          <td>{{ data.fullname }}</td>
+          <td>
+            <a [href]="data.email">{{ data.email }}</a>
+          </td>
+          <td>••••••••</td>
+          <td>
+            <nz-tag>
+              {{ getAccessLabel(data.access) }}
+            </nz-tag>
+          </td>
+          <td>
+            <button class="edit-btn" (click)="startEdit(data.id)">
+              Edit
+            </button>
+            <button class="delete-btn" nz-popconfirm nzPopconfirmTitle="Delete this user?"(nzOnConfirm)="deleteUser(data.id)">
+              Delete
+            </button>
+          </td>
+        </ng-container>
+        <ng-template #editTemplate>
+          <td>
+            <input nz-input [(ngModel)]="editCache[data.id].data.username" placeholder="Username"[class.invalid]="!editCache[data.id].data.username?.trim()"/>
+          </td>
+          <td>
+            <input nz-input [(ngModel)]="editCache[data.id].data.fullname" placeholder="Full Name"[class.invalid]="!editCache[data.id].data.fullname?.trim()"/>
+          </td>
+          <td>
+            <input nz-input type="email"[(ngModel)]="editCache[data.id].data.email" placeholder="Email"[class.invalid]="!editCache[data.id].data.email?.trim()"/>
+          </td>
+          <td>
+            <input nz-input type="password"[(ngModel)]="editCache[data.id].data.password" placeholder="Password"[class.invalid]="!editCache[data.id].data.password?.trim()"/>
+          </td>
+          <td>
+            <nz-select [(ngModel)]="editCache[data.id].data.access"style="width: 100%;">
+              <nz-option nzValue="admin" nzLabel="Admin"></nz-option>
+            </nz-select>
+          </td>
+          <td>
+            <button nz-button nzType="primary" size="small"(click)="saveEdit(data.id)"[disabled]="!isFormValid(data.id)">
+              Save
+            </button>
+            <button nz-button nzType="default" size="small"(click)="cancelEdit(data.id)">
+              {{ data.id.startsWith('temp_') ? 'Cancel Add' : 'Cancel' }}
+            </button>
+          </td>
+        </ng-template>
+      </tr>
     </tbody>
-</nz-table>
+  </nz-table>
+</div>

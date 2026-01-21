@@ -1,5 +1,5 @@
-router-outlet + * {
-    display: block;
+
+.router-outlet-container {
     margin-top: 30px;
     padding: 24px;
     background: #fff;
@@ -7,25 +7,32 @@ router-outlet + * {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid #e8e8e8;
     min-height: 400px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+:host ::ng-deep .router-outlet-container > * {
+    display: block;
+    width: 100%;
 }
 
 :host ::ng-deep .ant-layout {
     height: 100vh;
     min-height: 100vh;
-    background-color: #e3e0e3;
+    background-color: #F0F8FF;
 }
 
 .trigger {
-    font-size: 18px;
+    font-size: 25px;
     line-height: 64px;
     padding: 0 24px;
     cursor: pointer;
     transition: color 0.3s;
-    color: #D3DAD9;
+    color: #333333;
 }
 
 .trigger:hover {
-    color: #e6a008;
+    color: #706C61;
 }
 
 :host ::ng-deep .ant-layout-sider {
@@ -34,7 +41,7 @@ router-outlet + * {
     position: fixed;
     left: 0;
     z-index: 100;
-    background-color: #715A5A !important;
+    background-color: #FFFFFF !important;
     box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);;
 }
 
@@ -45,20 +52,21 @@ router-outlet + * {
 }
 
 :host ::ng-deep .ant-layout-sider .ant-menu-item {
-    color:white;
+    color:rgb(0, 0, 0);
 }
 
 :host ::ng-deep .ant-layout-sider .ant-menu-item:hover {
-    color: #000;
-    background-color: #fff;
+    color: #fff;
+    background-color: #677ec496;
 }
 
 :host ::ng-deep .ant-layout-sider .ant-menu-submenu-title {
-    color: white;
+    color: rgb(0, 0, 0);
 }
 
 :host ::ng-deep .ant-layout-sider .ant-menu-submenu-title:hover {
-    color: #e6a008;
+    color: #ffffff;
+    background-color: #677ec496;
 }
 .logo {
     height: 32px;
@@ -69,19 +77,18 @@ router-outlet + * {
     color: white;
     font-size: 18px;
     font-weight: bold;
-    background: white;
+    background: rgba(118, 138, 250, 0.623);
     border-radius: 4px;
 }
 
 nz-header {
-    background: #715A5A;
+    background: #fff;
     padding: 0;
     position: sticky;
     top: 0;
     z-index: 1;
     width: 100%;
     box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);;
-    border-bottom: 1px solid black;
 }
 
 :host ::ng-deep .ant-layout.ant-layout-has-sider {
@@ -91,12 +98,16 @@ nz-header {
 
 nz-content {
     flex: 5;
-    overflow-y: hidden; 
+    overflow-y: auto; 
     overflow-x: hidden; 
-    background-color: #e3e0e3;
+    background-color: #F0F8FF;
     transition: margin-left 0.2s;
     margin-left: 50px;
     width: 95%;
+    &::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+    }
 }
 
 :host ::ng-deep .ant-layout-sider:not(.ant-layout-sider-collapsed) ~ .ant-layout {
@@ -114,13 +125,14 @@ nz-breadcrumb {
 .inner-content {
     padding: 24px;
     background: #fff;
-    min-height: calc(100vh - 160px);
-    height: 100%;
+    min-height: auto; 
+    height: auto;
     border-radius: 8px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid #e8e8e8;
     max-width: 100%;
     box-sizing: border-box;
+    margin-bottom: 0;
 }
 .dashboard-container {
     display: flex;
@@ -129,10 +141,10 @@ nz-breadcrumb {
     flex-wrap: wrap;
 }
 h1{
-    border-bottom: 2px solid #715A5A;
-     width: fit-content; 
+    border-bottom: 2px solid #5162fa;
+    width: fit-content; 
+    font-weight: bolder;
 }
-
 
 .stat-card {
     flex: 1;
@@ -172,7 +184,7 @@ h1{
 .card-title {
     font-size: 16px;
     font-weight: 600;
-    color: #666;
+    color: #333333;
     margin: 0 0 8px 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -181,21 +193,21 @@ h1{
 .card-count {
     font-size: 36px;
     font-weight: 700;
-    color: #715A5A;
+    color: #2f2f2f;
     margin: 0 0 4px 0;
     line-height: 1.2;
 }
 
 .card-subtitle {
     font-size: 14px;
-    color: #999;
+    color: #000;
     margin: 0;
 }
 
 .card-datetime {
     font-size: 24px;
     font-weight: 600;
-    color: #715A5A;
+    color: #000;
     margin: 0 0 4px 0;
     line-height: 1.2;
 }
@@ -206,38 +218,25 @@ h1{
     margin: 0;
 }
 
-.card-btn{
-   background-color: #715A5A;
-   color: #fff;
-   border: none;
-   outline: none;
-   height: 40px;
-   width: 80px;
-   border-radius: 8px;
-   font-weight: bold;
-   cursor: pointer;
-}
-
 .admin-card .card-icon {
-    background-color: rgba(113, 90, 90, 0.1);
-    color: #715A5A;
+    background-color: rgba(243, 0, 0, 0.212);
+    color: #fa0000;
 }
 
 .employee-card .card-icon {
-    background-color: rgba(230, 160, 8, 0.1);
-    color: #e6a008;
+    background-color: rgba(126, 230, 8, 0.1);
+    color: #73e608;
 }
 
 .datetime-card .card-icon {
-    background-color: rgba(55, 53, 62, 0.1);
-    color: #37353E;
+    background-color: rgba(68, 25, 221, 0.1);
+    color: #3700ff;
 }
 
 nz-footer {
     text-align: center;
     padding: 24px 50px;
-    background: #e8e8e8;
-    color: var(--text-secondary);
+    background: #F0F8FF;
 }
 
 @media (max-width: 768px) {
@@ -255,12 +254,13 @@ nz-footer {
         margin: 0;
     }
     
-    .inner-content {
+    .inner-content,
+    .router-outlet-container {
         padding: 16px;
-        min-height: calc(100vh - 140px);
         border-radius: 0;
         border: none;
         box-shadow: none;
+        margin: 8px;
     }
     
     nz-footer {

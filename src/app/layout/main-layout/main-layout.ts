@@ -3,7 +3,7 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
-import { RouterOutlet, Router } from '@angular/router'; // Added Router import
+import { RouterOutlet, Router } from '@angular/router'; 
 import { AuthService } from '../../service/auth';
 
 @Component({
@@ -53,6 +53,10 @@ export class MainLayout implements OnInit {
 
   getEmployeeTable(){
       this.router.navigate(['/main/employee-table']);
+  }
+
+  getHome(){
+      this.router.navigate(['admin-home']);
   }
 
   logout(){

@@ -11,30 +11,6 @@
       "username": "lorenz",
       "email": "lorenzcfuentes@gmail.com",
       "password": "admin123"
-    },
-    {
-      "id": "2",
-      "firstName": "seb",
-      "middleName": "caluag",
-      "lastName": "fuentes",
-      "contact": "9123456789",
-      "department": "CEU",
-      "position": "student",
-      "username": "seb",
-      "email": "seb@gmail.com",
-      "password": "asdfgh"
-    },
-    {
-      "id": "3",
-      "firstName": "derrick",
-      "middleName": "",
-      "lastName": "rose",
-      "contact": "09123456789",
-      "department": "QA",
-      "position": "Intern",
-      "username": "drose",
-      "email": "drose@gmail.com",
-      "password": "admin123"
     }
   ],
   "admin": [
@@ -42,16 +18,40 @@
       "id": "1",
       "username": "lorenz",
       "password": "admin123",
-      "email": "email@gmail.com",
+      "email": "lorenz@gmail.com",
       "fullname": "lorzse",
       "access": "admin"
     },
     {
       "id": "2",
-      "username": "jairo",
+      "username": "seb",
       "password": "admin123",
-      "email": "email@gmail.com",
-      "fullname": "jairo garcia",
+      "email": "seb@gmail.com",
+      "fullname": "sebastian",
+      "access": "admin"
+    },
+    {
+      "id": "3",
+      "username": "test",
+      "password": "testing",
+      "email": "tes@gmail.com",
+      "fullname": "test",
+      "access": "admin"
+    },
+    {
+      "id": "3695",
+      "username": "drose",
+      "password": "drosese",
+      "email": "drose@gmail.com",
+      "fullname": "derrick",
+      "access": "admin"
+    },
+    {
+      "id": "76d1",
+      "username": "test",
+      "password": "admin123",
+      "email": "tst@gmail.com",
+      "fullname": "test",
       "access": "admin"
     }
   ]

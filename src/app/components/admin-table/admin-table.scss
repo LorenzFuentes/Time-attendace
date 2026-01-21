@@ -1,0 +1,90 @@
+.refresh-btn{
+    background-color: #fff;
+    border: 1px solid #5162fa;
+    border-radius: 100%;
+    margin-right: 5px;
+    margin-bottom: 12px;
+    font-weight: bold;
+    font-size: 20px;
+    color: #5162fa;
+}
+.addUser-btn{
+    background-color: #5162fa;
+    border: 1px solid #5162fa;
+    border-radius: 4px;
+    margin-right: 10px;
+    color: #fff;
+    margin-bottom: 10px;
+    height: 40px;
+    width: 100%;
+    margin-top: -5px;
+}
+
+::ng-deep {
+  .ant-table-thead > tr > th {
+    background-color: #e7e7e7 !important;
+    color: rgb(78, 78, 78) !important;
+    font-weight: 600;
+    padding: 12px 16px;
+  }
+}
+
+:host ::ng-deep {
+  .ant-table-wrapper {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bolder;
+  color: #5162fa;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.edit-btn{
+    background-color: #51b6fa;
+    color: white;
+    border: none;
+    outline: none;
+    height: 30px;
+    width: 70px;
+    margin-right: 10px;
+    border-radius: 4px;
+}
+.delete-btn{
+    background-color: #fa5151;
+    color: white;
+    border: none;
+    outline: none;
+    height: 30px;
+    width: 70px;
+    margin-right: 10px;
+    border-radius: 4px;
+}
+
+nz-tag{
+  color: #fa5151;
+  background-color: #fc636350;
+  width: 70px;
+  text-align: center;
+  width: 70px;
+  font-size: 12px;
+  border: 1px solid red;
+  border-radius: 10px;
+  padding: 4px;
+}

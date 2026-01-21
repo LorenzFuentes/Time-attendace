@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { User, Admin, RegisterRequest } from '../model/post';
+import { User, Admin } from '../model/post';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -11,25 +11,23 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  // LOGIN - Check if user exists with matching username and password
+  // LOGIN
   login(username: string, password: string): Observable<boolean> {
     return this.http
       .get<Admin[]>(`${this.adminApi}?username=${username}&password=${password}`)
       .pipe(map(users => users.length > 0));
   }
 
-  // --- USER REGISTRATION ---
-  // Register new user to json-server API
-  register(registerData: RegisterRequest): Observable<User> {
+  //USER REGISTRATION
+  register(registerData: any): Observable<User> {
     return this.http.post<User>(this.userApi, registerData);
   }
   
-  // Get all registered users
   getAllRegisteredUsers(): Observable<User[]> {
     return this.http.get<User[]>(this.userApi);
   }
   
-  // --- ADMIN USERS ---
+  //ADMIN
   getAllUsers(): Observable<Admin[]> {
     return this.http.get<Admin[]>(this.adminApi);
   }
@@ -38,11 +36,11 @@ export class AuthService {
     return this.http.get<Admin>(`${this.adminApi}/${id}`);
   }
 
-  createUser(admin: Admin): Observable<Admin> {
+  createUser(admin: any): Observable<Admin> {
     return this.http.post<Admin>(this.adminApi, admin);
   }
 
-  updateUser(id: any, admin: Admin): Observable<Admin> {
+  updateUser(id: any, admin: any): Observable<Admin> {
     return this.http.put<Admin>(`${this.adminApi}/${id}`, admin);
   }
 
@@ -50,19 +48,37 @@ export class AuthService {
     return this.http.delete<void>(`${this.adminApi}/${id}`);
   }
 
-  // --- DASHBOARD STATISTICS METHODS ---
-  
-  // Get admin count
+  //DASHBOARD
   getAdminCount(): Observable<number> {
     return this.http.get<Admin[]>(this.adminApi).pipe(
       map(admins => admins.length)
     );
   }
 
-  // Get employee count (assuming employees are regular users)
   getEmployeeCount(): Observable<number> {
     return this.http.get<User[]>(this.userApi).pipe(
       map(users => users.length)
     );
+  }
+
+  //Employee
+  getAllEmployee(): Observable<User[]> {
+    return this.http.get<User[]>(this.userApi);
+  }
+
+  getEmployeeById(id: any): Observable<User> {
+    return this.http.get<User>(`${this.userApi}/${id}`);
+  }
+
+  createEmployee(admin: any): Observable<User> {
+    return this.http.post<User>(this.userApi, admin);
+  }
+
+  updateEmployee(id: any, admin: any): Observable<User> {
+    return this.http.put<User>(`${this.userApi}/${id}`, admin);
+  }
+
+  deleteEmployee(id: any): Observable<void> {
+    return this.http.delete<void>(`${this.userApi}/${id}`);
   }
 }

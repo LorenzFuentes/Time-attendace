@@ -4,15 +4,15 @@
     <ul nz-menu nzTheme="dark" nzMode="inline">
         <li nz-submenu nzTitle="User" nzIcon="user">
         <ul>
-            <li nz-menu-item>Home</li>
+            <li nz-menu-item (click)="getHome()">Home</li>
             <li nz-menu-item>Settings</li>
             <li nz-menu-item (click)="logout()">Logout</li>
         </ul>
         </li>
         <li nz-submenu nzTitle="Team" nzIcon="team">
         <ul>
-            <li nz-menu-item>Admin</li>
-            <li nz-menu-item>Employee</li>
+            <li nz-menu-item (click)="getAdminTable()">Admin</li>
+            <li nz-menu-item (click)="getEmployeeTable()">Employee</li>
         </ul>
         </li>
         <li nz-menu-item>
@@ -46,7 +46,6 @@
                         <p class="card-count">{{ adminCount }}</p>
                         <p class="card-subtitle">Total Administrators</p>
                     </div>
-                    <button class="card-btn" (click)="getAdminTable()">View</button>
                 </div>
                 <div class="stat-card employee-card">
                     <div class="card-icon">
@@ -57,7 +56,6 @@
                         <p class="card-count">{{ employeeCount }}</p>
                         <p class="card-subtitle">Total Employees</p>
                     </div>
-                    <button class="card-btn" (click)="getEmployeeTable()">View</button>
                 </div>
                 <div class="stat-card datetime-card">
                     <div class="card-icon">
@@ -70,6 +68,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+    
+        <div class="router-outlet-container">
             <router-outlet></router-outlet>
         </div>
     </nz-content>

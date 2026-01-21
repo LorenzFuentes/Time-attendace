@@ -11,14 +11,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    NzButtonModule,
-    NzFormModule,
-    NzInputModule,
-    NzSelectModule
-  ],
+  imports: [CommonModule,ReactiveFormsModule,NzButtonModule,NzFormModule,NzInputModule,NzSelectModule ],
   templateUrl: './register.html',
   styleUrls: ['./register.scss']
 })
@@ -81,7 +74,6 @@ export class RegisterComponent {
       email: formData.email,
       password: formData.password
     };
-
     // Manual ID calculation
     this.registerUserWithManualId(newUser);
   }
@@ -95,7 +87,6 @@ export class RegisterComponent {
         if (existingUsers && existingUsers.length > 0) {
           maxId = Math.max(...existingUsers.map((user: any) => user.id));
         }
-        
         // Calculate next ID
         const nextId = maxId + 1;
         
@@ -104,7 +95,6 @@ export class RegisterComponent {
           id: nextId,
           ...newUser
         };
-        
         // Send POST request with the calculated ID
         this.http.post('http://localhost:3000/users', userWithId).subscribe({
           next: (response: any) => {

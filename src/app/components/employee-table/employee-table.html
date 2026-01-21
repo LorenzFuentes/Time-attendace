@@ -1,1 +1,97 @@
-<p>employee-table works!</p>
+<div class="table-container">
+    <div class="header-container">
+        <div class="header-left">
+            <h2>Employee Table</h2>
+        </div>
+        <div class="header-right">
+            <button class="refresh-btn" (click)="refreshData()">
+                <nz-icon nzType="reload" nzTheme="outline" class="reload" />
+            </button>
+        </div>
+    </div>
+    <nz-table #employeeTable nzBordered [nzData]="employees" nzTableLayout="fixed" [nzLoading]="isLoading">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Contact</th>
+                <th>Department</th>
+                <th>Position</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let employee of employeeTable.data">
+                <ng-container *ngIf="!editCache[employee.id]?.edit; else editTemplate">
+                    <td>{{ employee.firstName }}</td>
+                    <td>{{ employee.middleName || '-' }}</td>
+                    <td>{{ employee.lastName }}</td>
+                    <td>{{ employee.contact }}</td>
+                    <td>{{ employee.department }}</td>
+                    <td>{{ employee.position }}</td>
+                    <td>{{ employee.username }}</td>
+                    <td>
+                        <a [href]="'mailto:' + employee.email">{{ employee.email }}</a>
+                    </td>
+                    <td>
+                        <button class="edit-btn" (click)="startEdit(employee.id)">
+                            Edit
+                        </button>
+                        <button class="delete-btn" nz-popconfirm 
+                                nzPopconfirmTitle="Delete this employee?" 
+                                (nzOnConfirm)="deleteEmployee(employee.id)">
+                            Delete
+                        </button>
+                    </td>
+                </ng-container>
+                <ng-template #editTemplate>
+                    <td>
+                        <input nz-input [(ngModel)]="editCache[employee.id].data.firstName" placeholder="First Name"[class.invalid]="!editCache[employee.id].data.firstName?.trim()" />
+                    </td>
+                    <td>
+                        <input nz-input [(ngModel)]="editCache[employee.id].data.middleName" placeholder="Middle Name" />
+                    </td>
+                    <td>
+                        <input nz-input [(ngModel)]="editCache[employee.id].data.lastName"  placeholder="Last Name" [class.invalid]="!editCache[employee.id].data.lastName?.trim()" />
+                    </td>
+                    <td>
+                        <input nz-input [(ngModel)]="editCache[employee.id].data.contact" placeholder="Contact" [class.invalid]="!editCache[employee.id].data.contact?.trim()" />
+                    </td>
+                    <td>
+                        <input nz-input [(ngModel)]="editCache[employee.id].data.department" placeholder="Department" [class.invalid]="!editCache[employee.id].data.department?.trim()" />
+                    </td>
+                    <td>
+                        <input nz-input [(ngModel)]="editCache[employee.id].data.position" placeholder="Position" [class.invalid]="!editCache[employee.id].data.position?.trim()" />
+                    </td>
+                    <td>
+                        <input nz-input [(ngModel)]="editCache[employee.id].data.username" placeholder="Username"[class.invalid]="!editCache[employee.id].data.username?.trim()" />
+                    </td>
+                    <td>
+                        <input nz-input type="email"  [(ngModel)]="editCache[employee.id].data.email" placeholder="Email" [class.invalid]="!editCache[employee.id].data.email?.trim()" />
+                    </td>
+                    <td>
+                        <input nz-input type="password"  [(ngModel)]="editCache[employee.id].data.password"  placeholder="Leave blank to keep current" *ngIf="employee.id.toString().startsWith('temp_')" />
+                        <input nz-input type="password"  [(ngModel)]="editCache[employee.id].data.password" placeholder="Leave blank to keep current" *ngIf="!employee.id.toString().startsWith('temp_')" />
+                        <small class="password-hint" *ngIf="!employee.id.toString().startsWith('temp_')">
+                        Leave blank to keep current password
+                        </small>
+                        <div class="action-buttons">
+                            <button nz-button nzType="primary" size="small"
+                                    (click)="saveEdit(employee.id)"
+                                    [disabled]="!isFormValid(employee.id)">
+                                Save
+                            </button>
+                            <button nz-button nzType="default" size="small"
+                                    (click)="cancelEdit(employee.id)">
+                                {{ employee.id.toString().startsWith('temp_') ? 'Cancel Add' : 'Cancel' }}
+                            </button>
+                        </div>
+                    </td>
+                </ng-template>
+            </tr>
+        </tbody>
+    </nz-table>
+</div>
