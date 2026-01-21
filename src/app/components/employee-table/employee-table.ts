@@ -93,37 +93,41 @@ export class EmployeeTableComponent implements OnInit {
   }
 
   cancelEdit(id: number): void {
-    const idStr = id.toString();
-    if (idStr.startsWith('temp_')) {
-      const index = this.employees.findIndex(employee => employee.id.toString() === idStr);
-      if (index !== -1) {
-        this.employees.splice(index, 1);
-        delete this.editCache[idStr];
-      }
-    } else {
-      const index = this.employees.findIndex(employee => employee.id === id);
-      if (index !== -1) {
-        this.editCache[idStr] = {
-          data: { ...this.employees[index] },
-          edit: false
-        };
-      }
-    }
-  }
-  saveEdit(id: number): void {
-    const idStr = id.toString();
+  const idStr = id.toString();
+  const isNewEmployee = id < 0; 
+  
+  if (isNewEmployee) {
     const index = this.employees.findIndex(employee => employee.id === id);
-    if (index !== -1 && this.editCache[idStr]) {
-      const updatedEmployee = this.editCache[idStr].data;
-      const isNewEmployee = idStr.startsWith('temp_');
-      
-      if (isNewEmployee) {
-        this.createNewEmployee(updatedEmployee, id);
-      } else {
-        this.updateExistingEmployee(id, updatedEmployee, index);
-      }
+    if (index !== -1) {
+      this.employees.splice(index, 1);
+      delete this.editCache[idStr];
+    }
+  } else {
+    const index = this.employees.findIndex(employee => employee.id === id);
+    if (index !== -1) {
+      this.editCache[idStr] = {
+        data: { ...this.employees[index] },
+        edit: false
+      };
     }
   }
+}
+
+  saveEdit(id: number): void {
+  const idStr = id.toString();
+  const index = this.employees.findIndex(employee => employee.id === id);
+  if (index !== -1 && this.editCache[idStr]) {
+    const updatedEmployee = this.editCache[idStr].data;
+    const isNewEmployee = id < 0; 
+    
+    if (isNewEmployee) {
+      this.createNewEmployee(updatedEmployee, id);
+    } else {
+      this.updateExistingEmployee(id, updatedEmployee, index);
+    }
+  }
+}
+
   private createNewEmployee(employeeData: Employee, tempId: number): void {
     const tempIdStr = tempId.toString();
     const newEmployeePayload = {
@@ -171,6 +175,7 @@ export class EmployeeTableComponent implements OnInit {
       }
     });
   }
+
   private updateExistingEmployee(id: number, updatedEmployee: Employee, index: number): void {
   const cleanPayload = {
     id: updatedEmployee.id,
@@ -229,6 +234,7 @@ export class EmployeeTableComponent implements OnInit {
     }
   });
 }
+
   deleteEmployee(id: number): void {
     this.authService.deleteEmployee(id).subscribe({
       next: () => {
@@ -246,6 +252,31 @@ export class EmployeeTableComponent implements OnInit {
       }
     });
   }
+
+  addNewEmployee(): void {
+  const maxId = this.employees.reduce((max, employee) => {
+    return employee.id > max ? employee.id : max;
+  }, 0);
+  
+  const tempId = -(maxId + 1);
+  const newEmployee: Employee = {
+    id: tempId,
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    contact: '',
+    department: '',
+    position: '',
+    username: '',
+    email: '',
+    password: ''
+  };
+  
+  this.employees = [newEmployee, ...this.employees];
+  this.updateEditCache();
+  this.startEdit(tempId);
+  this.message.info('Please fill in the new employee details');
+}
   refreshData(): void {
    window.location.reload();
   }

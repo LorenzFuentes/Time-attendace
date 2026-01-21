@@ -7,6 +7,10 @@
             <button class="refresh-btn" (click)="refreshData()">
                 <nz-icon nzType="reload" nzTheme="outline" class="reload" />
             </button>
+            <button class="add-btn" (click)="addNewEmployee()">
+                <nz-icon nzType="user-add" nzTheme="outline" class="add-icon" />
+                Add New Employee
+            </button>
         </div>
     </div>
     <nz-table #employeeTable nzBordered [nzData]="employees" nzTableLayout="fixed" [nzLoading]="isLoading">
@@ -73,9 +77,15 @@
                         <input nz-input type="email"  [(ngModel)]="editCache[employee.id].data.email" placeholder="Email" [class.invalid]="!editCache[employee.id].data.email?.trim()" />
                     </td>
                     <td>
-                        <input nz-input type="password"  [(ngModel)]="editCache[employee.id].data.password"  placeholder="Leave blank to keep current" *ngIf="employee.id.toString().startsWith('temp_')" />
-                        <input nz-input type="password"  [(ngModel)]="editCache[employee.id].data.password" placeholder="Leave blank to keep current" *ngIf="!employee.id.toString().startsWith('temp_')" />
-                        <small class="password-hint" *ngIf="!employee.id.toString().startsWith('temp_')">
+                        <input nz-input type="password"  
+                            [(ngModel)]="editCache[employee.id].data.password"  
+                            placeholder="Leave blank to keep current" 
+                            *ngIf="employee.id < 0" /> 
+                        <input nz-input type="password"  
+                            [(ngModel)]="editCache[employee.id].data.password" 
+                            placeholder="Leave blank to keep current" 
+                            *ngIf="employee.id >= 0" /> 
+                        <small class="password-hint" *ngIf="employee.id >= 0">
                         Leave blank to keep current password
                         </small>
                         <div class="action-buttons">

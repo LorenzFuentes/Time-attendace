@@ -11,6 +11,18 @@
       "username": "lorenz",
       "email": "lorenzcfuentes@gmail.com",
       "password": "admin123"
+    },
+    {
+      "id": "8d34",
+      "firstName": "test",
+      "middleName": "test",
+      "lastName": "test",
+      "contact": "0987654321",
+      "department": "test",
+      "position": "test",
+      "username": "test",
+      "email": "test@gmail.com",
+      "password": ""
     }
   ],
   "admin": [
