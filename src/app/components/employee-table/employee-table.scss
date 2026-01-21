@@ -108,23 +108,18 @@ input.invalid {
 }
 
  .add-btn {
-      background: #1890ff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 16px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    background-color: #5162fa;
+    border: 1px solid #5162fa;
+    border-radius: 4px;
+    margin-right: 10px;
+    color: #fff;
+    margin-bottom: 10px;
+    height: 40px;
+    width: 100%;
+    margin-top: -5px;
+    gap: 6px;
+}
 
-      &:hover {
-        background: #40a9ff;
-      }
-
-      .add-icon {
-        font-size: 16px;
-      }
-    }
+.add-icon {
+  font-size: 16px;
+}

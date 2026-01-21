@@ -18,6 +18,7 @@
     height: 40px;
     width: 100%;
     margin-top: -5px;
+    gap: 6px;
 }
 
 ::ng-deep {
@@ -87,4 +88,8 @@ nz-tag{
   border: 1px solid red;
   border-radius: 10px;
   padding: 4px;
+}
+
+.add-icon {
+  font-size: 16px;
 }
