@@ -1,292 +1,432 @@
- .trigger {
-    font-size: 18px;
-    line-height: 64px;
-    padding: 0 24px;
-    cursor: pointer;
-    transition: color 0.3s;
-    color: #333333;
+.not-admin-container {
+  padding: 80px 0;
+  text-align: center;
+}
+
+::ng-deep .ant-result {
+    .ant-result-title {
+      color: #f5222d;
+    }
+  }
+.system-stats {
+  .system-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    nz-icon {
+      font-size: 24px;
+    }
+    .system-stat-info {
+      .system-stat-value {
+        font-weight: 600;
+        color: #333;
+        font-size: 15px;
+      }
+      
+      .system-stat-label {
+        color: #666;
+        font-size: 13px;
+      }
+    }
+  }
+}
+
+.stats-card {
+  margin-top: 16px;
+  
+  ::ng-deep .ant-card-head {
+    border-bottom: 1px solid #f0f0f0;
+    
+    .ant-card-head-title {
+      font-size: 15px;
+      font-weight: 500;
+    }
+  }
+}
+
+.trigger {
+  font-size: 18px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color 0.3s;
+  color: #333333;
 }
 
 .trigger:hover {
-    color: #706C61;
+  color: #706C61;
 }
 
 .logo {
-    height: 32px;
-    background: rgba(255, 255, 255, 0.2);
-    margin: 16px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 16px;
+}
+
+.main-header {
+  background: #fff;
+  padding: 0;
+  box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  
+  .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-right: 24px;
+      
+      .welcome-text {
+        color: #666;
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+  }
 }
 
 nz-header {
-    background: #fff;
-    padding: 0;
+  background: #fff;
+  padding: 0;
 }
 
 nz-content {
-    margin: 0 16px;
+  margin: 0 16px;
 }
 
 nz-breadcrumb {
-    margin: 16px 0;
+  margin: 8px 0 !important;
 }
 
 .inner-content {
-    padding: 24px;
-    background: #fff;
-    min-height: 100%;
+  padding: 16px !important;
+  background: #fff;
+  min-height: 100%;
 }
 
 nz-footer {
-    text-align: center;
+  text-align: center;
 }
-
 
 :host ::ng-deep .ant-layout {
-    height: 100vh;
-    min-height: 100vh;
-    background-color: #F0F8FF;
+  height: 100vh;
+  min-height: 100vh;
+  background-color: #F0F8FF;
 }
 
-
 :host ::ng-deep .ant-layout-sider {
-    height: 100vh;
-    overflow: auto;
-    position: fixed;
-    left: 0;
-    z-index: 100;
-    background-color: #FFFFFF !important;
-    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);;
+  height: 100vh;
+  overflow: auto;
+  position: fixed;
+  left: 0;
+  z-index: 100;
+  background-color: #FFFFFF !important;
+  box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);
 }
 
 :host ::ng-deep .ant-layout-sider .ant-menu {
-    background-color: transparent;
-    color:White;
-    border-right: none;
+  background-color: transparent;
+  color: White;
+  border-right: none;
 }
 
 :host ::ng-deep .ant-layout-sider .ant-menu-item {
-    color:rgb(0, 0, 0);
+  color: rgb(0, 0, 0);
 }
 
 :host ::ng-deep .ant-layout-sider .ant-menu-item:hover {
-    color: #fff;
-    background-color: #677ec496;
+  color: #fff;
+  background-color: #677ec496;
 }
 
 :host ::ng-deep .ant-layout-sider .ant-menu-submenu-title {
-    color: rgb(0, 0, 0);
+  color: rgb(0, 0, 0);
 }
 
 :host ::ng-deep .ant-layout-sider .ant-menu-submenu-title:hover {
-    color: #ffffff;
-    background-color: #677ec496;
-}
-.logo {
-    height: 32px;
-    margin: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    background: rgba(118, 138, 250, 0.623);
-    border-radius: 4px;
+  color: #ffffff;
+  background-color: #677ec496;
 }
 
-nz-header {
-    background: #fff;
-    padding: 0;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    width: 100%;
-    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);;
+::ng-deep .ant-tag {
+  font-size: 12px !important;
+  padding: 1px 6px !important;
+  line-height: 18px !important;
+}
+
+
+.logo {
+  height: 32px;
+  margin: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  background: rgba(118, 138, 250, 0.623);
+  border-radius: 4px;
 }
 
 :host ::ng-deep .ant-layout.ant-layout-has-sider {
-    height: 100vh;
-    min-height: 100vh;
+  height: 100vh;
+  min-height: 100vh;
 }
 
 nz-content {
-    flex: 5;
-    overflow-y: auto; 
-    overflow-x: hidden; 
-    background-color: #F0F8FF;
-    transition: margin-left 0.2s;
-    margin-left: 50px;
-    width: 95%;
-    &::-webkit-scrollbar {
-        width: 0px;
-        background: transparent;
-    }
+  flex: 5;
+  overflow-y: auto; 
+  overflow-x: hidden; 
+  background-color: #F0F8FF;
+  transition: margin-left 0.2s;
+  width: 95%;
+  margin: 0 12px !important;
+  
+  &::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
 }
 
 :host ::ng-deep .ant-layout-sider:not(.ant-layout-sider-collapsed) ~ .ant-layout {
-    margin-left: 200px;
+  margin-left: 200px;
 }
 
 :host ::ng-deep .ant-layout-sider.ant-layout-sider-collapsed ~ .ant-layout {
-    margin-left: 80px;
+  margin-left: 80px;
 }
 
 nz-breadcrumb {
-    margin: 16px 0;
+  margin: 16px 0;
 }
 
-
-.profile-container {
+// Profile Styles
+.profile-content-wrapper {
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .profile-header {
-  display: flex;
-  align-items: center;
-  gap: 40px;
-  margin-bottom: 40px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.profile-avatar {
-  text-align: center;
-  .avatar-large {
-    margin-bottom: 16px;
-  }
-  .change-avatar-btn {
-    width: 100%;
-  }
-}
-
-.profile-info {
-  flex: 1;
-  h1 {
-    margin: 0 0 8px 0;
-    font-size: 28px;
-    color: #333;
-  }
-  .profile-title {
-    color: #666;
-    margin: 0 0 24px 0;
-    font-size: 16px;
-  }
-}
-
-.profile-stats {
-  display: flex;
-  gap: 40px;
-  .stat-item {
-    text-align: center;
-    .stat-value {
-      display: block;
-      font-size: 24px;
-      font-weight: bold;
-      color: #1890ff;
-    }
-    .stat-label {
-      display: block;
-      color: #666;
-      font-size: 14px;
-      margin-top: 4px;
-    }
-  }
-}
-
-.profile-details {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
-}
-
-.details-card, .actions-card, .recent-activity {
-  background: #fff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 24px !important;
   border-radius: 8px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #f0f0f0;
+  color: white;
+  margin-bottom: 16px !important;
+  
+  .profile-info h1 {
+    color: white;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    font-size: 24px !important;
+  }
+  
+  .profile-title {
+    margin: 4px 0 12px 0 !important;
+    opacity: 0.9;
+    font-size: 14px !important;
+  }
+  
+  .profile-stats {
+    display: flex;
+    gap: 20px !important;
+    margin-top: 16px !important;
+    
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      
+      .stat-value {
+        font-size: 22px !important;
+        font-weight: bold;
+      }
+      
+      .stat-label {
+        font-size: 12px !important;
+        opacity: 0.8;
+      }
+    }
+  }
 }
 
-.details-card h3, .actions-card h3, .recent-activity h3 {
-  margin: 0 0 20px 0;
-  font-size: 18px;
-  color: #333;
+.profile-content-row {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  gap: 16px !important;
+  flex-wrap: wrap;
+}
+
+.profile-details-col {
+  flex: 3;
+  min-width: 300px;
+  ::ng-deep .ant-card {
+    .ant-card-head {
+      min-height: 48px !important;
+      padding: 0 16px !important;
+      
+      .ant-card-head-title {
+        font-size: 16px !important;
+        padding: 12px 0 !important;
+      }
+    }
+    
+    .ant-card-body {
+      padding: 16px !important; 
+    }
+  }
+}
+
+::ng-deep .ant-card {
+  .ant-card-head {
+    min-height: 48px !important;
+    padding: 0 16px !important;
+    
+    .ant-card-head-title {
+      font-size: 16px !important;
+      padding: 12px 0 !important;
+    }
+  }
+.quick-actions-col {
+  flex: 1;
+  min-width: 220px !important;
+  max-width: 300px !important;
+}
+
+.ant-card-body {
+  padding: 16px !important;
+}
+}
+.quick-actions-card {
+    font-size: 100px !important;
+
+  .actions-list {
+    display: flex;
+    flex-direction: column;
+     width: 200px;
+    gap: 12px;
+  }
+  .action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    height: 48px;
+    padding: 0 16px;
+    
+    nz-icon {
+      font-size: 14px !important;
+    }
+    
+    span {
+      flex: 1;
+      text-align: left;
+    }
+  }
 }
 
 .details-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px !important;
 }
 
 .detail-item {
-  .detail-label {
-    display: block;
-    color: #666;
-    font-size: 14px;
-    margin-bottom: 4px;
-  }
-  .detail-value {
-    display: block;
-    color: #333;
-    font-weight: 500;
-    font-size: 16px;
-  }
+  padding: 8px 0 !important;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.quick-actions {
+.detail-label {
+  display: block;
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 12px !important;
+  margin-bottom: 2px !important;
+}
+
+.detail-value {
+  display: block;
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 14px !important;
+  font-weight: 500;
+}
+
+.loading-container {
   display: flex;
   flex-direction: column;
-  gap: 30px;
-}
-
-.actions-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  button {
-    height: 80px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-size: 14px;
+  align-items: center;
+  justify-content: center;
+  padding: 60px !important;
+  text-align: center;
+  
+  .loading-text {
+    margin-top: 12px !important;
+    color: #666;
+    font-size: 14px !important;
   }
 }
 
-.recent-activity {
-  .activity-time {
-    display: block;
-    color: #999;
-    font-size: 12px;
-    margin-top: 4px;
-  }
+.no-user-container {
+  padding: 40px;
 }
 
 @media (max-width: 992px) {
-  .profile-details {
+  .profile-content-row {
+    flex-direction: column;
+  }
+  
+  .quick-actions-col {
+    max-width: 100%;
+  }
+  
+  .details-grid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 768px) {
   .profile-header {
+    padding: 16px !important;
+    
+    .profile-info h1 {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px !important;
+    }
+    
+    .profile-stats {
+      flex-direction: column;
+      gap: 12px !important;
+    }
+  }
+  
+  .header-right {
+    .welcome-text {
+      display: none;
+    }
+  }
+   .profile-content-row {
     flex-direction: column;
-    text-align: center;
-    gap: 20px;
   }
-  .profile-stats {
-    justify-content: center;
+  
+  .quick-actions-col {
+    max-width: 100% !important;
   }
-  .details-grid {
-    grid-template-columns: 1fr;
-  }
-  .actions-grid {
-    grid-template-columns: 1fr;
-  }
+}
+
+
+.ant-menu-item:active {
+    background-color: red !important;
 }

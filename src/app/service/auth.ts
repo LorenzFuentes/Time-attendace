@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject  } from 'rxjs';
 import { User, Admin } from '../model/post';
 
 @Injectable({ providedIn: 'root' })
@@ -9,16 +9,132 @@ export class AuthService {
   private adminApi = 'http://localhost:3000/admin';
   private userApi = 'http://localhost:3000/users';
 
-  constructor(private http: HttpClient) {}
+  private currentUserSubject = new BehaviorSubject<any>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
+  private userType: 'admin' | 'user' | null = null;
 
-  // LOGIN
-  login(username: string, password: string): Observable<boolean> {
-    return this.http
-      .get<Admin[]>(`${this.adminApi}?username=${username}&password=${password}`)
-      .pipe(map(users => users.length > 0));
+  constructor(private http: HttpClient) {
+    this.loadStoreUser();
   }
 
-  //USER REGISTRATION
+  private loadStoreUser(): void {
+  const storedUser = localStorage.getItem('currentUser');
+  const storedUserType = localStorage.getItem('currentUserType');
+  
+  if (storedUser && storedUserType) {
+    const user = JSON.parse(storedUser);
+    this.userType = storedUserType as 'admin' | 'user';
+
+    if (!user.role) {
+      user.role = this.userType;
+    }
+    
+    this.currentUserSubject.next(user);
+  }
+}
+
+  private setCurrentUser(user: any): void {
+  if (!user.role) {
+    user.role = this.userType;
+  }
+  localStorage.setItem('currentUser', JSON.stringify(user));
+  localStorage.setItem('currentUserType', this.userType || '');
+  this.currentUserSubject.next(user);
+}
+
+  // LOGIN
+  login(username: string, password: string): Observable<any> {
+  return new Observable(observer => {
+    this.http.get<Admin[]>(`${this.adminApi}?username=${username}&password=${password}`)
+      .subscribe({
+        next: (admins) => {
+          if (admins.length > 0) {
+            const admin = admins[0];
+            admin.access = 'admin';      
+            this.userType = 'admin';
+            this.setCurrentUser(admin);
+            observer.next(admin);
+            observer.complete();
+          } 
+        },
+        error: (err) => {
+          observer.error(err);
+        }
+      });
+  });
+}
+
+  getCurrentUser(): any {
+    return this.currentUserSubject.value;
+  }
+
+  getCurrentUserRole(): string {
+    const user = this.getCurrentUser();
+    return user?.role || '';
+  }
+  logout(): void {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('currentUserType');
+    this.currentUserSubject.next(null);
+    this.userType = null;
+  }
+
+  getUserProfile(): Observable<any> {
+    const user = this.getCurrentUser();
+    if (!user || !user.id) {
+      throw new Error('No user logged in');
+    }
+
+    if (this.userType === 'admin') {
+      return this.http.get<Admin>(`${this.adminApi}/${user.id}`);
+    } else {
+      return this.http.get<User>(`${this.userApi}/${user.id}`);
+    }
+  }
+
+  updateProfile(updatedData: any): Observable<any> {
+    const user = this.getCurrentUser();
+    if (!user || !user.id) {
+      throw new Error('No user logged in');
+    }
+
+    const apiUrl = this.userType === 'admin' 
+      ? `${this.adminApi}/${user.id}`
+      : `${this.userApi}/${user.id}`;
+
+    return this.http.put(apiUrl, updatedData).pipe(
+      tap(updatedUser => {
+        const mergedUser = {
+          ...user,
+          ...updatedUser,
+          role: user.role
+        };
+        this.setCurrentUser(mergedUser);
+      })
+    );
+  }
+
+  refreshUserData(): Observable<any> {
+    const user = this.getCurrentUser();
+    if (!user || !user.id) {
+      throw new Error('No user logged in');
+    }
+
+    const apiUrl = this.userType === 'admin'
+      ? `${this.adminApi}/${user.id}`
+      : `${this.userApi}/${user.id}`;
+
+    return this.http.get(apiUrl).pipe(
+      tap(freshUser => {
+        const mergedUser = {
+          ...freshUser,
+          role: user.role
+        };
+        this.setCurrentUser(mergedUser);
+      })
+    );
+  }
+
   register(registerData: any): Observable<User> {
     return this.http.post<User>(this.userApi, registerData);
   }
@@ -27,7 +143,7 @@ export class AuthService {
     return this.http.get<User[]>(this.userApi);
   }
   
-  //ADMIN
+  // ADMIN
   getAllUsers(): Observable<Admin[]> {
     return this.http.get<Admin[]>(this.adminApi);
   }
@@ -48,7 +164,7 @@ export class AuthService {
     return this.http.delete<void>(`${this.adminApi}/${id}`);
   }
 
-  //DASHBOARD
+  // DASHBOARD
   getAdminCount(): Observable<number> {
     return this.http.get<Admin[]>(this.adminApi).pipe(
       map(admins => admins.length)
@@ -61,7 +177,7 @@ export class AuthService {
     );
   }
 
-  //Employee
+  // Employee
   getAllEmployee(): Observable<User[]> {
     return this.http.get<User[]>(this.userApi);
   }

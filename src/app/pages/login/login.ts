@@ -36,21 +36,24 @@ export class LoginComponent {
   }
   submitForm(): void {
     if (this.validateForm.invalid) {
-      Object.values(this.validateForm.controls).forEach(control => {
-        control.markAsDirty();
-        control.updateValueAndValidity({ onlySelf: true });
-      });
-      return;
-    }
+    Object.values(this.validateForm.controls).forEach(control => {
+      control.markAsDirty();
+      control.updateValueAndValidity({ onlySelf: true });
+    });
+    return;
+  }
 
-    const { username, password } = this.validateForm.getRawValue();
+  const { username, password } = this.validateForm.getRawValue();
 
-    this.auth.login(username, password).subscribe(success => {
-      if (success) {
-        this.msg.success('Login successful');
-        this.router.navigate(['/main'])
-      } else {
-        this.msg.error('Invalid username or password');
+  this.auth.login(username, password).subscribe({
+    next: (adminData) => {
+      console.log('Admin login successful:', adminData);
+      this.msg.success('Admin login successful');
+      this.router.navigate(['/main']); 
+    },
+    error: (error) => {
+      console.error('Admin login failed:', error);
+      this.msg.error('Invalid admin username or password');
       }
     });
   }

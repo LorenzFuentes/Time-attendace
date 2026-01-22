@@ -4,15 +4,15 @@
     <ul nz-menu nzTheme="dark" nzMode="inline">
         <li nz-submenu nzTitle="User" nzIcon="user">
         <ul>
-            <li nz-menu-item (click)="getHome()">Home</li>
-            <li nz-menu-item>Settings</li>
-            <li nz-menu-item (click)="logout()">Logout</li>
+            <li nz-menu-item (click)="getHome()"><nz-icon nzType="dashboard"></nz-icon>&nbsp;&nbsp;Home</li>
+            <li nz-menu-item><nz-icon nzType="setting"></nz-icon>&nbsp;&nbsp;Settings</li>
+            <li nz-menu-item (click)="logout()" style="color: #ff4d4f;"><nz-icon nzType="logout"></nz-icon>&nbsp;&nbsp;Logout</li>
         </ul>
         </li>
         <li nz-submenu nzTitle="Team" nzIcon="team">
         <ul>
-            <li nz-menu-item (click)="getAdminTable()">Admin</li>
-            <li nz-menu-item (click)="getEmployeeTable()">Employee</li>
+            <li nz-menu-item (click)="getAdminTable()"><nz-icon nzType="team" nzTheme="outline" />&nbsp;&nbsp;Admin</li>
+            <li nz-menu-item (click)="getEmployeeTable()"><nz-icon nzType="user" nzTheme="outline" />&nbsp;&nbsp;Employee</li>
         </ul>
         </li>
         <li nz-menu-item>
@@ -22,12 +22,22 @@
     </ul>
     </nz-sider>
     <nz-layout>
-    <nz-header>
+    <nz-header class="main-header">
+      <div class="header-content">
         <nz-icon
-        class="trigger"
-        [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
-        (click)="isCollapsed = !isCollapsed"
+          class="trigger"
+          [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+          (click)="isCollapsed = !isCollapsed"
         />
+        <div class="header-right">
+          <span class="welcome-text">Welcome, {{ getDisplayName(currentUser) }}</span>
+          <nz-avatar 
+            [nzSize]="50" 
+            [nzText]="getInitials(currentUser)" 
+            [ngStyle]="{'background': '#f5222d'}"
+          ></nz-avatar>
+        </div>
+      </div>
     </nz-header>
     <nz-content>
         <nz-breadcrumb>

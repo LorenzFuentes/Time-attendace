@@ -13,7 +13,7 @@
       "password": "admin123"
     },
     {
-      "id": "8d34",
+      "id": "2",
       "firstName": "test",
       "middleName": "test",
       "lastName": "test",
@@ -23,6 +23,30 @@
       "username": "test",
       "email": "test@gmail.com",
       "password": ""
+    },
+    {
+      "id": "3",
+      "firstName": "Jonathan",
+      "middleName": "",
+      "lastName": "Zapata",
+      "contact": "09123456789",
+      "department": "Frontend Developer",
+      "position": "Intern",
+      "username": "Jon",
+      "email": "jonathan@gmail.com",
+      "password": "marclangpogi"
+    },
+    {
+      "id": 4,
+      "firstName": "test",
+      "middleName": "test",
+      "lastName": "test",
+      "contact": "test",
+      "department": "test",
+      "position": "test",
+      "username": "test",
+      "email": "test",
+      "password": "test"
     }
   ],
   "admin": [
@@ -30,28 +54,12 @@
       "id": "1",
       "username": "lorenz",
       "password": "admin123",
-      "email": "lorenz@gmail.com",
-      "fullname": "lorzse",
+      "email": "lrnz@gmail.com",
+      "fullname": "Lorenz Sebastian C. Fuentes",
       "access": "admin"
     },
     {
       "id": "2",
-      "username": "seb",
-      "password": "admin123",
-      "email": "seb@gmail.com",
-      "fullname": "sebastian",
-      "access": "admin"
-    },
-    {
-      "id": "3",
-      "username": "test",
-      "password": "testing",
-      "email": "tes@gmail.com",
-      "fullname": "test",
-      "access": "admin"
-    },
-    {
-      "id": "3695",
       "username": "drose",
       "password": "drosese",
       "email": "drose@gmail.com",
@@ -59,10 +67,10 @@
       "access": "admin"
     },
     {
-      "id": "76d1",
+      "id": "3",
       "username": "test",
-      "password": "admin123",
-      "email": "tst@gmail.com",
+      "password": "test",
+      "email": "test",
       "fullname": "test",
       "access": "admin"
     }

@@ -11,6 +11,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { AuthService } from '../../service/auth';
 import { Router } from '@angular/router';
 import { NzIconModule } from 'ng-zorro-antd/icon'
+
 export interface UserData {
   id: string;
   username: string;
@@ -19,10 +20,11 @@ export interface UserData {
   fullname: string;
   access: string;
 }
+
 @Component({
   selector: 'app-admin-table',
   standalone: true,
-  imports: [CommonModule,FormsModule,ReactiveFormsModule,NzInputModule,NzPopconfirmModule,NzTableModule, NzButtonModule,NzSelectModule,NzTagModule,NzIconModule,],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NzInputModule, NzPopconfirmModule, NzTableModule, NzButtonModule, NzSelectModule, NzTagModule, NzIconModule,],
   templateUrl: './admin-table.html',
   styleUrls: ['./admin-table.scss']
 })
@@ -40,6 +42,7 @@ export class AdminTable implements OnInit {
     private message: NzMessageService,
     private route: Router
   ) {}
+
   ngOnInit(): void {
     this.loadDataFromApi();
   }
@@ -76,11 +79,13 @@ export class AdminTable implements OnInit {
       };
     });
   }
+
   startEdit(id: string): void {
     if (this.editCache[id]) {
       this.editCache[id].edit = true;
     }
   }
+
   cancelEdit(id: string): void {
     if (id.startsWith('temp_')) {
       const index = this.listOfData.findIndex(item => item.id === id);
@@ -98,115 +103,129 @@ export class AdminTable implements OnInit {
       }
     }
   }
+
   saveEdit(id: string): void {
-    const index = this.listOfData.findIndex(item => item.id === id);
-    if (index !== -1 && this.editCache[id]) {
-      const updatedUser = this.editCache[id].data;
-      const isNewUser = id.startsWith('temp_');
-      
-      if (isNewUser) {
-        this.createNewUser(updatedUser, id);
-      } else {
-        this.updateExistingUser(id, updatedUser, index);
-      }
+    if (!this.isFormValid(id)) {
+      this.message.warning('Please fill in all required fields');
+      return;
+    }
+
+    const adminData = this.editCache[id].data;
+    
+    if (id.startsWith('temp_')) {
+      // New admin - get next ID from server using register logic
+      this.registerAdminWithManualId(adminData, id);
+    } else {
+      // Existing admin - update
+      this.authService.updateUser(id, adminData).subscribe({
+        next: () => {
+          this.editCache[id].edit = false;
+          this.message.success('Admin updated successfully!');
+        },
+        error: () => {
+          this.message.error('Failed to update admin');
+        }
+      });
     }
   }
-  private createNewUser(userData: UserData, tempId: string): void {
-    const newUserPayload = {
-      username: userData.username,
-      password: userData.password,
-      email: userData.email,
-      fullname: userData.fullname,
-      access: userData.access || 'user'
-    };
 
-    this.authService.createUser(newUserPayload).subscribe({
-      next: (response) => {
-        const tempIndex = this.listOfData.findIndex(item => item.id === tempId);
-        if (tempIndex !== -1) {
-          this.listOfData[tempIndex] = {
-            id: response.id.toString(),
-            username: response.username,
-            password: response.password,
-            email: response.email,
-            fullname: response.fullname,
-            access: response.access
-          };
-          delete this.editCache[tempId];
-          this.updateEditCache();
-          
-          this.message.success('User created successfully!');
-        }
-      },
-      error: (error) => {
-        const tempIndex = this.listOfData.findIndex(item => item.id === tempId);
-        if (tempIndex !== -1) {
-          this.listOfData.splice(tempIndex, 1);
-          delete this.editCache[tempId];
-        }
-        
-        this.message.error('Failed to create user. Please try again.');
-      }
-    });
-  }
-
-  private updateExistingUser(id: string, updatedUser: UserData, index: number): void {
-    const apiUser = {
-      ...updatedUser,
-      id: parseInt(updatedUser.id) || updatedUser.id
-    };
-    delete (apiUser as any).edit;
-
-    this.authService.updateUser(apiUser.id, apiUser).subscribe({
-      next: (response) => {
-
-        this.listOfData[index] = updatedUser;
-        this.editCache[id].edit = false;
-        this.message.success('User updated successfully!');
-      },
-      error: (error) => {
-        this.message.error('Failed to update user. Please try again.');
-      }
-    });
-  }
-  deleteUser(id: string): void {
-    const userId = parseInt(id) || id;
-    
-    this.authService.deleteUser(userId).subscribe({
-      next: () => {
-        const index = this.listOfData.findIndex(item => item.id === id);
-        if (index !== -1) {
-          this.listOfData.splice(index, 1);
-          delete this.editCache[id];
-          this.updateEditCache();
-          this.message.success('User deleted successfully!');
-        }
-      },
-      error: (error) => {
-        this.message.error('Failed to delete user. Please try again.');
-      }
-    });
-  }
   addNewUser(): void {
-    const maxId = this.listOfData.reduce((max, user) => {
-      const numId = parseInt(user.id);
-      return !isNaN(numId) && numId > max ? numId : max;
-    }, 0);
+    // Generate a temporary ID
+    const tempId = 'temp_' + Date.now();
     
-    const tempId = 'temp_' + (maxId + 1);
-    const newUser: UserData = {
+    const newAdmin: UserData = {
       id: tempId,
       username: '',
       password: '',
       email: '',
       fullname: '',
-      access: 'user'
+      access: 'admin'
     };
-    this.listOfData = [newUser, ...this.listOfData];
+    
+    this.listOfData = [newAdmin, ...this.listOfData];
     this.updateEditCache();
     this.startEdit(tempId);
-    this.message.info('Please fill in the new user details');
+    this.message.info('Please fill in the new admin details');
   }
+
+  private registerAdminWithManualId(newAdmin: any, tempId: string): void {
+    this.authService.getAllUsers().subscribe({
+      next: (existingAdmins: any) => {
+        let maxId = 0;
+        if (existingAdmins && existingAdmins.length > 0) {
+          const numericIds = existingAdmins
+            .filter((admin: any) => {
+              const idNum = Number(admin.id);
+              return !isNaN(idNum) && !admin.id.toString().startsWith('temp_');
+            })
+            .map((admin: any) => Number(admin.id));
+          
+          if (numericIds.length > 0) {
+            maxId = Math.max(...numericIds);
+          }
+        }
+        
+        const nextId = maxId + 1;
+        
+        const adminWithId = {
+          id: nextId.toString(),
+          username: newAdmin.username,
+          password: newAdmin.password,
+          email: newAdmin.email,
+          fullname: newAdmin.fullname,
+          access: 'admin'
+        };
+        
+        this.authService.createUser(adminWithId).subscribe({
+          next: (createdAdmin: any) => {
+            const tempIndex = this.listOfData.findIndex(item => item.id === tempId);
+            if (tempIndex !== -1) {
+              this.listOfData[tempIndex] = createdAdmin;
+              
+              this.editCache[createdAdmin.id] = {
+                edit: false,
+                data: createdAdmin
+              };
+              delete this.editCache[tempId];
+              
+              this.updateEditCache();
+            }
+            
+            this.message.success(`Admin ${newAdmin.fullname} registered successfully! ID: ${nextId}`);
+          },
+          error: (error) => {
+            console.error('Registration failed:', error);
+            this.message.error('Registration failed. Please try again.');
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Failed to get existing admins:', error);
+        this.message.error('Failed to connect to server. Please try again.');
+      }
+    });
+  }
+
+  deleteUser(id: string): void {
+    if (!id.startsWith('temp_')) {
+      const userId = parseInt(id) || id;
+      
+      this.authService.deleteUser(userId).subscribe({
+        next: () => {
+          this.listOfData = this.listOfData.filter(item => item.id !== id);
+          delete this.editCache[id];
+          this.message.success('User deleted successfully!');
+        },
+        error: (error) => {
+          this.message.error('Failed to delete user. Please try again.');
+        }
+      });
+    } else {
+      this.listOfData = this.listOfData.filter(item => item.id !== id);
+      delete this.editCache[id];
+    }
+  }
+
   getAccessLabel(access: string): string {
     switch (access.toLowerCase()) {
       case 'admin': return 'Admin';
@@ -215,16 +234,16 @@ export class AdminTable implements OnInit {
   }
 
   refreshData(): void {
-    window.location.reload();
+    this.loadDataFromApi();
   }
 
   isFormValid(userId: string): boolean {
     const userData = this.editCache[userId]?.data;
     if (!userData) return false;
     
-    return !!userData.username?.trim() && 
-           !!userData.email?.trim() && 
-           !!userData.password?.trim() &&
-           !!userData.fullname?.trim();
+    return !!userData.username.trim() && 
+           !!userData.email.trim() && 
+           !!userData.password.trim() &&
+           !!userData.fullname.trim();
   }
 }

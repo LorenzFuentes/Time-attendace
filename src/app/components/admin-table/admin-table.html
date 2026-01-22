@@ -49,16 +49,16 @@
         </ng-container>
         <ng-template #editTemplate>
           <td>
-            <input nz-input [(ngModel)]="editCache[data.id].data.username" placeholder="Username"[class.invalid]="!editCache[data.id].data.username?.trim()"/>
+            <input nz-input [(ngModel)]="editCache[data.id].data.username" placeholder="Username"[class.invalid]="!editCache[data.id].data.username.trim()"/>
           </td>
           <td>
-            <input nz-input [(ngModel)]="editCache[data.id].data.fullname" placeholder="Full Name"[class.invalid]="!editCache[data.id].data.fullname?.trim()"/>
+            <input nz-input [(ngModel)]="editCache[data.id].data.fullname" placeholder="Full Name"[class.invalid]="!editCache[data.id].data.fullname.trim()"/>
           </td>
           <td>
-            <input nz-input type="email"[(ngModel)]="editCache[data.id].data.email" placeholder="Email"[class.invalid]="!editCache[data.id].data.email?.trim()"/>
+            <input nz-input type="email"[(ngModel)]="editCache[data.id].data.email" placeholder="Email"[class.invalid]="!editCache[data.id].data.email.trim()"/>
           </td>
           <td>
-            <input nz-input type="password"[(ngModel)]="editCache[data.id].data.password" placeholder="Password"[class.invalid]="!editCache[data.id].data.password?.trim()"/>
+            <input nz-input type="password"[(ngModel)]="editCache[data.id].data.password" placeholder="Password"[class.invalid]="!editCache[data.id].data.password.trim()"/>
           </td>
           <td>
             <nz-select [(ngModel)]="editCache[data.id].data.access"style="width: 100%;">
