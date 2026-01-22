@@ -1,9 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router } from '@angular/router'; 
-import { TitleCasePipe } from '@angular/common';
-
-// NG-ZORRO imports
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -15,7 +12,7 @@ import { AuthService } from '../../service/auth';
 
 @Component({
   selector: 'app-main-layout',
-  imports: [CommonModule,RouterOutlet,TitleCasePipe,NzAvatarModule,NzBreadCrumbModule,NzIconModule,NzLayoutModule,NzMenuModule,NzTagModule,NzResultModule,],
+  imports: [CommonModule,RouterOutlet,NzAvatarModule,NzBreadCrumbModule,NzIconModule,NzLayoutModule,NzMenuModule,NzTagModule,NzResultModule,],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss',
 })
@@ -155,8 +152,12 @@ export class MainLayout implements OnInit, OnDestroy {
     this.router.navigate(['/admin-home']);
   }
 
+  getChart(): void {
+    this.router.navigate(['/main/chart']);
+  }
+
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(['']);
   }
 }

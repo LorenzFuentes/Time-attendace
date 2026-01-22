@@ -56,6 +56,13 @@ h2 {
   gap: 12px;
 }
 
+.btn-container{
+    display: flex;
+    gap: 2px; 
+    align-items: center;
+}
+
+
 .edit-btn{
     background-color: #51b6fa;
     color: white;

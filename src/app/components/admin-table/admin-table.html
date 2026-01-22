@@ -16,6 +16,7 @@
   <nz-table #userTable nzBordered [nzData]="listOfData" nzTableLayout="fixed"[nzLoading]="isLoading">
     <thead>
       <tr>
+        <th>ID</th>
         <th>Username</th>
         <th>Full Name</th>
         <th>Email</th>
@@ -27,6 +28,7 @@
     <tbody>
       <tr *ngFor="let data of userTable.data">
         <ng-container *ngIf="!editCache[data.id]?.edit; else editTemplate">
+          <td>{{ data.id }}</td>
           <td>{{ data.username }}</td>
           <td>{{ data.fullname }}</td>
           <td>
@@ -48,6 +50,8 @@
           </td>
         </ng-container>
         <ng-template #editTemplate>
+          <td>
+            <input nz-input  placeholder="ID" disabled/>
           <td>
             <input nz-input [(ngModel)]="editCache[data.id].data.username" placeholder="Username"[class.invalid]="!editCache[data.id].data.username.trim()"/>
           </td>

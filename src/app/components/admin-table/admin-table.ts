@@ -192,6 +192,7 @@ export class AdminTable implements OnInit {
             }
             
             this.message.success(`Admin ${newAdmin.fullname} registered successfully! ID: ${nextId}`);
+            window.location.reload();
           },
           error: (error) => {
             console.error('Registration failed:', error);
@@ -234,7 +235,7 @@ export class AdminTable implements OnInit {
   }
 
   refreshData(): void {
-    this.loadDataFromApi();
+    window.location.reload();
   }
 
   isFormValid(userId: string): boolean {

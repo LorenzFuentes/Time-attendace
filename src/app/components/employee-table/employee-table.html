@@ -16,6 +16,7 @@
     <nz-table #employeeTable nzBordered [nzData]="employees" nzTableLayout="fixed" [nzLoading]="isLoading">
         <thead>
             <tr>
+                <th>ID</th>
                 <th>First Name</th>
                 <th>Middle Name</th>
                 <th>Last Name</th>
@@ -31,6 +32,7 @@
         <tbody>
             <tr *ngFor="let employee of employeeTable.data">
                 <ng-container *ngIf="!editCache[employee.id]?.edit; else editTemplate">
+                    <td>{{ employee.id }}</td>
                     <td>{{ employee.firstName }}</td>
                     <td>{{ employee.middleName || '-' }}</td>
                     <td>{{ employee.lastName }}</td>
@@ -43,14 +45,16 @@
                     </td>
                     <td>••••••••</td>
                     <td>
-                        <button class="edit-btn" (click)="startEdit(employee.id)">
-                            Edit
-                        </button>
-                        <button class="delete-btn" nz-popconfirm 
-                                nzPopconfirmTitle="Delete this employee?" 
-                                (nzOnConfirm)="deleteEmployee(employee.id)">
-                            Delete
-                        </button>
+                        <div class="btn-container">
+                            <button class="edit-btn" (click)="startEdit(employee.id)">
+                                Edit
+                            </button>
+                            <button class="delete-btn" nz-popconfirm 
+                                    nzPopconfirmTitle="Delete this employee?" 
+                                    (nzOnConfirm)="deleteEmployee(employee.id)">
+                                Delete
+                            </button>
+                        </div>
                     </td>
                 </ng-container>
                 <ng-template #editTemplate>
@@ -79,10 +83,12 @@
                         <input nz-input type="email"  [(ngModel)]="editCache[employee.id].data.email" placeholder="Email" [class.invalid]="!editCache[employee.id].data.email.trim()" />
                     </td>
                     <td>
+                        <!-- Fix 1: Check if it's a temporary employee -->
                         <input nz-input type="password"  
                             [(ngModel)]="editCache[employee.id].data.password"  
-                            [placeholder]="employee.id < 0 ? 'Password' : 'Leave blank to keep current'" />
-                        <small class="password-hint" *ngIf="employee.id >= 0">
+                            [placeholder]="employee.id.startsWith('temp_') ? 'Password' : 'Leave blank to keep current'" />
+                        <!-- Fix 2: Update the condition -->
+                        <small class="password-hint" *ngIf="!employee.id.startsWith('temp_')">
                             Leave blank to keep current password
                         </small>
                     </td>
@@ -93,9 +99,10 @@
                                     [disabled]="!isFormValid(employee.id)">
                                 Save
                             </button>
+                            <!-- Fix 3: Update cancel button text -->
                             <button nz-button nzType="default" size="small"
                                     (click)="cancelEdit(employee.id)">
-                                {{ employee.id < 0 ? 'Cancel Add' : 'Cancel' }}
+                                {{ employee.id.startsWith('temp_') ? 'Cancel Add' : 'Cancel' }}
                             </button>
                         </div>
                     </td>

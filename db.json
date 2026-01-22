@@ -14,64 +14,232 @@
     },
     {
       "id": "2",
-      "firstName": "test",
-      "middleName": "test",
-      "lastName": "test",
-      "contact": "0987654321",
-      "department": "test",
-      "position": "test",
-      "username": "test",
-      "email": "test@gmail.com",
-      "password": ""
-    },
-    {
-      "id": "3",
-      "firstName": "Jonathan",
+      "firstName": "marc",
       "middleName": "",
-      "lastName": "Zapata",
+      "lastName": "zapata",
       "contact": "09123456789",
-      "department": "Frontend Developer",
+      "department": "CEU",
       "position": "Intern",
-      "username": "Jon",
-      "email": "jonathan@gmail.com",
-      "password": "marclangpogi"
+      "username": "zap",
+      "email": "zap@gmail.com",
+      "password": "admin123"
     },
-    {
-      "id": 4,
-      "firstName": "test",
-      "middleName": "test",
-      "lastName": "test",
-      "contact": "test",
-      "department": "test",
-      "position": "test",
-      "username": "test",
-      "email": "test",
-      "password": "test"
-    }
+      {
+    "id": "3",
+    "firstName": "john",
+    "middleName": "michael",
+    "lastName": "dela cruz",
+    "contact": "09123456780",
+    "department": "IT",
+    "position": "Developer",
+    "username": "johndc",
+    "email": "john.dc@gmail.com",
+    "password": "pass123"
+  },
+  {
+    "id": "4",
+    "firstName": "maria",
+    "middleName": "santos",
+    "lastName": "reyes",
+    "contact": "09123456781",
+    "department": "HR",
+    "position": "Manager",
+    "username": "mreyes",
+    "email": "maria.reyes@gmail.com",
+    "password": "hrpass456"
+  },
+  {
+    "id": "5",
+    "firstName": "carlos",
+    "middleName": "",
+    "lastName": "lim",
+    "contact": "09123456782",
+    "department": "Finance",
+    "position": "Analyst",
+    "username": "clim",
+    "email": "carlos.lim@gmail.com",
+    "password": "finance789"
+  },
+  {
+    "id": "6",
+    "firstName": "sarah",
+    "middleName": "jane",
+    "lastName": "tan",
+    "contact": "09123456783",
+    "department": "Marketing",
+    "position": "Specialist",
+    "username": "sjtan",
+    "email": "sarah.tan@gmail.com",
+    "password": "market123"
+  },
+  {
+    "id": "7",
+    "firstName": "james",
+    "middleName": "robert",
+    "lastName": "ong",
+    "contact": "09123456784",
+    "department": "Operations",
+    "position": "Supervisor",
+    "username": "jrong",
+    "email": "james.ong@gmail.com",
+    "password": "ops456"
+  },
+  {
+    "id": "8",
+    "firstName": "anna",
+    "middleName": "marie",
+    "lastName": "garcia",
+    "contact": "09123456785",
+    "department": "Sales",
+    "position": "Representative",
+    "username": "amgarcia",
+    "email": "anna.garcia@gmail.com",
+    "password": "sales789"
+  },
+  {
+    "id": "9",
+    "firstName": "david",
+    "middleName": "lee",
+    "lastName": "chan",
+    "contact": "09123456786",
+    "department": "IT",
+    "position": "Admin",
+    "username": "dlchan",
+    "email": "david.chan@gmail.com",
+    "password": "itadmin123"
+  },
+  {
+    "id": "10",
+    "firstName": "lisa",
+    "middleName": "",
+    "lastName": "martinez",
+    "contact": "09123456787",
+    "department": "Customer Service",
+    "position": "Agent",
+    "username": "lmartinez",
+    "email": "lisa.martinez@gmail.com",
+    "password": "cs456"
+  },
+  {
+    "id": "11",
+    "firstName": "peter",
+    "middleName": "paul",
+    "lastName": "ramos",
+    "contact": "09123456788",
+    "department": "Logistics",
+    "position": "Coordinator",
+    "username": "ppramos",
+    "email": "peter.ramos@gmail.com",
+    "password": "logistics123"
+  },
+  {
+    "id": "12",
+    "firstName": "michelle",
+    "middleName": "ann",
+    "lastName": "torres",
+    "contact": "09123456790",
+    "department": "Quality Assurance",
+    "position": "Engineer",
+    "username": "matorres",
+    "email": "michelle.torres@gmail.com",
+    "password": "qa789"
+  }
   ],
   "admin": [
     {
       "id": "1",
-      "username": "lorenz",
+      "username": "lorze",
       "password": "admin123",
       "email": "lrnz@gmail.com",
       "fullname": "Lorenz Sebastian C. Fuentes",
+      "access": "Admin"
+    },
+    {
+      "id": "5",
+      "username": "sindel",
+      "password": "bapsilog",
+      "email": "rc@gmail.com",
+      "fullname": "Ralph Cruz",
       "access": "admin"
     },
     {
-      "id": "2",
-      "username": "drose",
-      "password": "drosese",
-      "email": "drose@gmail.com",
-      "fullname": "derrick",
+      "id": "6",
+      "username": "jai",
+      "password": "warupaypay",
+      "email": "jai@gmail.com",
+      "fullname": "Jairo Garcia",
       "access": "admin"
     },
     {
-      "id": "3",
-      "username": "test",
-      "password": "test",
-      "email": "test",
-      "fullname": "test",
+      "id": "7",
+      "username": "RNCS",
+      "password": "rncsyearner",
+      "email": "rncs@gmail.com",
+      "fullname": "Ronaldo Junior",
+      "access": "admin"
+    },
+    {
+      "id": "8",
+      "username": "lyzza",
+      "password": "lyzzaabig",
+      "email": "lyzza@gmail.com",
+      "fullname": "Lyzza Abig",
+      "access": "admin"
+    },
+    {
+      "id": "9",
+      "username": "neil",
+      "password": "neilfromlaco",
+      "email": "nj@gmail.com",
+      "fullname": "Neil Joseph",
+      "access": "admin"
+    },
+    {
+      "id": "10",
+      "username": "adi",
+      "password": "adifromlaco",
+      "email": "adi@gmail.com",
+      "fullname": "Adriana ",
+      "access": "admin"
+    },
+    {
+      "id": "11",
+      "username": "ainz",
+      "password": "ainzdownbad",
+      "email": "ainz@gmail.com",
+      "fullname": "Al Cedrick Garcia",
+      "access": "admin"
+    },
+    {
+      "id": "12",
+      "username": "Aljo",
+      "password": "aljomigi",
+      "email": "aljo@gmail.com",
+      "fullname": "Aljo Miguel",
+      "access": "admin"
+    },
+    {
+      "id": "13",
+      "username": "Haji",
+      "password": "fusifusi",
+      "email": "haji@gmail.com",
+      "fullname": "Francis",
+      "access": "admin"
+    },
+    {
+      "id": "14",
+      "username": "Leo",
+      "password": "leofromwater",
+      "email": "leo@gmail.com",
+      "fullname": "Leonard Bruno",
+      "access": "admin"
+    },
+    {
+      "id": "15",
+      "username": "Glodo",
+      "password": "hidetheminors",
+      "email": "alex@gmail.com",
+      "fullname": "Alexander Glodo",
       "access": "admin"
     }
   ]

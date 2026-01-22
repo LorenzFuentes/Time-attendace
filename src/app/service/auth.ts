@@ -3,12 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { map, tap } from 'rxjs/operators';
 import { Observable, BehaviorSubject  } from 'rxjs';
 import { User, Admin } from '../model/post';
+import { inject } from '@angular/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private adminApi = 'http://localhost:3000/admin';
   private userApi = 'http://localhost:3000/users';
-
+   private msg = inject(NzMessageService);
   private currentUserSubject = new BehaviorSubject<any>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   private userType: 'admin' | 'user' | null = null;
@@ -44,7 +46,7 @@ export class AuthService {
 
   // LOGIN
   login(username: string, password: string): Observable<any> {
-  return new Observable(observer => {
+   return new Observable(observer => {
     this.http.get<Admin[]>(`${this.adminApi}?username=${username}&password=${password}`)
       .subscribe({
         next: (admins) => {
@@ -55,11 +57,15 @@ export class AuthService {
             this.setCurrentUser(admin);
             observer.next(admin);
             observer.complete();
-          } 
+          } else {
+            observer.error({
+              status: 401,
+              message: 'Invalid username or password'
+            });
+          }
         },
         error: (err) => {
-          observer.error(err);
-        }
+          observer.error(err);        }
       });
   });
 }

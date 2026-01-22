@@ -11,11 +11,11 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzResultModule } from 'ng-zorro-antd/result';
-import { TitleCasePipe } from '@angular/common';
 import { AuthService } from '../../service/auth';
 
 @Component({
   selector: 'app-admin-home',
+  standalone: true,
   imports: [
     CommonModule,
     NzBreadCrumbModule,
@@ -27,20 +27,18 @@ import { AuthService } from '../../service/auth';
     NzCardModule,
     NzButtonModule,
     NzSpinModule,
-    NzResultModule,
-    TitleCasePipe
+    NzResultModule
   ],
   templateUrl: './admin-home.html',
-  styleUrl: './admin-home.scss',
+  styleUrls: ['./admin-home.scss']
 })
 export class AdminHomeComponent implements OnInit {
   isCollapsed = false;
   adminCount = 0;
   employeeCount = 0;
   totalUsers = 0;
-  isLoading = true; // Start with true
-  protected readonly date = new Date();
-  
+  isLoading = true;
+  date = new Date()
   currentUser: any = null;
 
   constructor(
@@ -49,61 +47,45 @@ export class AdminHomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('AdminHomeComponent initializing...');
     this.loadCurrentUser();
-    this.loadUserCounts();
   }
 
   private loadCurrentUser(): void {
-    console.log('Loading current user...');
-    
-    // Method 1: Get from auth service
     this.currentUser = this.authService.getCurrentUser();
-    console.log('User from auth service:', this.currentUser);
     
     if (this.currentUser) {
-      console.log('User role:', this.currentUser.role);
-      console.log('User data:', this.currentUser);
-      this.isLoading = false;
-      
-      // If user is not admin, redirect to appropriate page
-      if (this.currentUser.role !== 'admin') {
-        console.log('User is not admin, redirecting...');
-        // Redirect to user home page
-        this.router.navigate(['/user-home']);
-        return;
-      }
+      this.handleUserLoaded();
     } else {
-      console.log('No user found in auth service, checking localStorage...');
-      
-      // Method 2: Try localStorage as fallback
-      const userData = localStorage.getItem('currentUser');
-      const userType = localStorage.getItem('currentUserType');
-      
-      if (userData) {
-        this.currentUser = JSON.parse(userData);
-        
-        // If role doesn't exist, set it based on userType
-        if (!this.currentUser.role && userType) {
-          this.currentUser.role = userType;
-        }
-        
-        console.log('User from localStorage:', this.currentUser);
-        this.isLoading = false;
-        
-        if (this.currentUser.role !== 'admin') {
-          this.router.navigate(['/user-home']);
-          return;
-        }
-      } else {
-        console.log('No user in localStorage either');
-        this.isLoading = false;
-      }
+      this.loadUserFromStorage();
     }
     
-    // Subscribe to changes
+    this.subscribeToUserUpdates();
+  }
+
+  private handleUserLoaded(): void {
+    this.isLoading = false;
+    this.loadUserCounts();
+  }
+
+  private loadUserFromStorage(): void {
+    const userData = localStorage.getItem('currentUser');
+    const userType = localStorage.getItem('currentUserType');
+    
+    if (userData) {
+      this.currentUser = JSON.parse(userData);
+      
+      if (!this.currentUser.role && userType) {
+        this.currentUser.role = userType;
+      }
+      
+      this.handleUserLoaded();
+    } else {
+      this.isLoading = false;
+    }
+  }
+
+  private subscribeToUserUpdates(): void {
     this.authService.currentUser$.subscribe(user => {
-      console.log('User observable updated:', user);
       if (user) {
         this.currentUser = user;
       }
@@ -124,8 +106,7 @@ export class AdminHomeComponent implements OnInit {
 
   getDisplayName(user: any): string {
     if (!user) return 'Admin';
-  
-    // Check all possible name fields
+
     if (user.fullname && user.fullname.trim()) {
       return user.fullname;
     }
@@ -138,15 +119,14 @@ export class AdminHomeComponent implements OnInit {
       return user.username;
     }
     
-    // Try combining first/middle/last names
-    const names = [
+    const nameParts = [
       user.firstName,
       user.middleName,
       user.lastName
-    ].filter(name => name && name.trim());
+    ].filter(part => part && part.trim());
     
-    if (names.length > 0) {
-      return names.join(' ');
+    if (nameParts.length > 0) {
+      return nameParts.join(' ');
     }
     
     return 'User';
@@ -164,18 +144,7 @@ export class AdminHomeComponent implements OnInit {
       .substring(0, 2);
   }
 
-  editProfile(): void {
-    console.log('Edit profile clicked');
-    // Navigate to edit profile page
-  }
-
-  changePassword(): void {
-    console.log('Change password clicked');
-    // Navigate to change password page
-  }
-
   logout(): void {
-    console.log('Logging out...');
     this.authService.logout();
     this.router.navigate(['']);
   }
@@ -190,5 +159,9 @@ export class AdminHomeComponent implements OnInit {
 
   getEmployeeTable(): void {
     this.router.navigate(['/main/employee-table']);
+  }
+  
+  getChart(): void {
+    this.router.navigate(['/main/chart']);
   }
 }
