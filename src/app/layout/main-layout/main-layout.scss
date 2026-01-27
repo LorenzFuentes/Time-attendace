@@ -86,17 +86,21 @@
     color: #ffffff;
     background-color: #677ec496;
 }
+
+h1{
+    width: fit-content; 
+    font-weight: bolder;
+}
 .logo {
-    height: 32px;
-    margin: 16px;
     display: flex;
+    font-family: 'Chillax', sans-serif;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    background: rgba(118, 138, 250, 0.623);
-    border-radius: 4px;
+    font-size: 20px;
+    background: linear-gradient(to right, #170b49, #5162fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    padding-top: 1rem;
 }
 
 nz-header {
@@ -157,11 +161,6 @@ nz-breadcrumb {
     gap: 24px;
     margin-bottom: 30px;
     flex-wrap: wrap;
-}
-h1{
-    border-bottom: 2px solid #5162fa;
-    width: fit-content; 
-    font-weight: bolder;
 }
 
 .stat-card {

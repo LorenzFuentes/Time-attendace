@@ -39,7 +39,7 @@ export class RegisterComponent {
   }
 
   getLogin(){
-    this.router.navigate(['']);
+    this.router.navigate(['login']);
   }
 
   checkPasswordMatch(): boolean {

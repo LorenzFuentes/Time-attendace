@@ -115,15 +115,15 @@ nz-select .ant-select-selector {
 }
 
 .register-title {
-    font-size: 48px;
+    font-size: 50px;
     font-weight: 700;
-    color: #fff;
+    color: white;
     margin: 0 0 10px 0;
     text-align: center;
 }
 
 .register-subtitle {
-    font-size: 13px;
+    font-size: 16px;
     color: #ddd;
     margin: 0;
     line-height: 1.3;
@@ -143,9 +143,10 @@ nz-select .ant-select-selector {
     margin-top: 24px;
 }
 
-h1{
+h2{
     border-bottom: 2px solid #5162fa;
-    width: fit-content
+    width: fit-content;
+    font-size: 1.5rem;
 }
 
 .register-button:hover {
