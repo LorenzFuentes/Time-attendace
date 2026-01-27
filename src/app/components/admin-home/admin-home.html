@@ -73,8 +73,6 @@
               </h1>
               
               <p class="profile-title">
-                <span *ngIf="currentUser.position">{{currentUser.position}}</span>
-                <span *ngIf="currentUser.department"> • {{currentUser.department}}</span>
                 <span *ngIf="!currentUser.position && !currentUser.department">System Administrator</span>
               </p>
               
@@ -205,6 +203,6 @@
       </div>
     </nz-content>
     
-    <nz-footer>Ant Design ©{{ date.getFullYear() }} Implement By Angular</nz-footer>
+    <nz-footer>Lorenz Fuentes ©{{ date.getFullYear() }}</nz-footer>
   </nz-layout>
 </nz-layout>

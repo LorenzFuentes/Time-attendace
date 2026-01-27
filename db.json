@@ -7,7 +7,7 @@
       "lastName": "fuentes",
       "contact": "09123456789",
       "department": "CEU",
-      "position": "Student",
+      "position": "Developer",
       "username": "lorenz",
       "email": "lorenzcfuentes@gmail.com",
       "password": "admin123"
@@ -24,126 +24,126 @@
       "email": "zap@gmail.com",
       "password": "admin123"
     },
-      {
-    "id": "3",
-    "firstName": "john",
-    "middleName": "michael",
-    "lastName": "dela cruz",
-    "contact": "09123456780",
-    "department": "IT",
-    "position": "Developer",
-    "username": "johndc",
-    "email": "john.dc@gmail.com",
-    "password": "pass123"
-  },
-  {
-    "id": "4",
-    "firstName": "maria",
-    "middleName": "santos",
-    "lastName": "reyes",
-    "contact": "09123456781",
-    "department": "HR",
-    "position": "Manager",
-    "username": "mreyes",
-    "email": "maria.reyes@gmail.com",
-    "password": "hrpass456"
-  },
-  {
-    "id": "5",
-    "firstName": "carlos",
-    "middleName": "",
-    "lastName": "lim",
-    "contact": "09123456782",
-    "department": "Finance",
-    "position": "Analyst",
-    "username": "clim",
-    "email": "carlos.lim@gmail.com",
-    "password": "finance789"
-  },
-  {
-    "id": "6",
-    "firstName": "sarah",
-    "middleName": "jane",
-    "lastName": "tan",
-    "contact": "09123456783",
-    "department": "Marketing",
-    "position": "Specialist",
-    "username": "sjtan",
-    "email": "sarah.tan@gmail.com",
-    "password": "market123"
-  },
-  {
-    "id": "7",
-    "firstName": "james",
-    "middleName": "robert",
-    "lastName": "ong",
-    "contact": "09123456784",
-    "department": "Operations",
-    "position": "Supervisor",
-    "username": "jrong",
-    "email": "james.ong@gmail.com",
-    "password": "ops456"
-  },
-  {
-    "id": "8",
-    "firstName": "anna",
-    "middleName": "marie",
-    "lastName": "garcia",
-    "contact": "09123456785",
-    "department": "Sales",
-    "position": "Representative",
-    "username": "amgarcia",
-    "email": "anna.garcia@gmail.com",
-    "password": "sales789"
-  },
-  {
-    "id": "9",
-    "firstName": "david",
-    "middleName": "lee",
-    "lastName": "chan",
-    "contact": "09123456786",
-    "department": "IT",
-    "position": "Admin",
-    "username": "dlchan",
-    "email": "david.chan@gmail.com",
-    "password": "itadmin123"
-  },
-  {
-    "id": "10",
-    "firstName": "lisa",
-    "middleName": "",
-    "lastName": "martinez",
-    "contact": "09123456787",
-    "department": "Customer Service",
-    "position": "Agent",
-    "username": "lmartinez",
-    "email": "lisa.martinez@gmail.com",
-    "password": "cs456"
-  },
-  {
-    "id": "11",
-    "firstName": "peter",
-    "middleName": "paul",
-    "lastName": "ramos",
-    "contact": "09123456788",
-    "department": "Logistics",
-    "position": "Coordinator",
-    "username": "ppramos",
-    "email": "peter.ramos@gmail.com",
-    "password": "logistics123"
-  },
-  {
-    "id": "12",
-    "firstName": "michelle",
-    "middleName": "ann",
-    "lastName": "torres",
-    "contact": "09123456790",
-    "department": "Quality Assurance",
-    "position": "Engineer",
-    "username": "matorres",
-    "email": "michelle.torres@gmail.com",
-    "password": "qa789"
-  }
+    {
+      "id": "3",
+      "firstName": "john",
+      "middleName": "michael",
+      "lastName": "dela cruz",
+      "contact": "09123456780",
+      "department": "IT",
+      "position": "Developer",
+      "username": "johndc",
+      "email": "john.dc@gmail.com",
+      "password": "pass123"
+    },
+    {
+      "id": "4",
+      "firstName": "maria",
+      "middleName": "santos",
+      "lastName": "reyes",
+      "contact": "09123456781",
+      "department": "HR",
+      "position": "Manager",
+      "username": "mreyes",
+      "email": "maria.reyes@gmail.com",
+      "password": "hrpass456"
+    },
+    {
+      "id": "5",
+      "firstName": "carlos",
+      "middleName": "",
+      "lastName": "lim",
+      "contact": "09123456782",
+      "department": "Finance",
+      "position": "Intern",
+      "username": "clim",
+      "email": "carlos.lim@gmail.com",
+      "password": "finance789"
+    },
+    {
+      "id": "6",
+      "firstName": "sarah",
+      "middleName": "jane",
+      "lastName": "tan",
+      "contact": "09123456783",
+      "department": "Marketing",
+      "position": "Intern",
+      "username": "sjtan",
+      "email": "sarah.tan@gmail.com",
+      "password": "market123"
+    },
+    {
+      "id": "7",
+      "firstName": "james",
+      "middleName": "robert",
+      "lastName": "ong",
+      "contact": "09123456784",
+      "department": "Operations",
+      "position": "Intern",
+      "username": "jrong",
+      "email": "james.ong@gmail.com",
+      "password": "ops456"
+    },
+    {
+      "id": "8",
+      "firstName": "anna",
+      "middleName": "marie",
+      "lastName": "garcia",
+      "contact": "09123456785",
+      "department": "Sales",
+      "position": "Intern",
+      "username": "amgarcia",
+      "email": "anna.garcia@gmail.com",
+      "password": "sales789"
+    },
+    {
+      "id": "9",
+      "firstName": "david",
+      "middleName": "lee",
+      "lastName": "chan",
+      "contact": "09123456786",
+      "department": "IT",
+      "position": "Admin",
+      "username": "dlchan",
+      "email": "david.chan@gmail.com",
+      "password": "itadmin123"
+    },
+    {
+      "id": "10",
+      "firstName": "lisa",
+      "middleName": "",
+      "lastName": "martinez",
+      "contact": "09123456787",
+      "department": "Customer Service",
+      "position": "Admin",
+      "username": "lmartinez",
+      "email": "lisa.martinez@gmail.com",
+      "password": "cs456"
+    },
+    {
+      "id": "11",
+      "firstName": "peter",
+      "middleName": "paul",
+      "lastName": "ramos",
+      "contact": "09123456788",
+      "department": "Logistics",
+      "position": "Admin",
+      "username": "ppramos",
+      "email": "peter.ramos@gmail.com",
+      "password": "logistics123"
+    },
+    {
+      "id": "12",
+      "firstName": "michelle",
+      "middleName": "ann",
+      "lastName": "torres",
+      "contact": "09123456790",
+      "department": "Quality Assurance",
+      "position": "Engineer",
+      "username": "matorres",
+      "email": "michelle.torres@gmail.com",
+      "password": "qa789"
+    }
   ],
   "admin": [
     {
@@ -240,6 +240,14 @@
       "password": "hidetheminors",
       "email": "alex@gmail.com",
       "fullname": "Alexander Glodo",
+      "access": "admin"
+    },
+    {
+      "id": "16",
+      "username": "drose",
+      "password": "admin123",
+      "email": "drose@gmail.com",
+      "fullname": "Derrick Rose",
       "access": "admin"
     }
   ]

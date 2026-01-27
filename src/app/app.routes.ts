@@ -6,7 +6,7 @@ import { MainLayout } from './layout/main-layout/main-layout';
 import { AdminHomeComponent } from './components/admin-home/admin-home';
 import { AdminTable } from './components/admin-table/admin-table';
 import { EmployeeTableComponent } from './components/employee-table/employee-table';
-import { Chart } from './components/chart/chart';
+import { Charts } from './components/charts/charts';
 export const routes: Routes = [
   { path: '', component: LandingPage, },
   { path: 'login', component: LoginComponent },
@@ -14,7 +14,7 @@ export const routes: Routes = [
   { path: 'main', component: MainLayout,  children: [
       { path: 'admin-table', component: AdminTable },
       { path: 'employee-table', component: EmployeeTableComponent},
-      { path: 'chart', component: Chart}
+      { path: 'chart', component: Charts}
   ]},
   { path: 'admin-home', component: AdminHomeComponent},
 ];

@@ -59,8 +59,9 @@
     position: fixed;
     left: 0;
     z-index: 100;
-    background-color: #FFFFFF !important;
-    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);;
+    background-color: white;
+    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);
+    // background: linear-gradient(179deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 55%, rgba(81, 98, 250, 1) 100%);    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);
 }
 
 :host ::ng-deep .ant-layout-sider .ant-menu {
@@ -138,7 +139,14 @@ nz-content {
 
 :host ::ng-deep .ant-layout-sider.ant-layout-sider-collapsed ~ .ant-layout {
     margin-left: 80px;
+
 }
+
+:host ::ng-deep .ant-layout-sider-collapsed .logo h1 {
+    text-indent: -9999px;
+    position: relative;
+}
+
 
 nz-breadcrumb {
     margin: 16px 0;
@@ -253,7 +261,7 @@ nz-breadcrumb {
 nz-footer {
     text-align: center;
     padding: 24px 50px;
-    background: #F0F8FF;
+    background-color: #F0F8FF;
 }
 
 @media (max-width: 768px) {

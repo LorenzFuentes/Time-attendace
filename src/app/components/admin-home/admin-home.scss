@@ -110,10 +110,13 @@ nz-breadcrumb {
   padding: 16px !important;
   background: #fff;
   min-height: 100%;
+  margin-left: 100px;
 }
 
 nz-footer {
   text-align: center;
+  background-color: #F0F8FF;
+
 }
 
 :host ::ng-deep .ant-layout {
@@ -128,7 +131,8 @@ nz-footer {
   position: fixed;
   left: 0;
   z-index: 100;
-  background-color: #FFFFFF !important;
+  background-color: white;
+  // background: linear-gradient(179deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 55%, rgba(81, 98, 250, 1) 100%);    
   box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);
 }
 
@@ -136,6 +140,10 @@ nz-footer {
   background-color: transparent;
   color: White;
   border-right: none;
+}
+:host ::ng-deep .ant-layout-sider-collapsed .logo h1 {
+    text-indent: -9999px;
+    position: relative;
 }
 
 :host ::ng-deep .ant-layout-sider .ant-menu-item {
