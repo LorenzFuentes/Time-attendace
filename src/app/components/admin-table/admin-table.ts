@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputModule, NzInputSearchEvent  } from 'ng-zorro-antd/input';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -246,5 +246,11 @@ export class AdminTable implements OnInit {
            !!userData.email.trim() && 
            !!userData.password.trim() &&
            !!userData.fullname.trim();
+  }
+
+  readonly value = signal('');
+
+  onSearch(event: NzInputSearchEvent): void {
+    console.log(event);
   }
 }

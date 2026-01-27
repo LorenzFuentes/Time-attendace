@@ -59,9 +59,9 @@
     position: fixed;
     left: 0;
     z-index: 100;
-    background-color: white;
+    // background-color: white;
     box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);
-    // background: linear-gradient(179deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 55%, rgba(81, 98, 250, 1) 100%);    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);
+    background: linear-gradient(179deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 55%, rgba(81, 98, 250, 1) 100%);    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);
 }
 
 :host ::ng-deep .ant-layout-sider .ant-menu {

@@ -2,6 +2,9 @@
     <div class="header-container">
       <div class="header-left">
         <h2>Admin Table</h2>
+        <nz-input-search (nzSearch)="onSearch($event)">
+          <input nz-input [(ngModel)]="value" placeholder="Search" />
+        </nz-input-search>
       </div>
       <div class="header-right">
         <button class="refresh-btn" (click)="refreshData()">

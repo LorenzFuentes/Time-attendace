@@ -149,9 +149,9 @@ export class AdminHomeComponent implements OnInit {
     this.router.navigate(['']);
   }
 
-  getDashboard(): void {
-    this.router.navigate(['main']);
-  }
+  // getDashboard(): void {
+  //   this.router.navigate(['main']);
+  // }
 
   getAdminTable(): void {
     this.router.navigate(['/main/admin-table']);
