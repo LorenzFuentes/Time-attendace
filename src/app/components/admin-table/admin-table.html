@@ -1,3 +1,4 @@
+<link href="https://api.fontshare.com/v2/css?f[]=synonym@400&f[]=chillax@600&display=swap" rel="stylesheet">
 <div class="table-container">
     <div class="header-container">
       <div class="header-left">
@@ -16,7 +17,7 @@
         </button>
       </div>
   </div>
-  <nz-table #userTable nzBordered [nzData]="listOfData" nzTableLayout="fixed"[nzLoading]="isLoading">
+  <nz-table #userTable nzBordered [nzData]="listOfData" nzTableLayout="fixed" [nzLoading]="isLoading" [nzPageSize]="10" [nzShowPagination]="true">
     <thead>
       <tr>
         <th>ID</th>
@@ -35,7 +36,7 @@
           <td>{{ data.username }}</td>
           <td>{{ data.fullname }}</td>
           <td>
-            <a [href]="data.email">{{ data.email }}</a>
+            <a [href]="'mailto:' + data.email">{{ data.email }}</a>
           </td>
           <td>••••••••</td>
           <td>
@@ -47,36 +48,37 @@
             <button class="edit-btn" (click)="startEdit(data.id)">
               Edit
             </button>
-            <button class="delete-btn" nz-popconfirm nzPopconfirmTitle="Delete this user?"(nzOnConfirm)="deleteUser(data.id)">
+            <button class="delete-btn" nz-popconfirm nzPopconfirmTitle="Delete this user?" (nzOnConfirm)="deleteUser(data.id)">
               Delete
             </button>
           </td>
         </ng-container>
         <ng-template #editTemplate>
           <td>
-            <input nz-input  placeholder="ID" disabled/>
-          <td>
-            <input nz-input [(ngModel)]="editCache[data.id].data.username" placeholder="Username"[class.invalid]="!editCache[data.id].data.username.trim()"/>
+            <input nz-input placeholder="ID" disabled />
           </td>
           <td>
-            <input nz-input [(ngModel)]="editCache[data.id].data.fullname" placeholder="Full Name"[class.invalid]="!editCache[data.id].data.fullname.trim()"/>
+            <input nz-input [(ngModel)]="editCache[data.id].data.username" placeholder="Username" [class.invalid]="!editCache[data.id].data.username.trim()"/>
           </td>
           <td>
-            <input nz-input type="email"[(ngModel)]="editCache[data.id].data.email" placeholder="Email"[class.invalid]="!editCache[data.id].data.email.trim()"/>
+            <input nz-input [(ngModel)]="editCache[data.id].data.fullname" placeholder="Full Name" [class.invalid]="!editCache[data.id].data.fullname.trim()"/>
           </td>
           <td>
-            <input nz-input type="password"[(ngModel)]="editCache[data.id].data.password" placeholder="Password"[class.invalid]="!editCache[data.id].data.password.trim()"/>
+            <input nz-input type="email" [(ngModel)]="editCache[data.id].data.email" placeholder="Email" [class.invalid]="!editCache[data.id].data.email.trim()"/>
           </td>
           <td>
-            <nz-select [(ngModel)]="editCache[data.id].data.access"style="width: 100%;">
+            <input nz-input type="password" [(ngModel)]="editCache[data.id].data.password" placeholder="Password" [class.invalid]="!editCache[data.id].data.password.trim()"/>
+          </td>
+          <td>
+            <nz-select [(ngModel)]="editCache[data.id].data.access" style="width: 100%;">
               <nz-option nzValue="admin" nzLabel="Admin"></nz-option>
             </nz-select>
           </td>
           <td>
-            <button nz-button nzType="primary" size="small"(click)="saveEdit(data.id)"[disabled]="!isFormValid(data.id)">
+            <button nz-button nzType="primary" size="small" (click)="saveEdit(data.id)" [disabled]="!isFormValid(data.id)">
               Save
             </button>
-            <button nz-button nzType="default" size="small"(click)="cancelEdit(data.id)">
+            <button nz-button nzType="default" size="small" (click)="cancelEdit(data.id)">
               {{ data.id.startsWith('temp_') ? 'Cancel Add' : 'Cancel' }}
             </button>
           </td>

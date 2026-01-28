@@ -121,6 +121,7 @@ export class AdminTable implements OnInit {
         next: () => {
           this.editCache[id].edit = false;
           this.message.success('Admin updated successfully!');
+          window.location.reload();
         },
         error: () => {
           this.message.error('Failed to update admin');
@@ -216,6 +217,7 @@ export class AdminTable implements OnInit {
           this.listOfData = this.listOfData.filter(item => item.id !== id);
           delete this.editCache[id];
           this.message.success('User deleted successfully!');
+          window.location.reload();
         },
         error: (error) => {
           this.message.error('Failed to delete user. Please try again.');

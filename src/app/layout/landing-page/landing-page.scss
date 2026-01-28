@@ -7,8 +7,8 @@
 .page {
   font-family: 'Inter', 'Helvetica Neue', sans-serif;
   overflow: hidden;
-  background-color: #F0F8FF;
-  color: white;
+  background-color: #121212;
+
   height: 100vh;
   display: flex;
   align-items: center;
@@ -29,10 +29,9 @@
     font-family: 'Chillax', sans-serif;
     font-size: 18rem;
     font-weight: 800;  
-    background: linear-gradient(to right, #170b49, #5162fa);
+    background: linear-gradient( #7c6cbb, #5162fa);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
     }
 
 .buttons-container {
@@ -60,18 +59,16 @@
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
-    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 20px #5162fa;
     background-color: #5162fa; 
     color: #fff;
-    outline: 1px solid #fff;
-    border: 1px solid #5162fa;
+    // outline: 1px solid #fff;
 }
 
 .btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 25px rgba(58, 143, 255, 0.4);
-    background-color: #fff; 
-    color: #5162fa;
+    background-color: #10185f; 
 }
 
 .gradient-background {
@@ -93,7 +90,7 @@
 .sphere-1 {
     width: 40vw;
     height: 40vw;
-    background: linear-gradient(40deg,#e1e3f4 , #5162fa);
+    background: linear-gradient(40deg,#000000 , #5162fa);
     top: -10%;
     left: -10%;
     animation: float-1 15s ease-in-out infinite alternate;
@@ -102,7 +99,7 @@
 .sphere-2 {
     width: 45vw;
     height: 45vw;
-    background: linear-gradient(240deg, #e1e3f4 , #5162fa);
+    background: linear-gradient(240deg, #000000 , #5162fa);
     bottom: -20%;
     right: -10%;
     animation: float-2 18s ease-in-out infinite alternate;
@@ -158,19 +155,6 @@
         linear-gradient(to right, rgba(3, 3, 3, 0.100) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(0, 0, 0, 0.100) 1px, transparent 1px);
     z-index: 2;
-}
-
-.glow {
-    position: absolute;
-    width: 40vw;
-    height: 40vh;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.397), transparent 70%);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-    animation: pulse 8s infinite alternate;
-    filter: blur(30px);
 }
 
 @keyframes pulse {

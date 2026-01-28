@@ -1,3 +1,4 @@
+<link href="https://api.fontshare.com/v2/css?f[]=synonym@400&f[]=chillax@600&display=swap" rel="stylesheet">
 <div class="table-container">
     <div class="header-container">
         <div class="header-left">
@@ -28,7 +29,7 @@
                 <th>Position</th>
                 <th>Username</th>
                 <th>Email</th>
-                <th>Password</th>
+                <!-- <th>Password</th> -->
                 <th>Actions</th>
             </tr>
         </thead>
@@ -46,7 +47,7 @@
                     <td>
                         <a [href]="'mailto:' + employee.email">{{ employee.email }}</a>
                     </td>
-                    <td>••••••••</td>
+                    <!-- <td>••••••••</td> -->
                     <td>
                         <div class="btn-container">
                             <button class="edit-btn" (click)="startEdit(employee.id)">
@@ -85,16 +86,14 @@
                     <td>
                         <input nz-input type="email"  [(ngModel)]="editCache[employee.id].data.email" placeholder="Email" [class.invalid]="!editCache[employee.id].data.email.trim()" />
                     </td>
-                    <td>
-                        <!-- Fix 1: Check if it's a temporary employee -->
+                    <!-- <td>
                         <input nz-input type="password"  
                             [(ngModel)]="editCache[employee.id].data.password"  
                             [placeholder]="employee.id.startsWith('temp_') ? 'Password' : 'Leave blank to keep current'" />
-                        <!-- Fix 2: Update the condition -->
                         <small class="password-hint" *ngIf="!employee.id.startsWith('temp_')">
                             Leave blank to keep current password
                         </small>
-                    </td>
+                    </td> -->
                     <td>
                         <div class="action-buttons">
                             <button nz-button nzType="primary" size="small" 
@@ -102,7 +101,6 @@
                                     [disabled]="!isFormValid(employee.id)">
                                 Save
                             </button>
-                            <!-- Fix 3: Update cancel button text -->
                             <button nz-button nzType="default" size="small"
                                     (click)="cancelEdit(employee.id)">
                                 {{ employee.id.startsWith('temp_') ? 'Cancel Add' : 'Cancel' }}

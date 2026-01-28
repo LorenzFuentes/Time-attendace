@@ -227,6 +227,7 @@ export class EmployeeTableComponent implements OnInit {
       };
       
       this.message.success('Employee updated successfully!');
+      window.location.reload();
     },
     error: (error) => {
       let errorMessage = 'Failed to update employee. ';
@@ -291,7 +292,7 @@ export class EmployeeTableComponent implements OnInit {
   }
 
   refreshData(): void {
-    this.loadEmployees();
+    window.location.reload();
   }
 
   isFormValid(employeeId: string): boolean {

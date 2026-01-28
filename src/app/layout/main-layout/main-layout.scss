@@ -1,3 +1,162 @@
+:host ::ng-deep .ant-layout {
+    height: 100vh;
+    min-height: 100vh;
+    background-color: #121212;
+}
+
+:host ::ng-deep .ant-layout.ant-layout-has-sider {
+    height: 100vh;
+    min-height: 100vh;
+}
+
+:host ::ng-deep .ant-layout,
+:host ::ng-deep .ant-layout-header,
+:host ::ng-deep .ant-layout-content,
+:host ::ng-deep .ant-layout-footer {
+    background: #121212 !important;
+}
+
+:host ::ng-deep .ant-card,
+:host ::ng-deep .ant-card-head,
+:host ::ng-deep .ant-card-body {
+    background: #1a1a1a !important;
+    color: #FFFFFF !important;
+    border-color: #3A3A3A !important;
+}
+
+:host ::ng-deep .ant-menu {
+    background: transparent !important;
+}
+
+:host ::ng-deep .ant-menu-item,
+:host ::ng-deep .ant-menu-submenu-title,
+:host ::ng-deep .ant-menu.ant-menu-dark .ant-menu-item,
+:host ::ng-deep .ant-menu.ant-menu-dark .ant-menu-submenu-title {
+    color: #FFFFFF !important;
+}
+
+:host ::ng-deep .ant-menu-item:hover,
+:host ::ng-deep .ant-menu-submenu-title:hover {
+    background: #677ec496 !important;
+    color: white !important;
+}
+
+:host ::ng-deep .ant-menu.ant-menu-dark .ant-menu-submenu-arrow::before,
+:host ::ng-deep .ant-menu.ant-menu-dark .ant-menu-submenu-arrow::after {
+    background: #FFFFFF !important;
+}
+
+::ng-deep .ant-menu-submenu-arrow {
+  color: white !important;
+}
+
+::ng-deep .ant-menu-submenu-arrow::before,
+::ng-deep .ant-menu-submenu-arrow::after {
+  background: white !important;
+}
+
+nz-avatar {
+    background: #5162fa !important;
+    color: #FFFFFF !important;
+}
+
+::ng-deep .ant-tag {
+    font-size: 12px !important;
+    padding: 1px 6px !important;
+    line-height: 18px !important;
+    background: #1a1a1a;
+    color: #FFFFFF;
+}
+
+:host ::ng-deep .ant-layout-sider {
+    height: 100vh;
+    overflow: auto;
+    position: fixed;
+    left: 0;
+    z-index: 100;
+    background: linear-gradient(179deg, rgba(18,18,18,1) 0%, rgba(18,18,18,1) 55%, rgba(81, 98, 250, 1) 100%);
+    box-shadow: 12px 0 32px rgba(189, 189, 189, 0.068);
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
+
+:host ::ng-deep .ant-layout-sider .ant-menu {
+    background-color: transparent;
+    color: White;
+    border-right: none;
+}
+
+:host ::ng-deep .ant-layout-sider .ant-menu-item {
+    color: rgb(255, 255, 255);
+}
+
+:host ::ng-deep .ant-layout-sider .ant-menu-item:hover {
+    color: #fff;
+    background-color: #677ec496;
+}
+
+:host ::ng-deep .ant-layout-sider .ant-menu-submenu-title {
+    color: rgb(255, 255, 255);
+}
+
+:host ::ng-deep .ant-layout-sider .ant-menu-submenu-title:hover {
+    color: #ffffff;
+    background-color: #677ec496;
+}
+
+.ant-menu-item:active {
+    background-color: #9D6BF2 !important;
+}
+
+:host ::ng-deep .ant-layout-sider:not(.ant-layout-sider-collapsed) ~ .ant-layout {
+    margin-left: 200px;
+}
+
+:host ::ng-deep .ant-layout-sider.ant-layout-sider-collapsed ~ .ant-layout {
+    margin-left: 80px;
+}
+
+.logo {
+    display: flex;
+    font-family: 'Chillax', sans-serif;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    background: linear-gradient(to right, #7c6cbb, #5162fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    padding-top: 1rem;
+}
+
+h1 {
+    width: fit-content; 
+    font-weight: bolder;
+}
+
+:host ::ng-deep .ant-layout-sider-collapsed .logo h1 {
+    text-indent: -9999px;
+    position: relative;
+}
+
+nz-header {
+    background: #121212;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    width: 100%;
+    // box-shadow: 12px 0 32px rgba(156, 156, 156, 0.31);
+}
+
+.main-header {
+    background: #121212;
+    padding: 0;
+    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
 .header-content {
     display: flex;
     align-items: center;
@@ -5,25 +164,88 @@
     height: 64px;
     
     .header-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding-right: 24px;
-      
-      .welcome-text {
-        color: #666;
-        font-size: 14px;
-        font-weight: 500;
-      }
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding-right: 24px;
+        
+        .welcome-text {
+            color: #FFFFFF;
+            font-size: 14px;
+            font-weight: 500;
+        }
     }
-  }
+}
+
+.trigger {
+    font-size: 25px;
+    line-height: 64px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+    color: #fff;
+}
+
+.trigger:hover {
+    color: #9D6BF2;
+}
+
+nz-content {
+    flex: 5;
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    background-color: #121212;
+    transition: margin-left 0.2s;
+    margin-left: 50px;
+    width: 95%;
+    
+    &::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+    }
+}
+
+nz-breadcrumb {
+    margin: 16px 0;
+}
+
+.dashboard-breadcrumb {
+    color: #fff !important;
+}
+
+.dashboard-breadcrumb ::ng-deep .ant-breadcrumb-link {
+    color: #fff !important;
+}
+
+.dashboard-breadcrumb ::ng-deep .ant-breadcrumb-separator {
+    color: #999 !important;
+}
+
+.inner-content {
+    padding: 24px;
+    background: #1a1a1a;
+    min-height: auto; 
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #3A3A3A;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 0;
+}
+
+.dashboard-txt{
+    color: #5162fa;
+    font-family: 'Chillax', sans-serif;
+    border-bottom: 2px solid #5162fa;
+}
 .router-outlet-container {
     margin-top: 30px;
     padding: 24px;
-    background: #fff;
+    background: #1a1a1a;
     border-radius: 8px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e8e8e8;
+    border: 1px solid #3A3A3A;
     min-height: 400px;
     width: 100%;
     box-sizing: border-box;
@@ -34,136 +256,6 @@
     width: 100%;
 }
 
-:host ::ng-deep .ant-layout {
-    height: 100vh;
-    min-height: 100vh;
-    background-color: #F0F8FF;
-}
-
-.trigger {
-    font-size: 25px;
-    line-height: 64px;
-    padding: 0 24px;
-    cursor: pointer;
-    transition: color 0.3s;
-    color: #333333;
-}
-
-.trigger:hover {
-    color: #706C61;
-}
-
-:host ::ng-deep .ant-layout-sider {
-    height: 100vh;
-    overflow: auto;
-    position: fixed;
-    left: 0;
-    z-index: 100;
-    // background-color: white;
-    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);
-    background: linear-gradient(179deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 55%, rgba(81, 98, 250, 1) 100%);    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);
-}
-
-:host ::ng-deep .ant-layout-sider .ant-menu {
-    background-color: transparent;
-    color:White;
-    border-right: none;
-}
-
-:host ::ng-deep .ant-layout-sider .ant-menu-item {
-    color:rgb(0, 0, 0);
-}
-
-:host ::ng-deep .ant-layout-sider .ant-menu-item:hover {
-    color: #fff;
-    background-color: #677ec496;
-}
-
-:host ::ng-deep .ant-layout-sider .ant-menu-submenu-title {
-    color: rgb(0, 0, 0);
-}
-
-:host ::ng-deep .ant-layout-sider .ant-menu-submenu-title:hover {
-    color: #ffffff;
-    background-color: #677ec496;
-}
-
-h1{
-    width: fit-content; 
-    font-weight: bolder;
-}
-.logo {
-    display: flex;
-    font-family: 'Chillax', sans-serif;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    background: linear-gradient(to right, #170b49, #5162fa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    padding-top: 1rem;
-}
-
-nz-header {
-    background: #fff;
-    padding: 0;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    width: 100%;
-    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);;
-}
-
-:host ::ng-deep .ant-layout.ant-layout-has-sider {
-    height: 100vh;
-    min-height: 100vh;
-}
-
-nz-content {
-    flex: 5;
-    overflow-y: auto; 
-    overflow-x: hidden; 
-    background-color: #F0F8FF;
-    transition: margin-left 0.2s;
-    margin-left: 50px;
-    width: 95%;
-    &::-webkit-scrollbar {
-        width: 0px;
-        background: transparent;
-    }
-}
-
-:host ::ng-deep .ant-layout-sider:not(.ant-layout-sider-collapsed) ~ .ant-layout {
-    margin-left: 200px;
-}
-
-:host ::ng-deep .ant-layout-sider.ant-layout-sider-collapsed ~ .ant-layout {
-    margin-left: 80px;
-
-}
-
-:host ::ng-deep .ant-layout-sider-collapsed .logo h1 {
-    text-indent: -9999px;
-    position: relative;
-}
-
-
-nz-breadcrumb {
-    margin: 16px 0;
-}
-
-.inner-content {
-    padding: 24px;
-    background: #fff;
-    min-height: auto; 
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e8e8e8;
-    max-width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 0;
-}
 .dashboard-container {
     display: flex;
     gap: 24px;
@@ -174,11 +266,11 @@ nz-breadcrumb {
 .stat-card {
     flex: 1;
     min-width: 280px;
-    background: #fff;
+    background: #121212;
     border-radius: 12px;
     padding: 24px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    border: 1px solid #e8e8e8;
+    box-shadow: 0 4px 12px rgba(81, 98, 250, 0.397);
+    border: 1px solid #3A3A3A;
     display: flex;
     align-items: center;
     transition: transform 0.3s, box-shadow 0.3s;
@@ -186,7 +278,7 @@ nz-breadcrumb {
 
 .stat-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 24px rgba(81,98,250,1);
 }
 
 .card-icon {
@@ -209,7 +301,7 @@ nz-breadcrumb {
 .card-title {
     font-size: 16px;
     font-weight: 600;
-    color: #333333;
+    color: #fff;
     margin: 0 0 8px 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -218,21 +310,21 @@ nz-breadcrumb {
 .card-count {
     font-size: 36px;
     font-weight: 700;
-    color: #2f2f2f;
+    color: #fff;
     margin: 0 0 4px 0;
     line-height: 1.2;
 }
 
 .card-subtitle {
     font-size: 14px;
-    color: #000;
+    color: #999;
     margin: 0;
 }
 
 .card-datetime {
     font-size: 24px;
     font-weight: 600;
-    color: #000;
+    color: #fff;
     margin: 0 0 4px 0;
     line-height: 1.2;
 }
@@ -258,10 +350,301 @@ nz-breadcrumb {
     color: #3700ff;
 }
 
+.not-admin-container {
+    padding: 80px 0;
+    text-align: center;
+    background: #121212;
+    color: #FFFFFF;
+}
+
+::ng-deep .ant-result {
+    background: #1a1a1a;
+    
+    .ant-result-title {
+        color: #f5222d;
+    }
+    
+    .ant-result-subtitle {
+        color: #CCCCCC;
+    }
+}
+
+.no-user-container {
+    padding: 40px;
+    background: #121212;
+    color: #FFFFFF;
+}
+
+.system-stats {
+    background: #1a1a1a;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #3A3A3A;
+    
+    .system-stat-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid #5162fa;
+        
+        &:last-child {
+            border-bottom: none;
+        }
+        
+        nz-icon {
+            font-size: 24px;
+            color: #9D6BF2;
+        }
+        
+        .system-stat-info {
+            .system-stat-value {
+                font-weight: 600;
+                color: #FFFFFF;
+                font-size: 15px;
+            }
+            
+            .system-stat-label {
+                color: #CCCCCC;
+                font-size: 13px;
+            }
+        }
+    }
+}
+
+.stats-card {
+    margin-top: 16px;
+    background: #1a1a1a;
+    border: 1px solid #3A3A3A;
+    
+    ::ng-deep .ant-card-head {
+        background: #1a1a1a;
+        border-bottom: 1px solid #5162fa;
+        
+        .ant-card-head-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: #FFFFFF;
+        }
+    }
+    
+    ::ng-deep .ant-card-body {
+        background: #1a1a1a;
+        color: #FFFFFF;
+    }
+}
+
+.profile-content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.profile-header {
+    background: linear-gradient(135deg, #0c011a 0%, #7B3FE4 100%);
+    padding: 24px !important;
+    border-radius: 8px;
+    color: white;
+    margin-bottom: 16px !important;
+    
+    .profile-info h1 {
+        color: white;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        font-size: 24px !important;
+    }
+    
+    .profile-title {
+        margin: 4px 0 12px 0 !important;
+        opacity: 0.9;
+        font-size: 14px !important;
+    }
+    
+    .profile-stats {
+        display: flex;
+        gap: 20px !important;
+        margin-top: 16px !important;
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            
+            .stat-value {
+                font-size: 22px !important;
+                font-weight: bold;
+            }
+            
+            .stat-label {
+                font-size: 12px !important;
+                opacity: 0.8;
+            }
+        }
+    }
+}
+
+.profile-content-row {
+    display: flex;
+    gap: 16px !important;
+    flex-wrap: wrap;
+}
+
+.profile-details-col {
+    flex: 3;
+    min-width: 300px;
+    background-color: #1a1a1a;
+    
+    ::ng-deep .ant-card {
+        background: #1a1a1a;
+        border: 1px solid #3A3A3A;
+        
+        .ant-card-head {
+            background: #1a1a1a;
+            min-height: 48px !important;
+            padding: 0 16px !important;
+            border-bottom: 1px solid #5162fa;
+            
+            .ant-card-head-title {
+                color: #FFFFFF;
+                font-size: 16px !important;
+                padding: 12px 0 !important;
+            }
+        }
+        
+        .ant-card-body {
+            background: #1a1a1a;
+            color: #FFFFFF;
+            padding: 16px !important; 
+        }
+    }
+}
+
+.quick-actions-col {
+    flex: 1;
+    min-width: 220px !important;
+    max-width: 300px !important;
+}
+
+.quick-actions-card {
+    background: #1a1a1a;
+    border: 1px solid #3A3A3A;
+    color: #FFFFFF;
+    
+    .actions-list {
+        display: flex;
+        flex-direction: column;
+        width: 200px;
+        gap: 12px;
+    }
+    
+    .action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 8px;
+        height: 48px;
+        padding: 0 16px;
+        background: #121212;
+        border: 1px solid #3A3A3A;
+        color: #FFFFFF;
+        transition: all 0.3s;
+        
+        &:hover {
+            background: #9D6BF2;
+            border-color: #9D6BF2;
+        }
+        
+        nz-icon {
+            font-size: 14px !important;
+        }
+        
+        span {
+            flex: 1;
+            text-align: left;
+        }
+    }
+}
+
+::ng-deep .ant-card {
+    background: #1a1a1a;
+    border: 1px solid #3A3A3A;
+    color: #FFFFFF;
+    
+    .ant-card-head {
+        background: #1a1a1a;
+        min-height: 48px !important;
+        padding: 0 16px !important;
+        border-bottom: 1px solid #5162fa;
+        
+        .ant-card-head-title {
+            color: #FFFFFF;
+            font-size: 16px !important;
+            padding: 12px 0 !important;
+        }
+    }
+    
+    .ant-card-body {
+        background: #1a1a1a;
+        color: #FFFFFF;
+        padding: 16px !important;
+    }
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 12px !important;
+    background-color: #1a1a1a;
+}
+
+.detail-item {
+    padding: 8px 0 !important;
+    border-bottom: 1px solid #5162fa;
+    background-color: #1a1a1a;
+}
+
+.detail-label {
+    display: block;
+    color: #CCCCCC;
+    font-size: 12px !important;
+    margin-bottom: 2px !important;
+}
+
+.detail-value {
+    display: block;
+    color: #FFFFFF;
+    font-size: 14px !important;
+    font-weight: 500;
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px !important;
+    text-align: center;
+    background: #121212;
+    
+    .loading-text {
+        margin-top: 12px !important;
+        color: #CCCCCC;
+        font-size: 14px !important;
+    }
+}
+
 nz-footer {
     text-align: center;
     padding: 24px 50px;
-    background-color: #F0F8FF;
+    background-color: #121212;
+    color: white;
+    border-top: 1px solid #3A3A3A;
+}
+
+@media (max-width: 1024px) {
+    .stat-card {
+        min-width: calc(50% - 12px);
+    }
 }
 
 @media (max-width: 768px) {
@@ -291,15 +674,7 @@ nz-footer {
     nz-footer {
         padding: 16px;
     }
-}
-
-@media (max-width: 1024px) {
-    .stat-card {
-        min-width: calc(50% - 12px);
-    }
-}
-
-@media (max-width: 768px) {
+    
     .dashboard-container {
         gap: 16px;
     }
@@ -325,6 +700,44 @@ nz-footer {
     .card-datetime {
         font-size: 20px;
     }
+    
+    .profile-header {
+        padding: 16px !important;
+        
+        .profile-info h1 {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px !important;
+        }
+        
+        .profile-stats {
+            flex-direction: column;
+            gap: 12px !important;
+        }
+    }
+    
+    .header-right {
+        .welcome-text {
+            display: none;
+        }
+    }
+    
+    .profile-content-row {
+        flex-direction: column;
+    }
+    
+    .quick-actions-col {
+        max-width: 100% !important;
+    }
+    
+    .inner-content {
+        margin-left: 0;
+        padding: 12px !important;
+    }
+    
+    nz-footer {
+        padding: 16px !important;
+    }
 }
 
 @media (max-width: 480px) {
@@ -345,5 +758,19 @@ nz-footer {
     
     .card-datetime {
         font-size: 18px;
+    }
+    
+    @media (max-width: 992px) {
+        .profile-content-row {
+            flex-direction: column;
+        }
+        
+        .quick-actions-col {
+            max-width: 100%;
+        }
+        
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
     }
 }

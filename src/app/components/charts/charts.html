@@ -1,9 +1,31 @@
 <h1>Charts</h1>
-<div id="chart-container">
+<div id="chart-container" #chartContainer>
   <div *ngIf="isLoading" style="text-align: center; padding: 40px; font-size: 16px; color: #666;">Loading charts...</div>
-  
   <div *ngIf="!isLoading" class="charts-grid">
     <div class="chart-card">
+      <div class="chart-header">
+        <h2 class="chart-title">Position Distribution</h2>
+        <div class="chart-actions">
+          <button (click)="downloadChart('pie')" class="chart-download-btn" title="Download this chart">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <defs>
+                <linearGradient id="pieGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#8B5CF6" />
+                  <stop offset="100%" stop-color="#7C3AED" />
+                </linearGradient>
+              </defs>
+              <path d="M12 4v10m0 0l3.5-3.5M12 14l-3.5-3.5" 
+                    stroke="url(#pieGradient)" 
+                    stroke-width="1.8" 
+                    stroke-linecap="round"/>
+              
+              <rect x="5" y="17" width="14" height="4" 
+                    rx="2" 
+                    fill="url(#pieGradient)"/>
+            </svg>
+          </button>
+        </div>
+      </div>
       <apx-chart
         [series]="pieChartOptions.series"
         [chart]="pieChartOptions.chart"
@@ -14,6 +36,30 @@
       ></apx-chart>
     </div>
     <div class="chart-card">
+      <div class="chart-header">
+        <h2 class="chart-title">Department Distribution</h2>
+        <div class="chart-actions">
+          <button (click)="downloadChart('column')" class="chart-download-btn" title="Download this chart">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <defs>
+                <linearGradient id="columnGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#8B5CF6" />
+                  <stop offset="100%" stop-color="#7C3AED" />
+                </linearGradient>
+              </defs>
+              
+              <path d="M12 4v10m0 0l3.5-3.5M12 14l-3.5-3.5" 
+                    stroke="url(#columnGradient)" 
+                    stroke-width="1.8" 
+                    stroke-linecap="round"/>
+              
+              <rect x="5" y="17" width="14" height="4" 
+                    rx="2" 
+                    fill="url(#columnGradient)"/>
+            </svg>
+          </button>
+        </div>
+      </div>
       <apx-chart
         [series]="columnChartOptions.series"
         [chart]="columnChartOptions.chart"

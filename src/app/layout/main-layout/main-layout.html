@@ -38,18 +38,18 @@
           <nz-avatar 
             [nzSize]="50" 
             [nzText]="getInitials(currentUser)" 
-            [ngStyle]="{'background': '#f5222d'}"
+            [ngStyle]="{'background': '#5162fa'}"
           ></nz-avatar>
         </div>
       </div>
     </nz-header>
     <nz-content>
-        <nz-breadcrumb>
-        <nz-breadcrumb-item>Admin</nz-breadcrumb-item>
-        <nz-breadcrumb-item>Dashboard</nz-breadcrumb-item>
+        <nz-breadcrumb class="dashboard-breadcrumb">
+            <nz-breadcrumb-item>Admin</nz-breadcrumb-item>
+            <nz-breadcrumb-item>Dashboard</nz-breadcrumb-item>
         </nz-breadcrumb>
         <div class="inner-content">
-            <h1>Admin Dashboard</h1>
+            <h1 class="dashboard-txt">Admin Dashboard</h1>
             <div class="dashboard-container">
                 <div class="stat-card admin-card">
                     <div class="card-icon">

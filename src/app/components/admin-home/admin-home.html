@@ -4,7 +4,7 @@
     <div class="logo">
       <h1>InTime</h1>
     </div>
-    <ul nz-menu nzTheme="dark" nzMode="inline">
+    <ul nz-menu nzMode="inline">
       <li nz-submenu nzTitle="User" nzIcon="user">
         <ul>
           <!-- <li nz-menu-item (click)="getDashboard()"><nz-icon nzType="dashboard"></nz-icon>&nbsp;&nbsp;Dashboard</li> -->
@@ -39,14 +39,14 @@
           <nz-avatar 
             [nzSize]="50" 
             [nzText]="getInitials(currentUser)" 
-            [ngStyle]="{'background': '#f5222d'}"
+            [ngStyle]="{'background': '#5162fa'}"
           ></nz-avatar>
         </div>
       </div>
     </nz-header>
     
     <nz-content>
-      <nz-breadcrumb>
+      <nz-breadcrumb class="dashboard-breadcrumb">
         <nz-breadcrumb-item>Admin</nz-breadcrumb-item>
         <nz-breadcrumb-item>Profile</nz-breadcrumb-item>
       </nz-breadcrumb>
@@ -68,7 +68,7 @@
                 ></nz-avatar>
                 <span style="margin-left: 16px;">
                   {{ getDisplayName(currentUser) }}
-                  <nz-tag nzColor="red">Administrator</nz-tag>
+                  <nz-tag style="background-color: rgba(252, 99, 99, 0.3);  border: 1px solid #fa5151;  border-radius: 10px; color: red;">Administrator</nz-tag>
                 </span>
               </h1>
               
@@ -125,21 +125,21 @@
                   <div class="detail-item" *ngIf="currentUser.access">
                     <span class="detail-label">Access Level</span>
                     <span class="detail-value">
-                      <nz-tag nzColor="purple">Admin</nz-tag>
+                      <nz-tag nzColor="purple" style="background-color: rgba(156, 39, 176, 0.3); border: 1px solid #9c27b0; border-radius: 10px; color: rgb(204, 46, 204);">Admin</nz-tag>
                     </span>
                   </div>
                   
                   <div class="detail-item">
                     <span class="detail-label">Account Type</span>
                     <span class="detail-value">
-                      <nz-tag nzColor="red">Administrator</nz-tag>
+                      <nz-tag nzColor="red" style="background-color: rgba(252, 99, 99, 0.3);  border: 1px solid #fa5151;  border-radius: 10px; color: red;">Administrator</nz-tag>
                     </span>
                   </div>
                   
                   <div class="detail-item">
                     <span class="detail-label">Status</span>
                     <span class="detail-value">
-                      <nz-tag nzColor="success">Active</nz-tag>
+                      <nz-tag nzColor="success" style="background-color: rgba(76, 175, 80, 0.3); border: 1px solid #4caf50; border-radius: 10px; color: rgb(6, 218, 6);">Active</nz-tag>
                     </span>
                   </div>
                   
