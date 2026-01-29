@@ -1,154 +1,152 @@
 <link href="https://api.fontshare.com/v2/css?f[]=synonym@400&f[]=chillax@600&display=swap" rel="stylesheet">
-    <nz-content>
-      <div class="inner-content">
-        <div *ngIf="isLoading" class="loading-container">
-          <nz-spin nzSize="large"></nz-spin>
-          <p class="loading-text">Loading admin profile...</p>
+<nz-content>
+  <div class="inner-content">
+    <div *ngIf="isLoading" class="loading-container">
+      <nz-spin nzSize="large"></nz-spin>
+      <p class="loading-text">Loading admin profile...</p>
+    </div>
+    <div *ngIf="!isLoading && currentUser && currentUser.role === 'admin'" class="profile-content-wrapper">
+      <div class="profile-header">
+        <div class="profile-info">
+          <h1>
+            <nz-avatar 
+              [nzSize]="55" 
+              [nzText]="getInitials(currentUser)" 
+              nzShape="circle"
+              [ngStyle]="{'background': '#f5222d'}"
+            ></nz-avatar>
+            <span style="margin-left: 16px;">
+              {{ getDisplayName(currentUser) }}
+              <nz-tag style="background-color: rgba(252, 99, 99, 0.3);  border: 1px solid #fa5151;  border-radius: 10px; color: red;">Administrator</nz-tag>
+            </span>
+          </h1> 
+          
+          <p class="profile-title">
+            <span *ngIf="!currentUser.position && !currentUser.department">System Administrator</span>
+          </p>
+          
+          <div class="profile-stats">
+            <div class="stat-item">
+              <span class="stat-value">{{employeeCount || 0}}</span>
+              <span class="stat-label">Employees</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{{adminCount || 0}}</span>
+              <span class="stat-label">Admins</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{{totalUsers || 0}}</span>
+              <span class="stat-label">Total Users</span>
+            </div>
+          </div>
         </div>
-        <div *ngIf="!isLoading && currentUser && currentUser.role === 'admin'" class="profile-content-wrapper">
-          <div class="profile-header">
-            <div class="profile-info">
-              <h1>
-                <nz-avatar 
-                  [nzSize]="55" 
-                  [nzText]="getInitials(currentUser)" 
-                  nzShape="circle"
-                  [ngStyle]="{'background': '#f5222d'}"
-                ></nz-avatar>
-                <span style="margin-left: 16px;">
-                  {{ getDisplayName(currentUser) }}
-                  <nz-tag style="background-color: rgba(252, 99, 99, 0.3);  border: 1px solid #fa5151;  border-radius: 10px; color: red;">Administrator</nz-tag>
+      </div>
+      <div class="profile-content-row">
+        <div class="profile-details-col">
+          <nz-card nzTitle="Admin Information">
+            <div class="details-grid">
+              <div class="detail-item">
+                <span class="detail-label">Full Name</span>
+                <span class="detail-value">{{ currentUser.fullname || getDisplayName(currentUser) }}</span>
+              </div>
+              
+              <div class="detail-item">
+                <span class="detail-label">Email</span>
+                <span class="detail-value">{{ currentUser.email || 'Not set' }}</span>
+              </div>
+              
+              <div class="detail-item">
+                <span class="detail-label">Username</span>
+                <span class="detail-value">{{ currentUser.username || 'Not set' }}</span>
+              </div>
+              
+              <div class="detail-item" *ngIf="currentUser.phone">
+                <span class="detail-label">Phone</span>
+                <span class="detail-value">{{ currentUser.phone || 'Not set' }}</span>
+              </div>
+              
+              <div class="detail-item">
+                <span class="detail-label">Admin ID</span>
+                <span class="detail-value">{{ currentUser.id }}</span>
+              </div>
+              
+              <div class="detail-item" *ngIf="currentUser.access">
+                <span class="detail-label">Access Level</span>
+                <span class="detail-value">
+                  <nz-tag nzColor="purple" style="background-color: rgba(156, 39, 176, 0.3); border: 1px solid #9c27b0; border-radius: 10px; color: rgb(204, 46, 204);">Admin</nz-tag>
                 </span>
-              </h1> 
+              </div>
               
-              <p class="profile-title">
-                <span *ngIf="!currentUser.position && !currentUser.department">System Administrator</span>
-              </p>
+              <div class="detail-item">
+                <span class="detail-label">Account Type</span>
+                <span class="detail-value">
+                  <nz-tag nzColor="red" style="background-color: rgba(252, 99, 99, 0.3);  border: 1px solid #fa5151;  border-radius: 10px; color: red;">Administrator</nz-tag>
+                </span>
+              </div>
               
-              <div class="profile-stats">
-                <div class="stat-item">
-                  <span class="stat-value">{{employeeCount || 0}}</span>
-                  <span class="stat-label">Employees</span>
+              <div class="detail-item">
+                <span class="detail-label">Status</span>
+                <span class="detail-value">
+                  <nz-tag nzColor="success" style="background-color: rgba(76, 175, 80, 0.3); border: 1px solid #4caf50; border-radius: 10px; color: rgb(6, 218, 6);">Active</nz-tag>
+                </span>
+              </div>
+              
+              <div class="detail-item">
+                <span class="detail-label">Last Login</span>
+                <span class="detail-value">{{ date | date: 'medium' }}</span>
+              </div>
+            </div>
+          </nz-card>
+        </div>
+        <div class="quick-actions-col">
+          <nz-card nzTitle="Quick Actions" class="quick-actions-card">
+            <div class="actions-list">
+              <button nz-button  nzBlock (click)="getEmployeeTable()" class="action-btn">
+                <nz-icon nzType="team"></nz-icon>
+                <span>Manage Employees</span>
+              </button>
+              <button nz-button nzType="default" nzBlock (click)="getAdminTable()" class="action-btn">
+                <nz-icon nzType="user"></nz-icon>
+                <span>Manage Admins</span>
+              </button>                  
+              <button nz-button nzType="default" nzBlock  class="action-btn">
+                <nz-icon nzType="file-text"></nz-icon>
+                <span>Generate Report</span>
+              </button>
+            </div>
+            <nz-card nzTitle="System Overview" class="stats-card">
+            <div class="system-stats">
+              <div class="system-stat-item">
+                <nz-icon nzType="check-circle" nzTheme="fill" style="color: #52c41a;"></nz-icon>
+                <div class="system-stat-info">
+                  <div class="system-stat-value">System Online</div>
+                  <div class="system-stat-label">Status: Operational</div>
                 </div>
-                <div class="stat-item">
-                  <span class="stat-value">{{adminCount || 0}}</span>
-                  <span class="stat-label">Admins</span>
-                </div>
-                <div class="stat-item">
-                  <span class="stat-value">{{totalUsers || 0}}</span>
-                  <span class="stat-label">Total Users</span>
+              </div>
+              <div class="system-stat-item">
+                <nz-icon nzType="database" style="color: #1890ff;"></nz-icon>
+                <div class="system-stat-info">
+                  <div class="system-stat-value">{{ totalUsers || 0 }} Users</div>
+                  <div class="system-stat-label">Total Registered</div>
                 </div>
               </div>
             </div>
-          </div>
-
-          <div class="profile-content-row">
-            <div class="profile-details-col">
-              <nz-card nzTitle="Admin Information">
-                <div class="details-grid">
-                  <div class="detail-item">
-                    <span class="detail-label">Full Name</span>
-                    <span class="detail-value">{{ currentUser.fullname || getDisplayName(currentUser) }}</span>
-                  </div>
-                  
-                  <div class="detail-item">
-                    <span class="detail-label">Email</span>
-                    <span class="detail-value">{{ currentUser.email || 'Not set' }}</span>
-                  </div>
-                  
-                  <div class="detail-item">
-                    <span class="detail-label">Username</span>
-                    <span class="detail-value">{{ currentUser.username || 'Not set' }}</span>
-                  </div>
-                  
-                  <div class="detail-item" *ngIf="currentUser.phone">
-                    <span class="detail-label">Phone</span>
-                    <span class="detail-value">{{ currentUser.phone || 'Not set' }}</span>
-                  </div>
-                  
-                  <div class="detail-item">
-                    <span class="detail-label">Admin ID</span>
-                    <span class="detail-value">{{ currentUser.id }}</span>
-                  </div>
-                  
-                  <div class="detail-item" *ngIf="currentUser.access">
-                    <span class="detail-label">Access Level</span>
-                    <span class="detail-value">
-                      <nz-tag nzColor="purple" style="background-color: rgba(156, 39, 176, 0.3); border: 1px solid #9c27b0; border-radius: 10px; color: rgb(204, 46, 204);">Admin</nz-tag>
-                    </span>
-                  </div>
-                  
-                  <div class="detail-item">
-                    <span class="detail-label">Account Type</span>
-                    <span class="detail-value">
-                      <nz-tag nzColor="red" style="background-color: rgba(252, 99, 99, 0.3);  border: 1px solid #fa5151;  border-radius: 10px; color: red;">Administrator</nz-tag>
-                    </span>
-                  </div>
-                  
-                  <div class="detail-item">
-                    <span class="detail-label">Status</span>
-                    <span class="detail-value">
-                      <nz-tag nzColor="success" style="background-color: rgba(76, 175, 80, 0.3); border: 1px solid #4caf50; border-radius: 10px; color: rgb(6, 218, 6);">Active</nz-tag>
-                    </span>
-                  </div>
-                  
-                  <div class="detail-item">
-                    <span class="detail-label">Last Login</span>
-                    <span class="detail-value">{{ date | date: 'medium' }}</span>
-                  </div>
-                </div>
-              </nz-card>
-            </div>
-            <div class="quick-actions-col">
-              <nz-card nzTitle="Quick Actions" class="quick-actions-card">
-                <div class="actions-list">
-                  <button nz-button  nzBlock (click)="getEmployeeTable()" class="action-btn">
-                    <nz-icon nzType="team"></nz-icon>
-                    <span>Manage Employees</span>
-                  </button>
-                  <button nz-button nzType="default" nzBlock (click)="getAdminTable()" class="action-btn">
-                    <nz-icon nzType="user"></nz-icon>
-                    <span>Manage Admins</span>
-                  </button>                  
-                  <button nz-button nzType="default" nzBlock  class="action-btn">
-                    <nz-icon nzType="file-text"></nz-icon>
-                    <span>Generate Report</span>
-                  </button>
-                </div>
-                <nz-card nzTitle="System Overview" class="stats-card">
-                <div class="system-stats">
-                  <div class="system-stat-item">
-                    <nz-icon nzType="check-circle" nzTheme="fill" style="color: #52c41a;"></nz-icon>
-                    <div class="system-stat-info">
-                      <div class="system-stat-value">System Online</div>
-                      <div class="system-stat-label">Status: Operational</div>
-                    </div>
-                  </div>
-                  <div class="system-stat-item">
-                    <nz-icon nzType="database" style="color: #1890ff;"></nz-icon>
-                    <div class="system-stat-info">
-                      <div class="system-stat-value">{{ totalUsers || 0 }} Users</div>
-                      <div class="system-stat-label">Total Registered</div>
-                    </div>
-                  </div>
-                </div>
-              </nz-card>
-              </nz-card>
-            </div>
-          </div>
-        </div>
-
-        <div *ngIf="!isLoading && currentUser && currentUser.role !== 'admin'" class="not-admin-container">
-          <nz-result
-            nzStatus="403"
-            nzTitle="Admin Access Required"
-            nzSubTitle="This page is only accessible to administrators."
-          >
-            <div nz-result-extra>
-              <button nz-button nzType="primary" (click)="logout()">Return to Login</button>
-            </div>
-          </nz-result>
+          </nz-card>
+          </nz-card>
         </div>
       </div>
-    </nz-content>
+    </div>
 
+    <div *ngIf="!isLoading && currentUser && currentUser.role !== 'admin'" class="not-admin-container">
+      <nz-result
+        nzStatus="403"
+        nzTitle="Admin Access Required"
+        nzSubTitle="This page is only accessible to administrators."
+      >
+        <div nz-result-extra>
+          <button nz-button nzType="primary" (click)="logout()">Return to Login</button>
+        </div>
+      </nz-result>
+    </div>
+  </div>
+</nz-content> 

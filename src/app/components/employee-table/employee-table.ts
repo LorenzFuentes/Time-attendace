@@ -1,7 +1,7 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NzInputModule, NzInputSearchEvent } from 'ng-zorro-antd/input';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -11,6 +11,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { AuthService } from '../../service/auth';
 import { Router } from '@angular/router';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 
 export interface Employee {
   id: string;
@@ -32,9 +33,10 @@ export interface Employee {
   templateUrl: './employee-table.html',
   styleUrl: './employee-table.scss'
 })
-export class EmployeeTableComponent implements OnInit { 
+export class EmployeeTableComponent implements OnInit, OnDestroy { 
   editCache: { [key: string]: { edit: boolean; data: Employee } } = {};  
   employees: Employee[] = [];
+  filteredEmployees: Employee[] = [];
   isLoading: boolean = true;
 
   isCollapsed = false;
@@ -46,7 +48,13 @@ export class EmployeeTableComponent implements OnInit {
   currentDateTime: string = '';
   currentDate: string = '';
 
+  // Search property for two-way binding
+  searchValue: string = '';
+
   private timer: any; 
+  private searchSubject = new Subject<string>();
+  private searchSubscription!: Subscription;
+  
   constructor(
     private authService: AuthService,
     private message: NzMessageService,
@@ -65,6 +73,13 @@ export class EmployeeTableComponent implements OnInit {
     this.loadDashboardStats();
     this.updateDateTime();
     this.timer = setInterval(() => this.updateDateTime(), 60000);
+    
+    // Subscribe to search input with debounce for real-time search
+    this.searchSubscription = this.searchSubject
+      .pipe(debounceTime(300)) // 300ms delay to prevent excessive filtering
+      .subscribe(searchTerm => {
+        this.filterEmployees(searchTerm);
+      });
   }
 
   private loadEmployees(): void {
@@ -84,6 +99,8 @@ export class EmployeeTableComponent implements OnInit {
           email: employee.email || '',
           password: employee.password || ''
         }));
+        // Initialize filteredEmployees with all employees
+        this.filteredEmployees = [...this.employees];
         this.updateEditCache();
         this.isLoading = false;
       },
@@ -96,12 +113,53 @@ export class EmployeeTableComponent implements OnInit {
 
   private updateEditCache(): void {
     this.editCache = {};
-    this.employees.forEach(employee => {
+    this.filteredEmployees.forEach(employee => {
       this.editCache[employee.id] = {
         edit: false,
         data: { ...employee }
       };
     });
+  }
+
+  // Filter employees based on search term
+  private filterEmployees(searchTerm: string): void {
+    if (!searchTerm.trim()) {
+      // If search is empty, show all employees
+      this.filteredEmployees = [...this.employees];
+      this.updateEditCache();
+      return;
+    }
+
+    const term = searchTerm.toLowerCase().trim();
+    
+    // Filter employees based on multiple fields
+    this.filteredEmployees = this.employees.filter(employee => {
+      return (
+        employee.firstName?.toLowerCase().includes(term) ||
+        employee.lastName?.toLowerCase().includes(term) ||
+        employee.middleName?.toLowerCase().includes(term) ||
+        employee.contact?.toLowerCase().includes(term) ||
+        employee.department?.toLowerCase().includes(term) ||
+        employee.position?.toLowerCase().includes(term) ||
+        employee.username?.toLowerCase().includes(term) ||
+        employee.email?.toLowerCase().includes(term) ||
+        employee.id?.toLowerCase().includes(term)
+      );
+    });
+    
+    // Update edit cache for filtered results
+    this.updateEditCache();
+  }
+
+  // Handle search input - triggers real-time filtering
+  onSearch(): void {
+    // Send the current search value to the subject
+    this.searchSubject.next(this.searchValue);
+  }
+
+  // Handle search button click
+  onSearchClick(): void {
+    this.filterEmployees(this.searchValue);
   }
 
   startEdit(id: string): void {
@@ -114,24 +172,36 @@ export class EmployeeTableComponent implements OnInit {
     const isNewEmployee = id.startsWith('temp_');
     
     if (isNewEmployee) {
-      const index = this.employees.findIndex(employee => employee.id === id);
+      const index = this.filteredEmployees.findIndex(employee => employee.id === id);
+      const originalIndex = this.employees.findIndex(employee => employee.id === id);
+      
       if (index !== -1) {
-        this.employees.splice(index, 1);
+        this.filteredEmployees.splice(index, 1);
         delete this.editCache[id];
       }
+      
+      if (originalIndex !== -1) {
+        this.employees.splice(originalIndex, 1);
+      }
     } else {
-      const index = this.employees.findIndex(employee => employee.id === id);
+      const index = this.filteredEmployees.findIndex(employee => employee.id === id);
+      const originalIndex = this.employees.findIndex(employee => employee.id === id);
+      
       if (index !== -1) {
         this.editCache[id] = {
-          data: { ...this.employees[index] },
+          data: { ...this.filteredEmployees[index] },
           edit: false
         };
       }
     }
+    
+    // Re-filter after cancellation
+    this.filterEmployees(this.searchValue);
   }
 
   saveEdit(id: string): void {
-    const index = this.employees.findIndex(employee => employee.id === id);
+    const index = this.filteredEmployees.findIndex(employee => employee.id === id);
+    const originalIndex = this.employees.findIndex(employee => employee.id === id);
     
     if (index === -1 || !this.editCache[id]) {
       this.message.error('Employee not found!');
@@ -149,127 +219,153 @@ export class EmployeeTableComponent implements OnInit {
     if (isNewEmployee) {
       this.registerNewEmployee(employeeData, id);
     } else {
-      this.updateExistingEmployee(id, employeeData, index);
+      this.updateExistingEmployee(id, employeeData, index, originalIndex);
     }
   }
 
   private registerNewEmployee(newEmployee: Employee, tempId: string): void {
-     this.authService.getAllEmployee().subscribe({
-    next: (existingEmployees: any[]) => {
-      let maxId = 0;
-      
-      existingEmployees.forEach(emp => {
-        const idNum = parseInt(emp.id, 10);
-        if (!isNaN(idNum) && idNum > maxId) {
-          maxId = idNum;
-        }
-      });
-      
-      const nextId = (maxId + 1).toString();
-      
-      const employeeToCreate = {
-        id: nextId, 
-        firstName: newEmployee.firstName,
-        middleName: newEmployee.middleName,
-        lastName: newEmployee.lastName,
-        contact: newEmployee.contact,
-        department: newEmployee.department,
-        position: newEmployee.position,
-        username: newEmployee.username,
-        email: newEmployee.email,
-        password: newEmployee.password
-      };
-      
-      this.authService.createEmployee(employeeToCreate).subscribe({
-        next: (createdEmployee: any) => {
-          const tempIndex = this.employees.findIndex(employee => employee.id === tempId);
-          if (tempIndex !== -1) {
+    this.authService.getAllEmployee().subscribe({
+      next: (existingEmployees: any[]) => {
+        let maxId = 0;
+        
+        existingEmployees.forEach(emp => {
+          const idNum = parseInt(emp.id, 10);
+          if (!isNaN(idNum) && idNum > maxId) {
+            maxId = idNum;
+          }
+        });
+        
+        const nextId = (maxId + 1).toString();
+        
+        const employeeToCreate = {
+          id: nextId, 
+          firstName: newEmployee.firstName,
+          middleName: newEmployee.middleName,
+          lastName: newEmployee.lastName,
+          contact: newEmployee.contact,
+          department: newEmployee.department,
+          position: newEmployee.position,
+          username: newEmployee.username,
+          email: newEmployee.email,
+          password: newEmployee.password
+        };
+        
+        this.authService.createEmployee(employeeToCreate).subscribe({
+          next: (createdEmployee: any) => {
             const employeeWithStringId = {
               ...createdEmployee,
               id: createdEmployee.id ? createdEmployee.id.toString() : nextId
             };
             
-            this.employees[tempIndex] = employeeWithStringId;
+            // Update in original array
+            const originalIndex = this.employees.findIndex(employee => employee.id === tempId);
+            if (originalIndex !== -1) {
+              this.employees[originalIndex] = employeeWithStringId;
+            } else {
+              // Add to original array if not found
+              this.employees.unshift(employeeWithStringId);
+            }
+            
+            // Update edit cache
             this.editCache[employeeWithStringId.id] = {
               edit: false,
               data: employeeWithStringId
             };
             delete this.editCache[tempId];
+            
+            this.message.success(`Employee ${newEmployee.firstName} ${newEmployee.lastName} created successfully!`);
+            
+            // Re-filter to apply current search
+            this.filterEmployees(this.searchValue);
+          },
+          error: (error) => {
+            console.error('Registration failed:', error);
+            this.message.error('Failed to create employee. Please try again.');
+            
+            // Remove the temporary employee on error
+            this.employees = this.employees.filter(e => e.id !== tempId);
+            this.filterEmployees(this.searchValue);
           }
-          
-          this.message.success(`Employee ${newEmployee.firstName} ${newEmployee.lastName} created successfully!`);
-          window.location.reload();
-        },
-        error: (error) => {
-          console.error('Registration failed:', error);
-          this.message.error('Failed to create employee. Please try again.');
-        }
-      });
-    },
-    error: (error) => {
-      console.error('Failed to fetch existing employees:', error);
-      this.message.error('Failed to connect to server. Please try again.');
-    }
-  });
+        });
+      },
+      error: (error) => {
+        console.error('Failed to fetch existing employees:', error);
+        this.message.error('Failed to connect to server. Please try again.');
+      }
+    });
   }
 
-  private updateExistingEmployee(id: string, updatedEmployee: Employee, index: number): void {
+  private updateExistingEmployee(id: string, updatedEmployee: Employee, index: number, originalIndex: number): void {
     const cleanPayload = {
-    firstName: updatedEmployee.firstName,
-    middleName: updatedEmployee.middleName,
-    lastName: updatedEmployee.lastName,
-    contact: updatedEmployee.contact,
-    department: updatedEmployee.department,
-    position: updatedEmployee.position,
-    username: updatedEmployee.username,
-    email: updatedEmployee.email
-  };
-  
-  const passwordValue = updatedEmployee.password;
-  if (passwordValue && passwordValue.trim() && passwordValue !== '••••••••') {
-    (cleanPayload as any).password = passwordValue;
-  }
-  
-  this.authService.updateEmployee(id, cleanPayload).subscribe({
-    next: (response) => {
-      const responseWithStringId = {
-        ...response,
-        id: response.id ? response.id.toString() : id
-      };
-      
-      this.employees[index] = {
-        ...this.employees[index],
-        ...responseWithStringId
-      };
-      this.editCache[id] = {
-        edit: false,
-        data: { ...this.employees[index] }
-      };
-      
-      this.message.success('Employee updated successfully!');
-      window.location.reload();
-    },
-    error: (error) => {
-      let errorMessage = 'Failed to update employee. ';
-      if (error.status === 400) {
-        errorMessage += 'Bad request - please check the data format.';
-      } else if (error.status === 404) {
-        errorMessage += 'Employee not found.';
-      } else if (error.status === 409) {
-        errorMessage += 'Conflict (duplicate email or username).';
-      } else if (error.status === 500) {
-        errorMessage += 'Server error. Please try again later.';
-      } else {
-        errorMessage += `Error ${error.status}: ${error.message}`;
-      }
-      
-      this.message.error(errorMessage);
-      this.editCache[id] = {
-        edit: true, 
-        data: { ...this.employees[index] }
-      };
+      firstName: updatedEmployee.firstName,
+      middleName: updatedEmployee.middleName,
+      lastName: updatedEmployee.lastName,
+      contact: updatedEmployee.contact,
+      department: updatedEmployee.department,
+      position: updatedEmployee.position,
+      username: updatedEmployee.username,
+      email: updatedEmployee.email
+    };
+    
+    const passwordValue = updatedEmployee.password;
+    if (passwordValue && passwordValue.trim() && passwordValue !== '••••••••') {
+      (cleanPayload as any).password = passwordValue;
     }
-  });
+    
+    this.authService.updateEmployee(id, cleanPayload).subscribe({
+      next: (response) => {
+        const responseWithStringId = {
+          ...response,
+          id: response.id ? response.id.toString() : id
+        };
+        
+        // Update in filtered array
+        if (index !== -1) {
+          this.filteredEmployees[index] = {
+            ...this.filteredEmployees[index],
+            ...responseWithStringId
+          };
+        }
+        
+        // Update in original array
+        if (originalIndex !== -1) {
+          this.employees[originalIndex] = {
+            ...this.employees[originalIndex],
+            ...responseWithStringId
+          };
+        }
+        
+        this.editCache[id] = {
+          edit: false,
+          data: { ...this.filteredEmployees[index] }
+        };
+        
+        this.message.success('Employee updated successfully!');
+        
+        // Re-filter in case the update affects search results
+        this.filterEmployees(this.searchValue);
+      },
+      error: (error) => {
+        let errorMessage = 'Failed to update employee. ';
+        if (error.status === 400) {
+          errorMessage += 'Bad request - please check the data format.';
+        } else if (error.status === 404) {
+          errorMessage += 'Employee not found.';
+        } else if (error.status === 409) {
+          errorMessage += 'Conflict (duplicate email or username).';
+        } else if (error.status === 500) {
+          errorMessage += 'Server error. Please try again later.';
+        } else {
+          errorMessage += `Error ${error.status}: ${error.message}`;
+        }
+        
+        this.message.error(errorMessage);
+        this.editCache[id] = {
+          edit: true, 
+          data: { ...this.filteredEmployees[index] }
+        };
+      }
+    });
   }
 
   addNewEmployee(): void {
@@ -288,6 +384,7 @@ export class EmployeeTableComponent implements OnInit {
     };
     
     this.employees = [newEmployee, ...this.employees];
+    this.filteredEmployees = [newEmployee, ...this.filteredEmployees];
     this.updateEditCache();
     this.startEdit(tempId);
     this.message.info('Please fill in the new employee details');
@@ -296,23 +393,28 @@ export class EmployeeTableComponent implements OnInit {
   deleteEmployee(id: string): void {
     if (id.startsWith('temp_')) {
       this.employees = this.employees.filter(e => e.id !== id);
+      this.filteredEmployees = this.filteredEmployees.filter(e => e.id !== id);
       delete this.editCache[id];
+      this.filterEmployees(this.searchValue);
       return;
     }
 
     this.authService.deleteEmployee(id).subscribe({
       next: () => {
         this.employees = this.employees.filter(e => e.id !== id);
+        this.filteredEmployees = this.filteredEmployees.filter(e => e.id !== id);
         delete this.editCache[id];
         this.message.success('Deleted successfully!');
-        window.location.reload();
+        this.filterEmployees(this.searchValue);
       },
       error: () => this.message.error('Delete failed!')
     });
   }
 
   refreshData(): void {
-    window.location.reload();
+    this.isLoading = true;
+    this.searchValue = '';
+    this.loadEmployees();
   }
 
   isFormValid(employeeId: string): boolean {
@@ -343,11 +445,6 @@ export class EmployeeTableComponent implements OnInit {
     }
     
     return allRequiredValid;
-  }
-   readonly value = signal('');
-
-  onSearch(event: NzInputSearchEvent): void {
-    console.log(event);
   }
 
   private loadCurrentUser(): void {
@@ -393,12 +490,6 @@ export class EmployeeTableComponent implements OnInit {
     });
   }
 
-  ngOnDestroy() {
-    if (this.timer) {
-      clearInterval(this.timer);
-    }
-  }
-
   private loadDashboardStats(): void {
     this.authService.getAdminCount().subscribe({
       next: (count) => {
@@ -417,5 +508,14 @@ export class EmployeeTableComponent implements OnInit {
         console.error('Failed to load employee count:', error);
       }
     });
+  }
+
+  ngOnDestroy() {
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
 }
