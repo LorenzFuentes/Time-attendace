@@ -1,7 +1,7 @@
-import { Component, OnInit, signal  } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NzInputModule, NzInputSearchEvent  } from 'ng-zorro-antd/input';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -10,7 +10,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { AuthService } from '../../service/auth';
 import { Router } from '@angular/router';
-import { NzIconModule } from 'ng-zorro-antd/icon'
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 
 export interface UserData {
   id: string;
@@ -20,6 +21,7 @@ export interface UserData {
   fullname: string;
   access: string;
 }
+
 @Component({
   selector: 'app-admin-table',
   standalone: true,
@@ -27,9 +29,10 @@ export interface UserData {
   templateUrl: './admin-table.html',
   styleUrls: ['./admin-table.scss']
 })
-export class AdminTable implements OnInit {
+export class AdminTable implements OnInit, OnDestroy {
   editCache: { [key: string]: { edit: boolean; data: UserData } } = {};
   listOfData: UserData[] = [];
+  filteredData: UserData[] = [];
   isLoading: boolean = true;
 
   accessLevels = [
@@ -44,7 +47,12 @@ export class AdminTable implements OnInit {
   currentDateTime: string = '';
   currentDate: string = '';
 
+  // Search property
+  searchValue: string = '';
+
   private timer: any; 
+  private searchSubject = new Subject<string>();
+  private searchSubscription!: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -53,17 +61,25 @@ export class AdminTable implements OnInit {
   ) {}
 
   ngOnInit(): void {
-  this.loadDataFromApi();
-  this.loadCurrentUser();
-  this.authService.currentUser$.subscribe(user => {
-    console.log('User observable updated:', user);
-    this.currentUser = user;
-  });
-  
-  this.loadDashboardStats();
-  this.updateDateTime();
-  this.timer = setInterval(() => this.updateDateTime(), 60000);
-}
+    this.loadDataFromApi();
+    this.loadCurrentUser();
+    this.authService.currentUser$.subscribe(user => {
+      console.log('User observable updated:', user);
+      this.currentUser = user;
+    });
+    
+    this.loadDashboardStats();
+    this.updateDateTime();
+    this.timer = setInterval(() => this.updateDateTime(), 60000);
+    
+    // Subscribe to search input with debounce
+    this.searchSubscription = this.searchSubject
+      .pipe(debounceTime(300))
+      .subscribe(searchTerm => {
+        this.filterAdmins(searchTerm);
+      });
+  }
+
   private loadDataFromApi(): void {
     this.isLoading = true;
     this.authService.getAllUsers().subscribe({
@@ -76,6 +92,7 @@ export class AdminTable implements OnInit {
           fullname: user.fullname || '',
           access: user.access || 'user'
         }));
+        this.filteredData = [...this.listOfData];
         this.updateEditCache();
         this.isLoading = false;
         this.message.success('Data loaded successfully!');
@@ -89,12 +106,45 @@ export class AdminTable implements OnInit {
 
   private updateEditCache(): void {
     this.editCache = {};
-    this.listOfData.forEach(item => {
+    this.filteredData.forEach(item => {
       this.editCache[item.id] = {
         edit: false,
         data: { ...item }
       };
     });
+  }
+
+  // Filter admins based on search term
+  private filterAdmins(searchTerm: string): void {
+    if (!searchTerm.trim()) {
+      this.filteredData = [...this.listOfData];
+      this.updateEditCache();
+      return;
+    }
+
+    const term = searchTerm.toLowerCase().trim();
+    
+    this.filteredData = this.listOfData.filter(admin => {
+      return (
+        admin.username?.toLowerCase().includes(term) ||
+        admin.fullname?.toLowerCase().includes(term) ||
+        admin.email?.toLowerCase().includes(term) ||
+        admin.access?.toLowerCase().includes(term) ||
+        admin.id?.toLowerCase().includes(term)
+      );
+    });
+    
+    this.updateEditCache();
+  }
+
+  // Handle real-time search
+  onSearch(): void {
+    this.searchSubject.next(this.searchValue);
+  }
+
+  // Handle search button click
+  onSearchClick(): void {
+    this.filterAdmins(this.searchValue);
   }
 
   startEdit(id: string): void {
@@ -104,21 +154,34 @@ export class AdminTable implements OnInit {
   }
 
   cancelEdit(id: string): void {
-    if (id.startsWith('temp_')) {
-      const index = this.listOfData.findIndex(item => item.id === id);
+    const isNewAdmin = id.startsWith('temp_');
+    
+    if (isNewAdmin) {
+      const index = this.filteredData.findIndex(item => item.id === id);
+      const originalIndex = this.listOfData.findIndex(item => item.id === id);
+      
       if (index !== -1) {
-        this.listOfData.splice(index, 1);
+        this.filteredData.splice(index, 1);
         delete this.editCache[id];
       }
+      
+      if (originalIndex !== -1) {
+        this.listOfData.splice(originalIndex, 1);
+      }
     } else {
-      const index = this.listOfData.findIndex(item => item.id === id);
+      const index = this.filteredData.findIndex(item => item.id === id);
+      const originalIndex = this.listOfData.findIndex(item => item.id === id);
+      
       if (index !== -1) {
         this.editCache[id] = {
-          data: { ...this.listOfData[index] },
+          data: { ...this.filteredData[index] },
           edit: false
         };
       }
     }
+    
+    // Re-filter after cancellation
+    this.filterAdmins(this.searchValue);
   }
 
   saveEdit(id: string): void {
@@ -128,17 +191,29 @@ export class AdminTable implements OnInit {
     }
 
     const adminData = this.editCache[id].data;
+    const index = this.filteredData.findIndex(item => item.id === id);
+    const originalIndex = this.listOfData.findIndex(item => item.id === id);
     
     if (id.startsWith('temp_')) {
       // New admin - get next ID from server using register logic
-      this.registerAdminWithManualId(adminData, id);
+      this.registerAdminWithManualId(adminData, id, index, originalIndex);
     } else {
       // Existing admin - update
       this.authService.updateUser(id, adminData).subscribe({
         next: () => {
+          if (index !== -1) {
+            this.filteredData[index] = { ...adminData };
+          }
+          if (originalIndex !== -1) {
+            this.listOfData[originalIndex] = { ...adminData };
+          }
+          
           this.editCache[id].edit = false;
           this.message.success('Admin updated successfully!');
           window.location.reload();
+          
+          // Re-filter after update
+          this.filterAdmins(this.searchValue);
         },
         error: () => {
           this.message.error('Failed to update admin');
@@ -161,12 +236,13 @@ export class AdminTable implements OnInit {
     };
     
     this.listOfData = [newAdmin, ...this.listOfData];
+    this.filteredData = [newAdmin, ...this.filteredData];
     this.updateEditCache();
     this.startEdit(tempId);
     this.message.info('Please fill in the new admin details');
   }
 
-  private registerAdminWithManualId(newAdmin: any, tempId: string): void {
+  private registerAdminWithManualId(newAdmin: any, tempId: string, index: number, originalIndex: number): void {
     this.authService.getAllUsers().subscribe({
       next: (existingAdmins: any) => {
         let maxId = 0;
@@ -196,25 +272,40 @@ export class AdminTable implements OnInit {
         
         this.authService.createUser(adminWithId).subscribe({
           next: (createdAdmin: any) => {
-            const tempIndex = this.listOfData.findIndex(item => item.id === tempId);
-            if (tempIndex !== -1) {
-              this.listOfData[tempIndex] = createdAdmin;
-              
-              this.editCache[createdAdmin.id] = {
-                edit: false,
-                data: createdAdmin
-              };
-              delete this.editCache[tempId];
-              
-              this.updateEditCache();
+            const adminWithStringId = {
+              ...createdAdmin,
+              id: createdAdmin.id ? createdAdmin.id.toString() : nextId.toString()
+            };
+            
+            // Update in filtered array
+            if (index !== -1) {
+              this.filteredData[index] = adminWithStringId;
             }
             
-            this.message.success(`Admin ${newAdmin.fullname} registered successfully! ID: ${nextId}`);
+            // Update in original array
+            if (originalIndex !== -1) {
+              this.listOfData[originalIndex] = adminWithStringId;
+            }
+            
+            this.editCache[adminWithStringId.id] = {
+              edit: false,
+              data: adminWithStringId
+            };
+            delete this.editCache[tempId];
+            
+            this.message.success(`Admin ${newAdmin.fullname} registered successfully!`);
             window.location.reload();
+            
+            // Re-filter after creation
+            this.filterAdmins(this.searchValue);
           },
           error: (error) => {
             console.error('Registration failed:', error);
             this.message.error('Registration failed. Please try again.');
+            
+            // Remove the temporary admin on error
+            this.listOfData = this.listOfData.filter(item => item.id !== tempId);
+            this.filterAdmins(this.searchValue);
           }
         });
       },
@@ -232,8 +323,10 @@ export class AdminTable implements OnInit {
       this.authService.deleteUser(userId).subscribe({
         next: () => {
           this.listOfData = this.listOfData.filter(item => item.id !== id);
+          this.filteredData = this.filteredData.filter(item => item.id !== id);
           delete this.editCache[id];
           this.message.success('User deleted successfully!');
+          this.filterAdmins(this.searchValue);
           window.location.reload();
         },
         error: (error) => {
@@ -242,7 +335,9 @@ export class AdminTable implements OnInit {
       });
     } else {
       this.listOfData = this.listOfData.filter(item => item.id !== id);
+      this.filteredData = this.filteredData.filter(item => item.id !== id);
       delete this.editCache[id];
+      this.filterAdmins(this.searchValue);
     }
   }
 
@@ -254,7 +349,9 @@ export class AdminTable implements OnInit {
   }
 
   refreshData(): void {
-    window.location.reload();
+    this.isLoading = true;
+    this.searchValue = '';
+    this.loadDataFromApi();
   }
 
   isFormValid(userId: string): boolean {
@@ -265,12 +362,6 @@ export class AdminTable implements OnInit {
            !!userData.email.trim() && 
            !!userData.password.trim() &&
            !!userData.fullname.trim();
-  }
-
-  readonly value = signal('');
-
-  onSearch(event: NzInputSearchEvent): void {
-    console.log(event);
   }
 
   private loadCurrentUser(): void {
@@ -320,6 +411,9 @@ export class AdminTable implements OnInit {
     if (this.timer) {
       clearInterval(this.timer);
     }
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
 
   private loadDashboardStats(): void {
@@ -341,7 +435,4 @@ export class AdminTable implements OnInit {
       }
     });
   }
-
-
-
 }

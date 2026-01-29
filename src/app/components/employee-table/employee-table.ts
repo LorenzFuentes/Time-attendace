@@ -274,6 +274,7 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
             delete this.editCache[tempId];
             
             this.message.success(`Employee ${newEmployee.firstName} ${newEmployee.lastName} created successfully!`);
+            window.location.reload();
             
             // Re-filter to apply current search
             this.filterEmployees(this.searchValue);
@@ -341,6 +342,7 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
         };
         
         this.message.success('Employee updated successfully!');
+        window.location.reload();
         
         // Re-filter in case the update affects search results
         this.filterEmployees(this.searchValue);
@@ -406,6 +408,7 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
         delete this.editCache[id];
         this.message.success('Deleted successfully!');
         this.filterEmployees(this.searchValue);
+        window.location.reload();
       },
       error: () => this.message.error('Delete failed!')
     });
