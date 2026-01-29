@@ -149,7 +149,7 @@ export class MainLayout implements OnInit, OnDestroy {
   }
 
   getHome(): void {
-    this.router.navigate(['/admin-home']);
+    this.router.navigate(['/main/admin-home']);
   }
 
   getChart(): void {

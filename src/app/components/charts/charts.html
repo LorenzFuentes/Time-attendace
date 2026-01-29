@@ -1,5 +1,41 @@
-<h1>Charts</h1>
+<div class="inner-content">
+    <h1 class="dashboard-txt">Admin Dashboard</h1>
+    <div class="dashboard-container">
+        <div class="stat-card admin-card">
+            <div class="card-icon">
+                <i nz-icon nzType="user" nzTheme="outline" class="icon"></i>
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">Admins</h3>
+                <p class="card-count">{{ adminCount }}</p>
+                <p class="card-subtitle">Total Administrators</p>
+            </div>
+        </div>
+        <div class="stat-card employee-card">
+            <div class="card-icon">
+                <i nz-icon nzType="team" nzTheme="outline" class="icon"></i>
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">Employees</h3>
+                <p class="card-count">{{ employeeCount }}</p>
+                <p class="card-subtitle">Total Employees</p>
+            </div>
+        </div>
+        <div class="stat-card datetime-card">
+            <div class="card-icon">
+                <i nz-icon nzType="clock-circle" nzTheme="outline" class="icon"></i>
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">Current Time</h3>
+                <p class="card-datetime">{{ currentDateTime }}</p>
+                <p class="card-date">{{ currentDate }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="chart-container" #chartContainer>
+  <h2 style="font-family: 'Chillax', sans-serif;">Charts</h2>
   <div *ngIf="isLoading" style="text-align: center; padding: 40px; font-size: 16px; color: #666;">Loading charts...</div>
   <div *ngIf="!isLoading" class="charts-grid">
     <div class="chart-card">

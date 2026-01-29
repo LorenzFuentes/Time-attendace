@@ -1,7 +1,22 @@
 #chart-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 15px;
+  padding: 24px;
+  background: #1a1a1a;
+  min-height: auto; 
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #3A3A3A;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-top: 20px;
+}
+
+h2 {
+  color: #5162fa;
+  width: fit-content;
+  margin: 0 0 30px 0;
+  font-size: 30px;
+  font-weight: bolder;
 }
 
 .charts-grid {
@@ -13,50 +28,26 @@
 .chart-card {
   background: #121212;
   border-radius: 12px;
-  padding: 25px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.048);
-}
-
-h1{
-  margin: 0;
-  font-size: 30px;
-  font-weight: bolder;
-  color: #5162fa;
-  font-family: 'Chillax', sans-serif;
-}
-
-.chart-title {
-  color: #fff;
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  // border-bottom: 2px solid #5162fa;
-  width: fit-content;
-}
-
-.chart-card {
-  background: #1a1a1a;
-  border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  border: 1px solid #2d2d2d;
+  border: 1px solid #3A3A3A;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
+
+
 .chart-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 15px;
-  border-bottom: 1px solid #2d2d2d;
+  border-bottom: 1px solid #5162fa;
 }
 
 .chart-title {
-  color: #ffffff;
-  font-size: 18px;
-  font-weight: 600;
+  color: #fff;
   margin: 0;
   flex: 1;
+  font-size: 20px;
 }
 
 .chart-download-btn {
@@ -92,10 +83,6 @@ h1{
   transform: scale(1.1);
 }
 
-.chart-download-btn.with-text:hover {
-  color: white;
-}
-
 @media (max-width: 768px) {
   .charts-grid {
     grid-template-columns: 1fr;
@@ -104,11 +91,6 @@ h1{
 
   .chart-card {
     padding: 16px;
-  }
-
-  .download-btn.violet-btn {
-    width: 100%;
-    justify-content: center;
   }
 
   .chart-header {
@@ -137,4 +119,117 @@ h1{
   .chart-actions {
     justify-content: center;
   }
+}
+
+.inner-content {
+    padding: 24px;
+    background: #1a1a1a;
+    min-height: auto; 
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #3A3A3A;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 0;
+}
+
+.dashboard-txt{
+    color: #5162fa;
+    font-family: 'Chillax', sans-serif;
+    border-bottom: 2px solid #5162fa;
+    width: fit-content;
+}
+
+.dashboard-container {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+.stat-card {
+    flex: 1;
+    min-width: 280px;
+    background: #121212;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(81, 98, 250, 0.397);
+    border: 1px solid #3A3A3A;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(81,98,250,1);
+}
+
+.card-icon {
+    margin-right: 20px;
+    padding: 16px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-icon .icon {
+    font-size: 32px;
+}
+
+.card-content {
+    flex: 1;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card-count {
+    font-size: 36px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+}
+
+.card-subtitle {
+    font-size: 14px;
+    color: #999;
+    margin: 0;
+}
+
+.card-datetime {
+    font-size: 24px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+}
+
+.card-date {
+    font-size: 14px;
+    color: #999;
+    margin: 0;
+}
+
+.admin-card .card-icon {
+    background-color: rgba(243, 0, 0, 0.212);
+    color: #fa0000;
+}
+
+.employee-card .card-icon {
+    background-color: rgba(126, 230, 8, 0.1);
+    color: #73e608;
+}
+
+.datetime-card .card-icon {
+    background-color: rgba(68, 25, 221, 0.1);
+    color: #3700ff;
 }

@@ -4,15 +4,14 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../service/auth';
 import { User } from '../../model/post';
 import { Router } from "@angular/router";
-
-// Add these imports
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-charts',
   standalone: true,
-  imports: [NgApexchartsModule, CommonModule],
+  imports: [NzIconModule,NgApexchartsModule, CommonModule],
   templateUrl: './charts.html',
   styleUrls: ['./charts.scss'],
 })
@@ -25,12 +24,32 @@ export class Charts implements OnInit {
   public departments: string[] = [];
   public deptCounts: number[] = [];
 
+  isCollapsed = false;
+  protected readonly date = new Date();
+
+  currentUser: any = null;
+  adminCount: number = 0;
+  employeeCount: number = 0;
+  currentDateTime: string = '';
+  currentDate: string = '';
+
+  private timer: any; 
+  
   @ViewChild('chartContainer') chartContainer!: ElementRef;
 
   constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit() {
     this.loadUserData();
+    this.loadCurrentUser();
+    this.authService.currentUser$.subscribe(user => {
+      console.log('User observable updated:', user);
+      this.currentUser = user;
+    });
+  
+    this.loadDashboardStats();
+    this.updateDateTime();
+    this.timer = setInterval(() => this.updateDateTime(), 60000);
   }
 
   loadUserData() {
@@ -64,7 +83,6 @@ export class Charts implements OnInit {
     });
   }
 
-  // Alternative: Download individual charts
   downloadChart(chartType: string) {
     let chartElement: HTMLElement | null = null;
     
@@ -210,5 +228,73 @@ export class Charts implements OnInit {
         }
       }
     };
+  }
+   private loadCurrentUser(): void {
+    this.currentUser = this.authService.getCurrentUser();
+    
+    console.log('AuthService user:', this.currentUser);
+
+    if (!this.currentUser) {
+      const userData = localStorage.getItem('currentUser');
+      console.log('LocalStorage user data:', userData);
+      
+      if (userData) {
+        try {
+          this.currentUser = JSON.parse(userData);
+          console.log('Parsed user from localStorage:', this.currentUser);
+        } catch (e) {
+          console.error('Error parsing user data:', e);
+        }
+      }
+    }
+    
+    if (!this.currentUser) {
+      console.log('No user found, redirecting to login...');
+      this.router.navigate(['/login']);
+      return;
+    }
+    
+    console.log('Final current user:', this.currentUser);
+  }
+
+  updateDateTime(): void {
+    const now = new Date();
+    this.currentDateTime = now.toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: true 
+    });
+    this.currentDate = now.toLocaleDateString([], {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
+  }
+
+  private loadDashboardStats(): void {
+    this.authService.getAdminCount().subscribe({
+      next: (count) => {
+        this.adminCount = count;
+      },
+      error: (error) => {
+        console.error('Failed to load admin count:', error);
+      }
+    });
+    
+    this.authService.getEmployeeCount().subscribe({
+      next: (count) => {
+        this.employeeCount = count;
+      },
+      error: (error) => {
+        console.error('Failed to load employee count:', error);
+      }
+    });
   }
 }

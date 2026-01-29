@@ -14,7 +14,7 @@ export const routes: Routes = [
   { path: 'main', component: MainLayout,  children: [
       { path: 'admin-table', component: AdminTable },
       { path: 'employee-table', component: EmployeeTableComponent},
-      { path: 'chart', component: Charts}
+      { path: 'chart', component: Charts},
+      { path: 'admin-home', component: AdminHomeComponent}
   ]},
-  { path: 'admin-home', component: AdminHomeComponent},
 ];
