@@ -1,0 +1,103 @@
+<div class="table-container">
+  <div class="header-container">
+    <h2>Attendance Management</h2>
+    <div class="header-right">
+      <!-- Note: Add functionality needs to be implemented in component -->
+      <button nz-button nzType="primary">
+        <i nz-icon nzType="plus"></i> Add New Attendance
+      </button>
+    </div>
+  </div>
+
+  <nz-table #attendanceTable nzBordered [nzData]="filteredData" nzTableLayout="fixed" 
+            [nzLoading]="isLoading" [nzPageSize]="10" [nzShowPagination]="true">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Employee Name</th>
+        <th>Position</th>
+        <th>Department</th>
+        <th>Time In</th>
+        <th>Time Out</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Existing attendance records -->
+      <tr *ngFor="let record of attendanceTable.data">
+        <ng-container *ngIf="!editCache[record.date]?.edit; else editTemplate">
+          <td>{{ record.date }}</td>
+          <td>{{ record.firstName }} {{ record.lastName }}</td>
+          <td>{{ record.position }}</td>
+          <td>{{ record.department }}</td>
+          <td>{{ record['time-in'] }}</td>
+          <td>{{ record['time-out'] }}</td>
+          <td>
+              <nz-tag [nzColor]="getStatusColor(record.status)">
+                {{ getStatusLabel(record.status) }}
+              </nz-tag>
+          </td>
+          <td>
+            <button class="edit-btn" (click)="startEdit(record.date)">
+              Edit
+            </button>
+            <button class="delete-btn" nz-popconfirm 
+                    nzPopconfirmTitle="Delete this attendance record?" 
+                    (nzOnConfirm)="deleteRecord(record.date)">
+              Delete
+            </button>
+          </td>
+        </ng-container>
+        
+        <ng-template #editTemplate>
+          <td>
+            <input nz-input [(ngModel)]="editCache[record.date].data.date" 
+                   placeholder="Date" [class.invalid]="!editCache[record.date].data.date.trim()"/>
+          </td>
+          <td>
+            <input nz-input [(ngModel)]="editCache[record.date].data.firstName" 
+                   placeholder="First Name" style="width: 45%; margin-right: 5%;"/>
+            <input nz-input [(ngModel)]="editCache[record.date].data.lastName" 
+                   placeholder="Last Name" style="width: 45%;"/>
+          </td>
+          <td>
+            <input nz-input [(ngModel)]="editCache[record.date].data.position" 
+                   placeholder="Position"/>
+          </td>
+          <td>
+            <input nz-input [(ngModel)]="editCache[record.date].data.department" 
+                   placeholder="Department"/>
+          </td>
+          <td>
+            <input nz-input [(ngModel)]="editCache[record.date].data['time-in']" 
+                   placeholder="Time In"/>
+          </td>
+          <td>
+            <input nz-input [(ngModel)]="editCache[record.date].data['time-out']" 
+                   placeholder="Time Out"/>
+          </td>
+          <td>
+            <nz-select [(ngModel)]="editCache[record.date].data.status" style="width: 100%;">
+              <nz-option nzValue="present" nzLabel="Present"></nz-option>
+              <nz-option nzValue="absent" nzLabel="Absent"></nz-option>
+              <nz-option nzValue="late" nzLabel="Late"></nz-option>
+              <nz-option nzValue="leave" nzLabel="On Leave"></nz-option>
+            </nz-select>
+          </td>
+          <td>
+            <button nz-button nzType="primary" size="small" 
+                    (click)="saveEdit(record.date)" 
+                    [disabled]="!editCache[record.date].data.date.trim()">
+              Save
+            </button>
+            <button nz-button nzType="default" size="small" 
+                    (click)="cancelEdit(record.date)">
+              Cancel
+            </button>
+          </td>
+        </ng-template>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

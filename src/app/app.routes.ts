@@ -7,6 +7,9 @@ import { AdminHomeComponent } from './components/admin-home/admin-home';
 import { AdminTable } from './components/admin-table/admin-table';
 import { EmployeeTableComponent } from './components/employee-table/employee-table';
 import { Charts } from './components/charts/charts';
+import { Calendar } from './components/calendar/calendar';
+import { AttendanceTable } from './components/attendance.table/attendance.table';
+import { LeaveTable } from './components/leave.table/leave.table';
 export const routes: Routes = [
   { path: '', component: LandingPage, },
   { path: 'login', component: LoginComponent },
@@ -15,6 +18,9 @@ export const routes: Routes = [
       { path: 'admin-table', component: AdminTable },
       { path: 'employee-table', component: EmployeeTableComponent},
       { path: 'chart', component: Charts},
-      { path: 'admin-home', component: AdminHomeComponent}
+      { path: 'admin-home', component: AdminHomeComponent},
+      { path: 'calendar', component: Calendar},
+      { path: 'attendance', component: AttendanceTable},
+      { path: 'leave', component: LeaveTable}
   ]},
 ];

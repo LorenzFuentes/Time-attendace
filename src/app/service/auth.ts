@@ -10,7 +10,11 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 export class AuthService {
   private adminApi = 'http://localhost:3000/admin';
   private userApi = 'http://localhost:3000/users';
-   private msg = inject(NzMessageService);
+  private attendanceApi = 'http://localhost:3000/attendance';
+  private leaveApi = 'http://localhost:3000/leave';
+
+
+  private msg = inject(NzMessageService);
   private currentUserSubject = new BehaviorSubject<any>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   private userType: 'admin' | 'user' | null = null;
@@ -68,7 +72,7 @@ export class AuthService {
           observer.error(err);        }
       });
   });
-}
+  }
 
   getCurrentUser(): any {
     return this.currentUserSubject.value;
@@ -78,6 +82,7 @@ export class AuthService {
     const user = this.getCurrentUser();
     return user?.role || '';
   }
+
   logout(): void {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('currentUserType');
@@ -203,4 +208,51 @@ export class AuthService {
   deleteEmployee(id: any): Observable<void> {
     return this.http.delete<void>(`${this.userApi}/${id}`);
   }
+
+  // Attendance
+  getAttendance(): Observable<any[]> {
+    return this.http.get<any[]>(this.attendanceApi);
+  }
+
+ 
+  addAttendance(data: any): Observable<any> {
+    return this.http.post(this.attendanceApi, data);
+  }
+
+ 
+  updateAttendance(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.attendanceApi}/${id}`, data);
+  }
+
+ 
+  deleteAttendance(id: number): Observable<any> {
+    return this.http.delete(`${this.attendanceApi}/${id}`);
+  }
+
+  // Leave
+  
+   getLeaveRecords(): Observable<any[]> {
+    return this.http.get<any[]>(this.leaveApi);
+  }
+
+  // Add new leave record
+  addLeaveRecord(data: any): Observable<any> {
+    return this.http.post(this.leaveApi, data);
+  }
+
+  // Update leave record
+  updateLeaveRecord(id: string, data: any): Observable<any> {
+    return this.http.put(`${this.leaveApi}/${id}`, data);
+  }
+
+  // Delete leave record
+  deleteLeaveRecord(id: string): Observable<any> {
+    return this.http.delete(`${this.leaveApi}/${id}`);
+  }
+
+
+
+
+
+  
 }

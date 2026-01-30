@@ -12,7 +12,8 @@ import { AuthService } from '../../service/auth';
 import { Router } from '@angular/router';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { debounceTime, Subject, Subscription } from 'rxjs';
-
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 export interface Employee {
   id: string;
   firstName: string;
@@ -511,6 +512,105 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
         console.error('Failed to load employee count:', error);
       }
     });
+  }
+  exportTableToPDF(): void {
+    if (!this.filteredEmployees || this.filteredEmployees.length === 0) {
+      this.message.warning('No employee data to export');
+      return;
+    }
+
+    this.isLoading = true;
+    
+    try {
+      const doc = new jsPDF('landscape');
+      const currentDate = new Date().toLocaleDateString();
+      
+      // Title
+      doc.setFontSize(18);
+      doc.setTextColor(81, 98, 250); // Match your button color #5162fa
+      doc.text('Employee Report', 14, 20);
+      
+      // Subtitle
+      doc.setFontSize(11);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Generated on: ${currentDate}`, 14, 28);
+      doc.text(`Total Employees: ${this.filteredEmployees.length}`, 14, 35);
+      
+      // Prepare table data
+      const headers = [
+        ['ID', 'First Name', 'Middle Name', 'Last Name', 'Contact', 
+         'Department', 'Position', 'Username', 'Email']
+      ];
+      
+      const data = this.filteredEmployees.map(employee => [
+        employee.id || 'N/A',
+        employee.firstName || 'N/A',
+        employee.middleName || 'N/A',
+        employee.lastName || 'N/A',
+        employee.contact || 'N/A',
+        employee.department || 'N/A',
+        employee.position || 'N/A',
+        employee.username || 'N/A',
+        employee.email || 'N/A'
+      ]);
+      
+      // Add table to PDF
+      autoTable(doc, {
+        head: headers,
+        body: data,
+        startY: 45,
+        theme: 'grid',
+        styles: {
+          fontSize: 8,
+          cellPadding: 3,
+          overflow: 'linebreak',
+          lineWidth: 0.1
+        },
+        headStyles: {
+          fillColor: [81, 98, 250], // Match your button color
+          textColor: [255, 255, 255],
+          fontStyle: 'bold'
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245]
+        },
+        columnStyles: {
+          0: { cellWidth: 20 }, // ID
+          1: { cellWidth: 25 }, // First Name
+          2: { cellWidth: 25 }, // Middle Name
+          3: { cellWidth: 25 }, // Last Name
+          4: { cellWidth: 30 }, // Contact
+          5: { cellWidth: 30 }, // Department
+          6: { cellWidth: 30 }, // Position
+          7: { cellWidth: 25 }, // Username
+          8: { cellWidth: 45 }  // Email
+        },
+        margin: { top: 45 }
+      });
+      
+      // Add page numbers
+      const pageCount = (doc as any).internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(10);
+        doc.setTextColor(150, 150, 150);
+        doc.text(
+          `Page ${i} of ${pageCount}`,
+          doc.internal.pageSize.width - 40,
+          doc.internal.pageSize.height - 10
+        );
+      }
+      
+      // Save the PDF
+      doc.save(`employee-report-${currentDate.replace(/\//g, '-')}.pdf`);
+      this.message.success('PDF exported successfully!');
+      
+    } catch (error) {
+      console.error('PDF export error:', error);
+      this.message.error('Failed to export PDF');
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   ngOnDestroy() {

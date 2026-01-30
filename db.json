@@ -530,5 +530,239 @@
       "fullname": "Aki Magsakay",
       "access": "admin"
     }
+  ],
+  "leave":[
+    {
+      "id": "1",
+      "firstName": "lorenz",
+      "lastName": "fuentes",
+      "position": "Frontend Developer",
+      "department": "Frontend Developer",
+      "apply": "leave",
+      "date-to": "January 20, 2026",
+      "date-from": "January 31, 2026",
+      "reason": "test",
+      "approval": "Approved",
+      "date-of-approval": "January 15, 2026"
+    },
+    {
+      "id": "2",
+      "firstName": "maria",
+      "lastName": "santos",
+      "position": "Backend Developer",
+      "department": "Software Engineering",
+      "apply": "sick",
+      "date-to": "February 5, 2026",
+      "date-from": "February 8, 2026",
+      "reason": "Flu and fever",
+      "approval": "Pending",
+      "date-of-approval": ""
+    },
+    {
+      "id": "3",
+      "firstName": "juan",
+      "lastName": "dela cruz",
+      "position": "Project Manager",
+      "department": "Project Management",
+      "apply": "vacation",
+      "date-to": "March 10, 2026",
+      "date-from": "March 20, 2026",
+      "reason": "Annual vacation leave",
+      "approval": "Approved",
+      "date-of-approval": "February 28, 2026"
+    },
+    {
+      "id": "4",
+      "firstName": "sarah",
+      "lastName": "lim",
+      "position": "UI/UX Designer",
+      "department": "Design Team",
+      "apply": "emergency",
+      "date-to": "January 25, 2026",
+      "date-from": "January 25, 2026",
+      "reason": "Family emergency",
+      "approval": "Approved",
+      "date-of-approval": "January 24, 2026"
+    },
+    {
+      "id": "5",
+      "firstName": "michael",
+      "lastName": "tan",
+      "position": "DevOps Engineer",
+      "department": "Infrastructure",
+      "apply": "leave",
+      "date-to": "April 15, 2026",
+      "date-from": "April 18, 2026",
+      "reason": "Personal matters",
+      "approval": "Rejected",
+      "date-of-approval": "April 10, 2026"
+    },
+    {
+      "id": "6",
+      "firstName": "anna",
+      "lastName": "gonzales",
+      "position": "QA Engineer",
+      "department": "Quality Assurance",
+      "apply": "sick",
+      "date-to": "February 15, 2026",
+      "date-from": "February 17, 2026",
+      "reason": "Medical checkup",
+      "approval": "Pending",
+      "date-of-approval": ""
+    },
+    {
+      "id": "7",
+      "firstName": "robert",
+      "lastName": "chen",
+      "position": "Data Analyst",
+      "department": "Analytics",
+      "apply": "vacation",
+      "date-to": "May 1, 2026",
+      "date-from": "May 10, 2026",
+      "reason": "Travel abroad",
+      "approval": "Approved",
+      "date-of-approval": "April 20, 2026"
+    },
+    {
+      "id": "8",
+      "firstName": "lisa",
+      "lastName": "wong",
+      "position": "Marketing Specialist",
+      "department": "Marketing",
+      "apply": "leave",
+      "date-to": "March 5, 2026",
+      "date-from": "March 7, 2026",
+      "reason": "Wedding preparation",
+      "approval": "Approved",
+      "date-of-approval": "February 25, 2026"
+    },
+    {
+      "id": "9",
+      "firstName": "david",
+      "lastName": "kim",
+      "position": "Mobile Developer",
+      "department": "Mobile Development",
+      "apply": "emergency",
+      "date-to": "January 30, 2026",
+      "date-from": "January 30, 2026",
+      "reason": "Car accident",
+      "approval": "Pending",
+      "date-of-approval": ""
+    },
+    {
+      "id": "10",
+      "firstName": "emily",
+      "lastName": "rodriguez",
+      "position": "HR Manager",
+      "department": "Human Resources",
+      "apply": "vacation",
+      "date-to": "June 1, 2026",
+      "date-from": "June 15, 2026",
+      "reason": "Summer vacation",
+      "approval": "Rejected",
+      "date-of-approval": "May 25, 2026"
+    }
+  ],
+  "attendance": [
+    {
+      "date": "January 29, 2026",
+      "firstName": "lorenz",
+      "lastName": "fuentes",
+      "position": "Frontend Developer",
+      "department": "Frontend Developer",
+      "time-in": "9:00 PM",
+      "time-out": "6:00 am",
+      "status": "present"
+    },
+    {
+      "date": "January 30, 2026",
+      "firstName": "maria",
+      "lastName": "santos",
+      "position": "Backend Developer",
+      "department": "Software Engineering",
+      "time-in": "8:45 AM",
+      "time-out": "5:30 PM",
+      "status": "present"
+    },
+    {
+      "date": "January 30, 2026",
+      "firstName": "juan",
+      "lastName": "dela cruz",
+      "position": "Project Manager",
+      "department": "Project Management",
+      "time-in": "9:15 AM",
+      "time-out": "6:00 PM",
+      "status": "late"
+    },
+    {
+      "date": "January 30, 2026",
+      "firstName": "sarah",
+      "lastName": "lim",
+      "position": "UI/UX Designer",
+      "department": "Design Team",
+      "time-in": "",
+      "time-out": "",
+      "status": "absent"
+    },
+    {
+      "date": "January 30, 2026",
+      "firstName": "michael",
+      "lastName": "tan",
+      "position": "DevOps Engineer",
+      "department": "Infrastructure",
+      "time-in": "8:30 AM",
+      "time-out": "5:45 PM",
+      "status": "present"
+    },
+    {
+      "date": "January 30, 2026",
+      "firstName": "anna",
+      "lastName": "gonzales",
+      "position": "QA Engineer",
+      "department": "Quality Assurance",
+      "time-in": "9:05 AM",
+      "time-out": "5:50 PM",
+      "status": "late"
+    },
+    {
+      "date": "January 31, 2026",
+      "firstName": "robert",
+      "lastName": "chen",
+      "position": "Data Analyst",
+      "department": "Analytics",
+      "time-in": "8:55 AM",
+      "time-out": "6:10 PM",
+      "status": "present"
+    },
+    {
+      "date": "January 31, 2026",
+      "firstName": "lisa",
+      "lastName": "wong",
+      "position": "Marketing Specialist",
+      "department": "Marketing",
+      "time-in": "",
+      "time-out": "",
+      "status": "leave"
+    },
+    {
+      "date": "January 31, 2026",
+      "firstName": "david",
+      "lastName": "kim",
+      "position": "Mobile Developer",
+      "department": "Mobile Development",
+      "time-in": "9:25 AM",
+      "time-out": "6:05 PM",
+      "status": "late"
+    },
+    {
+      "date": "January 31, 2026",
+      "firstName": "emily",
+      "lastName": "rodriguez",
+      "position": "HR Manager",
+      "department": "Human Resources",
+      "time-in": "8:40 AM",
+      "time-out": "5:35 PM",
+      "status": "present"
+    }
   ]
 }

@@ -155,6 +155,15 @@ export class MainLayout implements OnInit, OnDestroy {
   getChart(): void {
     this.router.navigate(['/main/chart']);
   }
+  getCalendar(): void {
+    this.router.navigate(['/main/calendar']);
+  }
+  getAttendance(): void {
+    this.router.navigate(['/main/attendance']);
+  }
+  getLeave(): void {
+    this.router.navigate(['/main/leave']);
+  }
 
   logout(): void {
     this.authService.logout();

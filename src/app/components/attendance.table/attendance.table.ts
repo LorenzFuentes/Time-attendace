@@ -1,0 +1,162 @@
+// your.component.ts
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../service/auth';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+
+// NG-ZORRO Modules
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzCalendarModule } from 'ng-zorro-antd/calendar';
+@Component({
+  selector: 'app-attendance.table',
+   imports: [
+    CommonModule,
+    FormsModule,
+    HttpClientModule,
+    NzTableModule,
+    NzTagModule,
+    NzInputModule,
+    NzButtonModule,
+    NzSelectModule,
+    NzPopconfirmModule,
+    NzIconModule,
+    NzAlertModule,
+    NzCalendarModule
+  ],
+  templateUrl: './attendance.table.html',
+  styleUrls: ['./attendance.table.scss']
+})
+export class AttendanceTable implements OnInit {
+  attendanceData: any[] = [];
+  filteredData: any[] = [];
+  isLoading = false;
+  editCache: { [key: string]: { edit: boolean; data: any } } = {};
+
+  constructor(private attendanceService: AuthService) {}
+
+  ngOnInit(): void {
+    this.loadAttendanceData();
+  }
+
+  loadAttendanceData(): void {
+    this.isLoading = true;
+    this.attendanceService.getAttendance().subscribe({
+      next: (data) => {
+        this.attendanceData = data;
+        this.filteredData = [...data];
+        this.updateEditCache();
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading attendance data:', error);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  updateEditCache(): void {
+    this.attendanceData.forEach(item => {
+      this.editCache[item.id || item.date] = {
+        edit: false,
+        data: { ...item }
+      };
+    });
+  }
+
+   getStatusLabel(status: string): string {
+  const statusMap: { [key: string]: string } = {
+    'present': 'Present',
+    'absent': 'Absent',
+    'late': 'Late',
+    'leave': 'On Leave'
+  };
+  return statusMap[status] || status;
+    }
+
+    getStatusColor(status: string): string {
+      const colorMap: { [key: string]: string } = {
+        'present': 'green',
+        'absent': 'red',
+        'late': 'orange',
+        'leave': 'blue'
+      };
+      return colorMap[status] || 'default';
+    }
+
+    // Add this for tag styling
+    getStatusStyle(status: string): any {
+      const styles: any = {
+        'border-radius': '16px',
+        'padding': '4px 12px',
+        'font-size': '12px',
+        'font-weight': '500',
+        'backdrop-filter': 'blur(4px)'
+      };
+      
+      // Add color-specific styles for attendance status
+      if (status === 'present') {
+        styles['color'] = '#81ff5a';
+        styles['background'] = 'linear-gradient(135deg, rgba(99, 252, 112, 0.15) 0%, rgba(99, 252, 112, 0.25) 100%)';
+        styles['border'] = '1px solid rgba(99, 252, 112, 0.15)';
+      } else if (status === 'absent') {
+        styles['color'] = '#ff4d4d';
+        styles['background'] = 'linear-gradient(135deg, rgba(255, 77, 77, 0.15) 0%, rgba(255, 77, 77, 0.25) 100%)';
+        styles['border'] = '1px solid rgba(255, 77, 77, 0.15)';
+      } else if (status === 'late') {
+        styles['color'] = '#ffa500';
+        styles['background'] = 'linear-gradient(135deg, rgba(255, 165, 0, 0.15) 0%, rgba(255, 165, 0, 0.25) 100%)';
+        styles['border'] = '1px solid rgba(255, 165, 0, 0.15)';
+      } else if (status === 'leave') {
+        styles['color'] = '#5162fa';
+        styles['background'] = 'linear-gradient(135deg, rgba(81, 98, 250, 0.15) 0%, rgba(81, 98, 250, 0.25) 100%)';
+        styles['border'] = '1px solid rgba(81, 98, 250, 0.15)';
+      } else {
+        styles['color'] = '#ffffff';
+        styles['background'] = 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.25) 100%)';
+        styles['border'] = '1px solid rgba(255, 255, 255, 0.15)';
+      }
+      
+      return styles;
+    }
+
+  startEdit(id: string): void {
+    this.editCache[id].edit = true;
+  }
+
+  cancelEdit(id: string): void {
+    const index = this.attendanceData.findIndex(item => (item.id || item.date) === id);
+    this.editCache[id] = {
+      data: { ...this.attendanceData[index] },
+      edit: false
+    };
+  }
+
+  saveEdit(id: string): void {
+    const index = this.attendanceData.findIndex(item => (item.id || item.date) === id);
+    Object.assign(this.attendanceData[index], this.editCache[id].data);
+    this.editCache[id].edit = false;
+    
+    // Update to server
+    this.attendanceService.updateAttendance(index + 1, this.attendanceData[index]).subscribe();
+  }
+
+  deleteRecord(id: string): void {
+    const index = this.attendanceData.findIndex(item => (item.id || item.date) === id);
+    if (index !== -1) {
+      this.attendanceService.deleteAttendance(index + 1).subscribe({
+        next: () => {
+          this.attendanceData.splice(index, 1);
+          this.filteredData = [...this.attendanceData];
+        }
+      });
+    }
+  }
+}

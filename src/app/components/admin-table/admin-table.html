@@ -1,6 +1,7 @@
 <link href="https://api.fontshare.com/v2/css?f[]=synonym@400&f[]=chillax@600&display=swap" rel="stylesheet">
 
 <div class="inner-content">
+    <!-- Dashboard Stats -->
     <h1 class="dashboard-txt">Admin Dashboard</h1>
     <div class="dashboard-container">
         <div class="stat-card admin-card">
@@ -35,12 +36,11 @@
         </div>
     </div>
 </div>
-
 <div class="table-container">
     <div class="header-container">
         <div class="header-left">
             <h2>Admin Table</h2>
-            <!-- Real-time Search Input -->
+            <!--Search Input -->
             <nz-input-group nzSearch [nzAddOnAfter]="searchIcon">
                 <input nz-input [(ngModel)]="searchValue" (input)="onSearch()"placeholder="Search"/>
                 <ng-template #searchIcon>
@@ -50,17 +50,21 @@
                 </ng-template>
             </nz-input-group>
         </div>
-        <div class="header-right">
+         <div class="header-right">
             <button class="refresh-btn" (click)="refreshData()">
                 <nz-icon nzType="reload" nzTheme="outline" class="reload" />
             </button>
-            <button class="addUser-btn" (click)="addNewUser()">
+            <button class="addUser-btn" (click)="addNewUser()"> 
                 <nz-icon nzType="user-add" nzTheme="outline" class="add-icon" />
-                Add New Admin
+                Add Employee
+            </button>
+            <button class="pdf-btn" (click)="exportTableToPDF()">
+                <nz-icon nzType="file-pdf" nzTheme="outline" class="pdf-icon" />
+                Export PDF
             </button>
         </div>
     </div>
-    
+
     <!-- Display message when no results found -->
     <div *ngIf="filteredData.length === 0 && !isLoading" class="no-results">
         <!-- <nz-icon nzType="search" nzTheme="outline"></nz-icon> -->
@@ -68,7 +72,7 @@
         <p *ngIf="searchValue" style="color: red;">No results for "{{ searchValue }}"</p>
         <p *ngIf="!searchValue">No admins in the system</p>
     </div>
-    
+    <!-- Table -->
     <nz-table #userTable nzBordered [nzData]="filteredData" nzTableLayout="fixed" [nzLoading]="isLoading" [nzPageSize]="10" [nzShowPagination]="true">
         <thead>
             <tr>
@@ -82,6 +86,7 @@
             </tr>
         </thead>
         <tbody>
+            <!-- Table data -->
             <tr *ngFor="let data of userTable.data">
                 <ng-container *ngIf="!editCache[data.id]?.edit; else editTemplate">
                     <td>{{ data.id }}</td>
@@ -105,6 +110,7 @@
                         </button>
                     </td>
                 </ng-container>
+                <!-- Add new admin design -->
                 <ng-template #editTemplate>
                     <td>
                         {{ data.id.startsWith('temp_') ? 'New' : data.id }}

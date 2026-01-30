@@ -1,6 +1,7 @@
 <link href="https://api.fontshare.com/v2/css?f[]=synonym@400&f[]=chillax@600&display=swap" rel="stylesheet">
 
 <div class="inner-content">
+    <!-- Dashboard Stats -->
     <h1 class="dashboard-txt">Admin Dashboard</h1>
     <div class="dashboard-container">
         <div class="stat-card admin-card">
@@ -40,6 +41,7 @@
     <div class="header-container">
         <div class="header-left">
             <h2>Employee Table</h2>
+             <!--Search Input -->
             <nz-input-group nzSearch [nzAddOnAfter]="searchIcon">
                 <input nz-input [(ngModel)]="searchValue" (input)="onSearch()"placeholder="Search"/>
                 <ng-template #searchIcon>
@@ -54,9 +56,13 @@
             <button class="refresh-btn" (click)="refreshData()">
                 <nz-icon nzType="reload" nzTheme="outline" class="reload" />
             </button>
-            <button class="add-btn" (click)="addNewEmployee()">
+            <button class="addUser-btn" (click)="addNewEmployee()"> 
                 <nz-icon nzType="user-add" nzTheme="outline" class="add-icon" />
-                Add New Employee
+                Add Employee
+            </button>
+            <button class="pdf-btn" (click)="exportTableToPDF()">
+                <nz-icon nzType="file-pdf" nzTheme="outline" class="pdf-icon" />
+                Export PDF
             </button>
         </div>
     </div>
@@ -68,7 +74,7 @@
         <p *ngIf="searchValue" style="color: red;">No results for "{{ searchValue }}"</p>
         <p *ngIf="!searchValue">No employees in the system</p>
     </div>
-    
+    <!-- Table -->
     <nz-table #employeeTable nzBordered [nzData]="filteredEmployees" nzTableLayout="fixed" [nzLoading]="isLoading">
         <thead>
             <tr>
@@ -85,6 +91,7 @@
             </tr>
         </thead>
         <tbody>
+            <!-- Table data -->
             <tr *ngFor="let employee of employeeTable.data">
                 <ng-container *ngIf="!editCache[employee.id]?.edit; else editTemplate">
                     <td>{{ employee.id }}</td>
@@ -111,6 +118,7 @@
                         </div>
                     </td>
                 </ng-container>
+                 <!-- Add new admin design -->
                 <ng-template #editTemplate>
                     <td>{{ employee.id.startsWith('temp_') ? 'New' : employee.id }}</td>
                     <td>

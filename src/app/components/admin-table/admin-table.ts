@@ -12,6 +12,8 @@ import { AuthService } from '../../service/auth';
 import { Router } from '@angular/router';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { debounceTime, Subject, Subscription } from 'rxjs';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 export interface UserData {
   id: string;
@@ -434,5 +436,108 @@ export class AdminTable implements OnInit, OnDestroy {
         console.error('Failed to load employee count:', error);
       }
     });
+  }
+
+exportTableToPDF(): void {
+  if (!this.filteredData || this.filteredData.length === 0) {
+    this.message.warning('No admin data to export');
+    return;
+  }
+
+  this.isLoading = true;
+  
+  try {
+    const doc = new jsPDF('landscape');
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString();
+    
+    // Title
+    doc.setFontSize(18);
+    doc.setTextColor(81, 98, 250); // Match your button color #5162fa
+    doc.text('Admin Users Report', 14, 20);
+    
+    // Subtitle
+    doc.setFontSize(11);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Generated on: ${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`, 14, 28);
+    doc.text(`Total Admins: ${this.filteredData.length}`, 14, 35);
+    
+    // Add search filter info if applicable
+    if (this.searchValue.trim()) {
+      doc.text(`Search Filter: "${this.searchValue}"`, 14, 42);
+    }
+    
+    // Prepare table data
+    const headers = [
+      ['ID', 'Username', 'Full Name', 'Email', 'Access Level', 'Status']
+    ];
+    
+    const data = this.filteredData.map(admin => [
+      admin.id || 'N/A',
+      admin.username || 'N/A',
+      admin.fullname || 'N/A',
+      admin.email || 'N/A',
+      this.getAccessLabel(admin.access) || 'N/A',
+      admin.email && admin.username ? 'Active' : 'Inactive'
+    ]);
+    
+    // Add table to PDF
+    autoTable(doc, {
+      head: headers,
+      body: data,
+      startY: this.searchValue.trim() ? 50 : 45,
+      theme: 'grid',
+      styles: {
+        fontSize: 9,
+        cellPadding: 4,
+        overflow: 'linebreak',
+        lineWidth: 0.1,
+        halign: 'left'
+      },
+      headStyles: {
+        fillColor: [81, 98, 250], // Match your button color
+        textColor: [255, 255, 255],
+        fontStyle: 'bold',
+        lineWidth: 0.1
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245]
+      },
+      columnStyles: {
+        0: { cellWidth: 25 },  // ID
+        1: { cellWidth: 35 },  // Username
+        2: { cellWidth: 45 },  // Full Name
+        3: { cellWidth: 60 },  // Email
+        4: { cellWidth: 30 },  // Access Level
+        5: { cellWidth: 25 }   // Status
+      },
+      margin: { top: this.searchValue.trim() ? 50 : 45 }
+    });
+    
+    // Add page numbers
+    const pageCount = (doc as any).internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(10);
+      doc.setTextColor(150, 150, 150);
+      doc.text(
+        `Page ${i} of ${pageCount}`,
+        doc.internal.pageSize.width - 40,
+        doc.internal.pageSize.height - 10
+      );
+    }
+    
+    // Save the PDF
+    const fileName = `admin-report-${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}.pdf`;
+    doc.save(fileName);
+    
+    this.message.success('PDF exported with ${this.filteredData.length} admin records!');
+    
+  } catch (error) {
+    console.error('PDF export error:', error);
+    this.message.error('Failed to export PDF');
+  } finally {
+    this.isLoading = false;
+  }
   }
 }

@@ -1,0 +1,187 @@
+<div class="table-container">
+  <div class="header-container">
+    <h2>Leave Management</h2>
+    <div class="header-right">
+      <button nz-button nzType="primary" (click)="startAddNew()" [disabled]="isAddingNew">
+        <i nz-icon nzType="plus"></i> Add New Leave
+      </button>
+    </div>
+  </div>
+
+  <nz-table #leaveTable nzBordered [nzData]="filteredData" nzTableLayout="fixed" 
+            [nzLoading]="isLoading" [nzPageSize]="10" [nzShowPagination]="true">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Employee Name</th>
+        <th>Position</th>
+        <th>Department</th>
+        <th>Leave Type</th>
+        <th>Date From</th>
+        <th>Date To</th>
+        <th>Reason</th>
+        <th>Status</th>
+        <th>Date Approved</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Add new leave row (if in add mode) -->
+      <tr *ngIf="isAddingNew">
+        <ng-container *ngFor="let record of filteredData">
+          <ng-container *ngIf="record.id.startsWith('temp_')">
+            <td>New</td>
+            <td>
+              <input nz-input [(ngModel)]="editCache[record.id].data.firstName" 
+                     placeholder="First Name" style="width: 45%; margin-right: 5%;"/>
+              <input nz-input [(ngModel)]="editCache[record.id].data.lastName" 
+                     placeholder="Last Name" style="width: 45%;"/>
+            </td>
+            <td>
+              <input nz-input [(ngModel)]="editCache[record.id].data.position" 
+                     placeholder="Position"/>
+            </td>
+            <td>
+              <input nz-input [(ngModel)]="editCache[record.id].data.department" 
+                     placeholder="Department"/>
+            </td>
+            <td>
+              <nz-select [(ngModel)]="editCache[record.id].data.apply" style="width: 100%;">
+                <nz-option nzValue="leave" nzLabel="Leave"></nz-option>
+                <nz-option nzValue="sick" nzLabel="Sick Leave"></nz-option>
+                <nz-option nzValue="vacation" nzLabel="Vacation"></nz-option>
+                <nz-option nzValue="emergency" nzLabel="Emergency Leave"></nz-option>
+              </nz-select>
+            </td>
+            <td>
+              <input nz-input [(ngModel)]="editCache[record.id].data['date-from']" 
+                     placeholder="YYYY-MM-DD"/>
+            </td>
+            <td>
+              <input nz-input [(ngModel)]="editCache[record.id].data['date-to']" 
+                     placeholder="YYYY-MM-DD"/>
+            </td>
+            <td>
+              <input nz-input [(ngModel)]="editCache[record.id].data.reason" 
+                     placeholder="Reason"/>
+            </td>
+            <td>
+              <nz-select [(ngModel)]="editCache[record.id].data.approval" style="width: 100%;">
+                <nz-option nzValue="Pending" nzLabel="Pending"></nz-option>
+                <nz-option nzValue="Approved" nzLabel="Approved"></nz-option>
+                <nz-option nzValue="Rejected" nzLabel="Rejected"></nz-option>
+              </nz-select>
+            </td>
+            <td>
+              <input nz-input [(ngModel)]="editCache[record.id].data['date-of-approval']" 
+                     placeholder="YYYY-MM-DD"/>
+            </td>
+            <td>
+              <button nz-button nzType="primary" size="small" 
+                      (click)="saveNewRecord(record.id)" 
+                      [disabled]="!isFormValid(record.id)">
+                Save
+              </button>
+              <button nz-button nzType="default" size="small" 
+                      (click)="cancelAddNew(record.id)">
+                Cancel
+              </button>
+            </td>
+          </ng-container>
+        </ng-container>
+      </tr>
+
+      <!-- Existing leave records -->
+      <tr *ngFor="let record of leaveTable.data">
+        <ng-container *ngIf="!record.id.startsWith('temp_')">
+          <ng-container *ngIf="!editCache[record.id]?.edit; else editTemplate">
+            <td>{{ record.id }}</td>
+            <td>{{ record.firstName }} {{ record.lastName }}</td>
+            <td>{{ record.position }}</td>
+            <td>{{ record.department }}</td>
+            <td>{{ getApplyTypeLabel(record.apply) }}</td>
+            <td>{{ record['date-from'] }}</td>
+            <td>{{ record['date-to'] }}</td>
+            <td>{{ record.reason }}</td>
+            <td>
+              <nz-tag [nzColor]="getApprovalColor(record.approval)">
+                {{ record.approval }}
+              </nz-tag>
+            </td>
+            <td>{{ record['date-of-approval'] || 'N/A' }}</td>
+            <td>
+              <button class="edit-btn" (click)="startEdit(record.id)">
+                Edit
+              </button>
+              <button class="delete-btn" nz-popconfirm 
+                      nzPopconfirmTitle="Delete this leave record?" 
+                      (nzOnConfirm)="deleteRecord(record.id)">
+                Delete
+              </button>
+            </td>
+          </ng-container>
+          
+          <ng-template #editTemplate>
+            <td>{{ record.id }}</td>
+            <td>
+              <input nz-input [(ngModel)]="editCache[record.id].data.firstName" 
+                     placeholder="First Name" style="width: 45%; margin-right: 5%;"/>
+              <input nz-input [(ngModel)]="editCache[record.id].data.lastName" 
+                     placeholder="Last Name" style="width: 45%;"/>
+            </td>
+            <td>
+              <input nz-input [(ngModel)]="editCache[record.id].data.position" 
+                     placeholder="Position"/>
+            </td>
+            <td>
+              <input nz-input [(ngModel)]="editCache[record.id].data.department" 
+                     placeholder="Department"/>
+            </td>
+            <td>
+              <nz-select [(ngModel)]="editCache[record.id].data.apply" style="width: 100%;">
+                <nz-option nzValue="leave" nzLabel="Leave"></nz-option>
+                <nz-option nzValue="sick" nzLabel="Sick Leave"></nz-option>
+                <nz-option nzValue="vacation" nzLabel="Vacation"></nz-option>
+                <nz-option nzValue="emergency" nzLabel="Emergency Leave"></nz-option>
+              </nz-select>
+            </td>
+            <td>
+              <input nz-input [(ngModel)]="editCache[record.id].data['date-from']" 
+                     placeholder="YYYY-MM-DD"/>
+            </td>
+            <td>
+              <input nz-input [(ngModel)]="editCache[record.id].data['date-to']" 
+                     placeholder="YYYY-MM-DD"/>
+            </td>
+            <td>
+              <input nz-input [(ngModel)]="editCache[record.id].data.reason" 
+                     placeholder="Reason"/>
+            </td>
+            <td>
+              <nz-select [(ngModel)]="editCache[record.id].data.approval" style="width: 100%;">
+                <nz-option nzValue="Pending" nzLabel="Pending"></nz-option>
+                <nz-option nzValue="Approved" nzLabel="Approved"></nz-option>
+                <nz-option nzValue="Rejected" nzLabel="Rejected"></nz-option>
+              </nz-select>
+            </td>
+            <td>
+              <input nz-input [(ngModel)]="editCache[record.id].data['date-of-approval']" 
+                     placeholder="YYYY-MM-DD"/>
+            </td>
+            <td>
+              <button nz-button nzType="primary" size="small" 
+                      (click)="saveEdit(record.id)" 
+                      [disabled]="!isFormValid(record.id)">
+                Save
+              </button>
+              <button nz-button nzType="default" size="small" 
+                      (click)="cancelEdit(record.id)">
+                Cancel
+              </button>
+            </td>
+          </ng-template>
+        </ng-container>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

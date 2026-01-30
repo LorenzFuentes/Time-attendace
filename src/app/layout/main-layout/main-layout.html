@@ -19,6 +19,13 @@
             <li nz-menu-item (click)="getChart()"><nz-icon nzType="bar-chart" nzTheme="outline" />&nbsp;&nbsp;Chart</li>
         </ul>
         </li>
+        <li nz-submenu nzTitle="Schedule" nzIcon="schedule">
+        <ul>
+            <li nz-menu-item (click)="getCalendar()"><nz-icon nzType="calendar" nzTheme="outline" />&nbsp;&nbsp;Calendar</li>
+            <li nz-menu-item (click)="getAttendance()"><nz-icon nzType="check-circle" nzTheme="outline" />&nbsp;&nbsp;Attendance</li>
+            <li nz-menu-item (click)="getLeave()"><nz-icon nzType="clock-circle" nzTheme="outline" />&nbsp;&nbsp;Leave</li>
+        </ul>
+        </li>
         <li nz-menu-item>
         <nz-icon nzType="file" />
         <span>File</span>

@@ -35,15 +35,15 @@
 </div>
 
 <div id="chart-container" #chartContainer>
-  <h2 style="font-family: 'Chillax', sans-serif;">Charts</h2>
-  <div *ngIf="isLoading" style="text-align: center; padding: 40px; font-size: 16px; color: #666;">Loading charts...</div>
+  <h2 style="font-family: 'Chillax', sans-serif; font-size: 26px; font-weight: bolder; color: #5162fa; margin: 0 0 24px 0; width: fit-content;">Charts</h2>
+  <div *ngIf="isLoading" style="text-align: center; padding: 32px; font-size: 14px; color: #666;">Loading charts...</div>
   <div *ngIf="!isLoading" class="charts-grid">
     <div class="chart-card">
       <div class="chart-header">
-        <h2 class="chart-title">Position Distribution</h2>
+        <h2 class="chart-title" style="font-size: 18px; margin: 0;">Position Distribution</h2>
         <div class="chart-actions">
           <button (click)="downloadChart('pie')" class="chart-download-btn" title="Download this chart">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
               <defs>
                 <linearGradient id="pieGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                   <stop offset="0%" stop-color="#8B5CF6" />
@@ -52,7 +52,7 @@
               </defs>
               <path d="M12 4v10m0 0l3.5-3.5M12 14l-3.5-3.5" 
                     stroke="url(#pieGradient)" 
-                    stroke-width="1.8" 
+                    stroke-width="1.6" 
                     stroke-linecap="round"/>
               
               <rect x="5" y="17" width="14" height="4" 
@@ -73,10 +73,10 @@
     </div>
     <div class="chart-card">
       <div class="chart-header">
-        <h2 class="chart-title">Department Distribution</h2>
+        <h2 class="chart-title" style="font-size: 18px; margin: 0;">Department Distribution</h2>
         <div class="chart-actions">
           <button (click)="downloadChart('column')" class="chart-download-btn" title="Download this chart">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
               <defs>
                 <linearGradient id="columnGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                   <stop offset="0%" stop-color="#8B5CF6" />
@@ -86,7 +86,7 @@
               
               <path d="M12 4v10m0 0l3.5-3.5M12 14l-3.5-3.5" 
                     stroke="url(#columnGradient)" 
-                    stroke-width="1.8" 
+                    stroke-width="1.6" 
                     stroke-linecap="round"/>
               
               <rect x="5" y="17" width="14" height="4" 
