@@ -149,7 +149,7 @@ export class Charts implements OnInit {
           offsetX: -2
         },
         labels: {
-          colors: '#FFFFFF'
+          colors: '#2F2F22'
         },
       },
       dataLabels: {
@@ -188,7 +188,7 @@ export class Charts implements OnInit {
         style: {
           fontSize: '13px',
           fontWeight: '600',
-          colors: ['#FCF8F8']
+          colors: ['#2F2F22']
         },
         offsetY: -5,
         formatter: function(val: number) {
@@ -203,18 +203,18 @@ export class Charts implements OnInit {
         labels: {
           style: {
             fontSize: '11px',
-            colors: '#FCF8F8'
+            colors: '#2F2F22'
           },
           rotate: -90
         },
         axisBorder: {
           show: true,
-          color: '#FCF8F8',
+          color: '#2F2F22',
           height: 1
         },
         axisTicks: {
           show: true,
-          color: '#FCF8F8'
+          color: '#2F2F22'
         }
       },
       yaxis: {

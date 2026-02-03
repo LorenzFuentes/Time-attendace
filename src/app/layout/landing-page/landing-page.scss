@@ -7,7 +7,7 @@
 .page {
   font-family: 'Inter', 'Helvetica Neue', sans-serif;
   overflow: hidden;
-  background-color: #121212;
+  background-color: #FCFFFD;
 
   height: 100vh;
   display: flex;
@@ -29,7 +29,7 @@
     font-family: 'Chillax', sans-serif;
     font-size: 18rem;
     font-weight: 800;  
-    background: linear-gradient( #7c6cbb, #5162fa);
+    background: linear-gradient( #a588be, #5162fa);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     }
@@ -59,7 +59,7 @@
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
-    box-shadow: 0 4px 20px #5162fa;
+    box-shadow: 0 6px 25px #a588be;
     background-color: #5162fa; 
     color: #fff;
     // outline: 1px solid #fff;
@@ -67,8 +67,7 @@
 
 .btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(58, 143, 255, 0.4);
-    background-color: #10185f; 
+    background-color: #a588be; 
 }
 
 .gradient-background {
@@ -90,7 +89,7 @@
 .sphere-1 {
     width: 40vw;
     height: 40vw;
-    background: linear-gradient(40deg,#000000 , #5162fa);
+    background: linear-gradient(40deg,#5162fa , #a588be);
     top: -10%;
     left: -10%;
     animation: float-1 15s ease-in-out infinite alternate;
@@ -99,7 +98,7 @@
 .sphere-2 {
     width: 45vw;
     height: 45vw;
-    background: linear-gradient(240deg, #000000 , #5162fa);
+    background: linear-gradient(240deg, #5162fa , #a588be);
     bottom: -20%;
     right: -10%;
     animation: float-2 18s ease-in-out infinite alternate;

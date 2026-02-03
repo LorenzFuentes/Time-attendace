@@ -12,9 +12,10 @@ import { NzCalendarModule } from 'ng-zorro-antd/calendar';
 })
 export class Calendar {
   constructor(private router: Router){}
-  selectedValue = new Date('2026-01-25');
+  selectedValue = new Date();
+  today = new Date();
 
   selectChange(select: Date): void {
-    console.log(`Select value: ${select}`);
+    console.log(`Select value: ${this.today}`);
   }
 }
