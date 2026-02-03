@@ -90,8 +90,6 @@ export class AttendanceTable implements OnInit {
       };
       return colorMap[status] || 'default';
     }
-
-    // Add this for tag styling
     getStatusStyle(status: string): any {
       const styles: any = {
         'border-radius': '16px',
@@ -100,30 +98,6 @@ export class AttendanceTable implements OnInit {
         'font-weight': '500',
         'backdrop-filter': 'blur(4px)'
       };
-      
-      // Add color-specific styles for attendance status
-      if (status === 'present') {
-        styles['color'] = '#81ff5a';
-        styles['background'] = 'linear-gradient(135deg, rgba(99, 252, 112, 0.15) 0%, rgba(99, 252, 112, 0.25) 100%)';
-        styles['border'] = '1px solid rgba(99, 252, 112, 0.15)';
-      } else if (status === 'absent') {
-        styles['color'] = '#ff4d4d';
-        styles['background'] = 'linear-gradient(135deg, rgba(255, 77, 77, 0.15) 0%, rgba(255, 77, 77, 0.25) 100%)';
-        styles['border'] = '1px solid rgba(255, 77, 77, 0.15)';
-      } else if (status === 'late') {
-        styles['color'] = '#ffa500';
-        styles['background'] = 'linear-gradient(135deg, rgba(255, 165, 0, 0.15) 0%, rgba(255, 165, 0, 0.25) 100%)';
-        styles['border'] = '1px solid rgba(255, 165, 0, 0.15)';
-      } else if (status === 'leave') {
-        styles['color'] = '#5162fa';
-        styles['background'] = 'linear-gradient(135deg, rgba(81, 98, 250, 0.15) 0%, rgba(81, 98, 250, 0.25) 100%)';
-        styles['border'] = '1px solid rgba(81, 98, 250, 0.15)';
-      } else {
-        styles['color'] = '#ffffff';
-        styles['background'] = 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.25) 100%)';
-        styles['border'] = '1px solid rgba(255, 255, 255, 0.15)';
-      }
-      
       return styles;
     }
 

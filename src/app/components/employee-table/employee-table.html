@@ -64,6 +64,10 @@
                 <nz-icon nzType="file-pdf" nzTheme="outline" class="pdf-icon" />
                 Export PDF
             </button>
+            <button class="csv-btn" (click)="exportTableToExcel()">
+                <nz-icon nzType="file-pdf" nzTheme="outline" class="pdf-icon" />
+                Export CSV
+            </button>
         </div>
     </div>
     
@@ -75,7 +79,7 @@
         <p *ngIf="!searchValue">No employees in the system</p>
     </div>
     <!-- Table -->
-    <nz-table #employeeTable nzBordered [nzData]="filteredEmployees" nzTableLayout="fixed" [nzLoading]="isLoading">
+    <nz-table #employeeTable nzBordered [nzData]="filteredEmployees" nzTableLayout="fixed" [nzLoading]="isLoading" id="table-data">
         <thead>
             <tr>
                 <th>ID</th>

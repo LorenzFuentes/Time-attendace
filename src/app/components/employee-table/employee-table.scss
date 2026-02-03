@@ -158,7 +158,7 @@
     transform: rotate(90deg);
 }
 
-.addUser-btn, .pdf-btn {
+.addUser-btn, .pdf-btn, .csv-btn {
     border-radius: 6px;
     color: #fff;
     height: 36px;
@@ -192,6 +192,17 @@
 .pdf-btn:hover {
     background-color: #e04141;
 }
+.csv-btn {
+  background-color: #0F9D58;
+  width: auto;
+}
+
+.csv-btn:hover {
+  background-color: #0c7944;
+  width: auto;
+}
+
+
 
 .addUser-btn nz-icon, .pdf-btn nz-icon {
     display: flex;

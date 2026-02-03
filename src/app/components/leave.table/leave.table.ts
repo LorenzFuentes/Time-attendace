@@ -86,7 +86,7 @@ export class LeaveTable implements OnInit {
     });
   }
 
-  // FIXED: Return lowercase color names that match CSS classes
+  // Status Color
   getApprovalColor(approval: string): string {
   const colorMap: { [key: string]: string } = {
     'Approved': 'green',
@@ -96,7 +96,6 @@ export class LeaveTable implements OnInit {
   return colorMap[approval] || 'default';
 }
 
-// Add this method for custom styling
 getTagStyle(approval: string): any {
   const styles: any = {
     'border-radius': '16px',
@@ -105,26 +104,7 @@ getTagStyle(approval: string): any {
     'font-weight': '500',
     'backdrop-filter': 'blur(4px)'
   };
-  
-  // Add color-specific styles
-  if (approval === 'Approved') {
-    styles['color'] = '#81ff5a';
-    styles['background'] = 'linear-gradient(135deg, rgba(99, 252, 112, 0.15) 0%, rgba(99, 252, 112, 0.25) 100%)';
-    styles['border'] = '1px solid rgba(99, 252, 112, 0.15)';
-  } else if (approval === 'Pending') {
-    styles['color'] = '#ffcc00';
-    styles['background'] = 'linear-gradient(135deg, rgba(255, 204, 0, 0.15) 0%, rgba(255, 204, 0, 0.25) 100%)';
-    styles['border'] = '1px solid rgba(255, 204, 0, 0.15)';
-  } else if (approval === 'Rejected') {
-    styles['color'] = '#ff4d4d';
-    styles['background'] = 'linear-gradient(135deg, rgba(255, 77, 77, 0.15) 0%, rgba(255, 77, 77, 0.25) 100%)';
-    styles['border'] = '1px solid rgba(255, 77, 77, 0.15)';
-  } else {
-    styles['color'] = '#ffffff';
-    styles['background'] = 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.25) 100%)';
-    styles['border'] = '1px solid rgba(255, 255, 255, 0.15)';
-  }
-  
+
   return styles;
 }
   getApplyTypeLabel(type: string): string {

@@ -14,6 +14,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import * as XLSX from 'xlsx';
 
 export interface UserData {
   id: string;
@@ -539,5 +540,38 @@ exportTableToPDF(): void {
   } finally {
     this.isLoading = false;
   }
-  }
+  }   
+  
+  exportTableToExcel() {
+    if (!this.filteredData || this.filteredData.length === 0) {
+    this.message.warning('No admin data to export');
+    return;
+    }
+    
+    this.isLoading = true;
+
+
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString();
+    
+    const fileName = `Admin-report-${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}.xlsx`
+    this.isLoading = true;
+    try {
+      
+      let data = document.getElementById("table-data");
+      const ws : XLSX.WorkSheet = XLSX.utils.table_to_sheet(data)
+      
+      const wb : XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+      
+      XLSX.writeFile(wb,fileName)
+    }
+    catch (error) {
+      console.error('CSV export error:', error);
+      this.message.error('Failed to export CSV');
+    } finally {
+      this.isLoading = false;
+    }
+    
+   }
 }
