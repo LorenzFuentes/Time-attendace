@@ -15,6 +15,7 @@ import { debounceTime, Subject, Subscription } from 'rxjs';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
+import * as Papa from 'papaparse';
 export interface Employee {
   id: string;
   firstName: string;
@@ -615,36 +616,66 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
   }
 
 exportTableToExcel() {
-    if (!this.filteredEmployees || this.filteredEmployees.length === 0) {
-    this.message.warning('No admin data to export');
+   //Check if there's data to export
+  if (!this.filteredEmployees || this.filteredEmployees.length === 0) {
+    this.message.warning('No employee data to export');
     return;
-    }
-    
-    this.isLoading = true;
+  }
 
-
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString();
+  this.isLoading = true;
+  
+  const currentDate = new Date();
+  
+  //Prepare clean data for export
+  const exportData = this.filteredEmployees.map(employee => ({
+    'Employee ID': employee.id.startsWith('temp_') ? 'New' : employee.id,
+    'First Name': employee.firstName,
+    'Middle Name': employee.middleName || '-',
+    'Last Name': employee.lastName,
+    'Full Name': `${employee.firstName} ${employee.middleName ? employee.middleName + ' ' : ''}${employee.lastName}`.trim(),
+    'Contact Number': employee.contact,
+    'Department': employee.department,
+    'Position': employee.position,
+    'Username': employee.username,
+    'Email': employee.email
+  }));
+  
+  //Create filename
+  const fileName = `Employee-Report_${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+  
+  try {
+    // Create CSV with proper formatting using Papa Parse
+    const csv = Papa.unparse(exportData, {
+      delimiter: ",",
+      header: true,
+      quotes: true,
+      quoteChar: '"',
+      escapeChar: '"',
+      escapeFormulae: true, // Security: prevents CSV injection
+      skipEmptyLines: true,
+      newline: "\r\n" // Windows-compatible line endings
+    });
     
-    const fileName = `admin-report-${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}.xlsx`
-    this.isLoading = true;
-    try {
-      
-      
-      let data = document.getElementById("table-data");
-      const ws : XLSX.WorkSheet = XLSX.utils.table_to_sheet(data)
-      
-      const wb : XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
-      
-      XLSX.writeFile(wb,fileName)
-    }
-    catch (error) {
-      console.error('CSV export error:', error);
-      this.message.error('Failed to export CSV');
-    } finally {
-      this.isLoading = false;
-    }
+    //Create and download the file
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' }); // BOM for Excel UTF-8
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.href = url;
+    link.download = `${fileName}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    this.message.success(`Exported ${this.filteredEmployees.length} employee records successfully`);
+    
+  } catch (error) {
+    console.error('Employee export error:', error);
+    this.message.error('Failed to export employee data');
+  } finally {
+    this.isLoading = false;
+  }
     
    }
 

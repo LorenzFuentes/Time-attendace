@@ -15,6 +15,7 @@ import { debounceTime, Subject, Subscription } from 'rxjs';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
+import * as Papa from 'papaparse';
 
 export interface UserData {
   id: string;
@@ -546,32 +547,61 @@ exportTableToPDF(): void {
     if (!this.filteredData || this.filteredData.length === 0) {
     this.message.warning('No admin data to export');
     return;
-    }
-    
-    this.isLoading = true;
+  }
 
-
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString();
+  this.isLoading = true;
+  
+  const currentDate = new Date();
+  
+  // Prepare clean data for export (no passwords, formatted labels)
+  const exportData = this.filteredData.map(item => ({
+    'ID': item.id.startsWith('temp_') ? 'New' : item.id,
+    'Username': item.username,
+    'Full Name': item.fullname,
+    'Email': item.email,
+    'Access Level': this.getAccessLabel(item.access),
+    'Export Date': currentDate.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    })
+  }));
+  
+  const fileName = `Admin-Report_${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+  
+  try {
+    // Create CSV with proper formatting using Papa Parse
+    const csv = Papa.unparse(exportData, {
+      delimiter: ",",
+      header: true,
+      quotes: true,
+      quoteChar: '"',
+      escapeChar: '"',
+      escapeFormulae: true, // Security: prevents CSV injection
+      skipEmptyLines: true,
+      newline: "\r\n" 
+    });
     
-    const fileName = `Admin-report-${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}.xlsx`
-    this.isLoading = true;
-    try {
-      
-      let data = document.getElementById("table-data");
-      const ws : XLSX.WorkSheet = XLSX.utils.table_to_sheet(data)
-      
-      const wb : XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
-      console.log(this.filteredData)
-      XLSX.writeFile(wb,fileName)
-    }
-    catch (error) {
-      console.error('CSV export error:', error);
-      this.message.error('Failed to export CSV');
-    } finally {
-      this.isLoading = false;
-    }
+    // Create and download the file
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' }); // BOM for Excel UTF-8
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.href = url;
+    link.download = `${fileName}.csv`; // Excel can open CSV
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    this.message.success('Export completed successfully');
+    
+  } catch (error) {
+    console.error('Export error:', error);
+    this.message.error('Failed to export data');
+  } finally {
+    this.isLoading = false;
+  }
     
    }
 }

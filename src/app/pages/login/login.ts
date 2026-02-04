@@ -49,7 +49,7 @@ export class LoginComponent {
     next: (adminData) => {
       console.log('Admin login successful:', adminData);
       this.msg.success('Admin login successful');
-      this.router.navigate(['main/admin-home']); 
+      this.router.navigate(['main/chart']); 
     },
     error: (error) => {
       console.error('Admin login failed:', error);
