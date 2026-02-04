@@ -390,9 +390,9 @@
       "id": "1",
       "username": "lorenz",
       "password": "admin123",
-      "email": "lrnz29@gmail.com",
-      "fullname": "Lorenz Sebastian C. Fuentes",
-      "access": "Admin"
+      "email": "test",
+      "fullname": "Lorenz Stestebastian C. Fuentes",
+      "access": "admin"
     },
     {
       "id": "5",

@@ -76,7 +76,7 @@
         <p *ngIf="!searchValue">No admins in the system</p>
     </div>
     <!-- Table -->
-    <nz-table #userTable nzBordered [nzData]="filteredData" nzTableLayout="fixed" [nzLoading]="isLoading" [nzPageSize]="10" [nzShowPagination]="true" id="table-data">
+    <nz-table #userTable nzBordered [nzData]="filteredData" nzTableLayout="fixed" [nzLoading]="isLoading" [nzPageSize]="10" [nzShowPagination]="true">
         <thead>
             <tr>
                 <th>ID</th>
