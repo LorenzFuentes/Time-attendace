@@ -563,7 +563,7 @@ exportTableToPDF(): void {
       
       const wb : XLSX.WorkBook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
-      
+      console.log(this.filteredData)
       XLSX.writeFile(wb,fileName)
     }
     catch (error) {
