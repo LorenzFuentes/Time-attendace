@@ -13,7 +13,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
-import { AuthService } from '../../service/auth';
+import { LeaveService } from '../../service/leave-service/leave';
 
 @Component({
   selector: 'app-leave-table',
@@ -55,7 +55,7 @@ export class LeaveTable implements OnInit {
     'date-of-approval': ''
   };
 
-  constructor(private authService: AuthService) {}
+  constructor(private leaveService: LeaveService) {}
 
   ngOnInit(): void {
     this.loadLeaveData();
@@ -63,14 +63,14 @@ export class LeaveTable implements OnInit {
 
   loadLeaveData(): void {
     this.isLoading = true;
-    this.authService.getLeaveRecords().subscribe({
-      next: (data) => {
+    this.leaveService.getLeaveRecords().subscribe({
+      next: (data: any[]) => { 
         this.leaveData = data;
         this.filteredData = [...data];
         this.updateEditCache();
         this.isLoading = false;
       },
-      error: (error) => {
+      error: (error: any) => { 
         console.error('Error loading leave data:', error);
         this.isLoading = false;
       }
@@ -88,25 +88,25 @@ export class LeaveTable implements OnInit {
 
   // Status Color
   getApprovalColor(approval: string): string {
-  const colorMap: { [key: string]: string } = {
-    'Approved': 'green',
-    'Pending': 'gold', 
-    'Rejected': 'red'
-  };
-  return colorMap[approval] || 'default';
-}
+    const colorMap: { [key: string]: string } = {
+      'Approved': 'green',
+      'Pending': 'gold', 
+      'Rejected': 'red'
+    };
+    return colorMap[approval] || 'default';
+  }
 
-getTagStyle(approval: string): any {
-  const styles: any = {
-    'border-radius': '16px',
-    'padding': '4px 12px',
-    'font-size': '12px',
-    'font-weight': '500',
-    'backdrop-filter': 'blur(4px)'
-  };
-
-  return styles;
-}
+  getTagStyle(approval: string): any {
+    const styles: any = {
+      'border-radius': '16px',
+      'padding': '4px 12px',
+      'font-size': '12px',
+      'font-weight': '500',
+      'backdrop-filter': 'blur(4px)'
+    };
+    return styles;
+  }
+  
   getApplyTypeLabel(type: string): string {
     const typeMap: { [key: string]: string } = {
       'leave': 'Leave',
@@ -134,23 +134,23 @@ getTagStyle(approval: string): any {
     Object.assign(this.leaveData[index], this.editCache[id].data);
     this.editCache[id].edit = false;
     
-    // Update to server
-    this.authService.updateLeaveRecord(id, this.leaveData[index]).subscribe({
+    // Update to server using LeaveService
+    this.leaveService.updateLeaveRecord(id, this.leaveData[index]).subscribe({
       next: () => console.log('Leave record updated'),
-      error: (error) => console.error('Error updating leave:', error)
+      error: (error: any) => console.error('Error updating leave:', error)
     });
   }
 
   deleteRecord(id: string): void {
     const index = this.leaveData.findIndex(item => item.id === id);
     if (index !== -1) {
-      this.authService.deleteLeaveRecord(id).subscribe({
+      this.leaveService.deleteLeaveRecord(id).subscribe({
         next: () => {
           this.leaveData.splice(index, 1);
           this.filteredData = [...this.leaveData];
           delete this.editCache[id];
         },
-        error: (error) => console.error('Error deleting leave:', error)
+        error: (error: any) => console.error('Error deleting leave:', error) 
       });
     }
   }
@@ -180,8 +180,8 @@ getTagStyle(approval: string): any {
     const recordToSave = { ...newRecord };
     delete recordToSave.id;
     
-    this.authService.addLeaveRecord(recordToSave).subscribe({
-      next: (response) => {
+    this.leaveService.addLeaveRecord(recordToSave).subscribe({
+      next: (response: any) => { // Add type annotation
         // Replace temp record with server response
         const index = this.filteredData.findIndex(item => item.id === tempId);
         if (index !== -1) {
@@ -191,7 +191,7 @@ getTagStyle(approval: string): any {
         this.isAddingNew = false;
         delete this.editCache[tempId];
       },
-      error: (error) => console.error('Error adding leave:', error)
+      error: (error: any) => console.error('Error adding leave:', error)
     });
   }
 

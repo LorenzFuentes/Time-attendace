@@ -1,17 +1,21 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../service/auth';
-import { User } from '../../model/post';
 import { Router } from "@angular/router";
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
+
+import { AuthService } from '../../service/auth';
+import { UserService } from '../../service/user-service/user'; 
+import { AdminService } from '../../service/admin-service/admin'; 
+import { User } from '../../model/post';
+
 @Component({
   selector: 'app-charts',
   standalone: true,
-  imports: [NzIconModule,NgApexchartsModule, CommonModule],
+  imports: [NzIconModule, NgApexchartsModule, CommonModule],
   templateUrl: './charts.html',
   styleUrls: ['./charts.scss'],
 })
@@ -37,12 +41,17 @@ export class Charts implements OnInit {
   
   @ViewChild('chartContainer') chartContainer!: ElementRef;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router, 
+    private authService: AuthService,
+    private userService: UserService, 
+    private adminService: AdminService
+  ) {}
 
   ngOnInit() {
     this.loadUserData();
     this.loadCurrentUser();
-    this.authService.currentUser$.subscribe(user => {
+    this.authService.currentUser$.subscribe((user: any) => { 
       console.log('User observable updated:', user);
       this.currentUser = user;
     });
@@ -53,7 +62,7 @@ export class Charts implements OnInit {
   }
 
   loadUserData() {
-    this.authService.getAllEmployee().subscribe({
+    this.userService.getAllUsers().subscribe({
       next: (users: User[]) => {
         const positionCounts = new Map<string, number>();
         const departmentCounts = new Map<string, number>();
@@ -76,7 +85,7 @@ export class Charts implements OnInit {
         this.createColumnChart();
         this.isLoading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading users:', error);
         this.isLoading = false;
       }
@@ -229,7 +238,8 @@ export class Charts implements OnInit {
       }
     };
   }
-   private loadCurrentUser(): void {
+
+  private loadCurrentUser(): void {
     this.currentUser = this.authService.getCurrentUser();
     
     console.log('AuthService user:', this.currentUser);
@@ -279,20 +289,22 @@ export class Charts implements OnInit {
   }
 
   private loadDashboardStats(): void {
-    this.authService.getAdminCount().subscribe({
-      next: (count) => {
+    // Use adminService for admin count
+    this.adminService.getAdminCount().subscribe({
+      next: (count: number) => {
         this.adminCount = count;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Failed to load admin count:', error);
       }
     });
     
-    this.authService.getEmployeeCount().subscribe({
-      next: (count) => {
+    // Use userService for employee count
+    this.userService.getUserCount().subscribe({
+      next: (count: number) => {
         this.employeeCount = count;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Failed to load employee count:', error);
       }
     });

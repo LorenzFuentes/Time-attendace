@@ -9,6 +9,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { AuthService } from '../../service/auth';
+import { UserService } from '../../service/user-service/user';
+import { AdminService } from '../../service/admin-service/admin';
 import { Router } from '@angular/router';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { debounceTime, Subject, Subscription } from 'rxjs';
@@ -16,6 +18,8 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import * as Papa from 'papaparse';
+import { User, RegisterRequest } from '../../model/post';
+
 export interface Employee {
   id: string;
   firstName: string;
@@ -60,6 +64,8 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
   
   constructor(
     private authService: AuthService,
+    private userService: UserService,
+    private adminService: AdminService,
     private message: NzMessageService,
     private router: Router
   ) {}
@@ -87,31 +93,67 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
 
   private loadEmployees(): void {
     this.isLoading = true;
-    this.authService.getAllEmployee().subscribe({
-      next: (data) => {
-        // Convert all IDs to strings
-        this.employees = data.map(employee => ({
-          id: employee.id.toString(),
-          firstName: employee.firstName || '',
-          middleName: employee.middleName || '',
-          lastName: employee.lastName || '',
-          contact: employee.contact || '',
-          department: employee.department || '',
-          position: employee.position || '',
-          username: employee.username || '',
-          email: employee.email || '',
-          password: employee.password || ''
-        }));
-        // Initialize filteredEmployees with all employees
+    this.userService.getAllUsers().subscribe({
+      next: (data: User[]) => {
+        // Convert User to Employee (number id to string id)
+        this.employees = data.map(user => this.convertUserToEmployee(user));
         this.filteredEmployees = [...this.employees];
         this.updateEditCache();
         this.isLoading = false;
+        this.message.success('Data loaded successfully!');
       },
       error: (error) => {
         this.message.error('Failed to load employees from server.');
         this.isLoading = false;
       }
     });
+  }
+
+  // Helper to convert User (with number id) to Employee (with string id)
+  private convertUserToEmployee(user: User): Employee {
+    return {
+      id: user.id.toString(),
+      firstName: user.firstName || '',
+      middleName: user.middleName || '',
+      lastName: user.lastName || '',
+      contact: user.contact || '',
+      department: user.department || '',
+      position: user.position || '',
+      username: user.username || '',
+      email: user.email || '',
+      password: user.password || ''
+    };
+  }
+
+  // Helper to convert Employee (with string id) to User (with number id)
+  private convertEmployeeToUser(employee: Employee): User {
+    return {
+      id: parseInt(employee.id) || 0,
+      firstName: employee.firstName,
+      middleName: employee.middleName,
+      lastName: employee.lastName,
+      contact: employee.contact,
+      department: employee.department,
+      position: employee.position,
+      username: employee.username,
+      email: employee.email,
+      password: employee.password
+    };
+  }
+
+  // Helper to convert Employee to RegisterRequest (for creating new users)
+  private convertEmployeeToRegisterRequest(employee: Employee): RegisterRequest {
+    return {
+      firstName: employee.firstName,
+      middleName: employee.middleName,
+      lastName: employee.lastName,
+      contact: employee.contact,
+      department: employee.department,
+      position: employee.position,
+      username: employee.username,
+      email: employee.email,
+      password: employee.password
+    };
   }
 
   private updateEditCache(): void {
@@ -127,7 +169,6 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
   // Filter employees based on search term
   private filterEmployees(searchTerm: string): void {
     if (!searchTerm.trim()) {
-      // If search is empty, show all employees
       this.filteredEmployees = [...this.employees];
       this.updateEditCache();
       return;
@@ -135,7 +176,6 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
 
     const term = searchTerm.toLowerCase().trim();
     
-    // Filter employees based on multiple fields
     this.filteredEmployees = this.employees.filter(employee => {
       return (
         employee.firstName?.toLowerCase().includes(term) ||
@@ -150,13 +190,11 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
       );
     });
     
-    // Update edit cache for filtered results
     this.updateEditCache();
   }
 
   // Handle search input - triggers real-time filtering
   onSearch(): void {
-    // Send the current search value to the subject
     this.searchSubject.next(this.searchValue);
   }
 
@@ -198,7 +236,6 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
       }
     }
     
-    // Re-filter after cancellation
     this.filterEmployees(this.searchValue);
   }
 
@@ -227,21 +264,20 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
   }
 
   private registerNewEmployee(newEmployee: Employee, tempId: string): void {
-    this.authService.getAllEmployee().subscribe({
-      next: (existingEmployees: any[]) => {
+    this.userService.getAllUsers().subscribe({
+      next: (existingEmployees: User[]) => {
         let maxId = 0;
         
-        existingEmployees.forEach(emp => {
-          const idNum = parseInt(emp.id, 10);
-          if (!isNaN(idNum) && idNum > maxId) {
-            maxId = idNum;
+        existingEmployees.forEach(user => {
+          if (user.id > maxId) {
+            maxId = user.id;
           }
         });
         
-        const nextId = (maxId + 1).toString();
+        const nextId = maxId + 1;
         
-        const employeeToCreate = {
-          id: nextId, 
+        // Use RegisterRequest interface for creating new user (no id needed)
+        const employeeToCreate: RegisterRequest = {
           firstName: newEmployee.firstName,
           middleName: newEmployee.middleName,
           lastName: newEmployee.lastName,
@@ -253,40 +289,31 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
           password: newEmployee.password
         };
         
-        this.authService.createEmployee(employeeToCreate).subscribe({
-          next: (createdEmployee: any) => {
-            const employeeWithStringId = {
-              ...createdEmployee,
-              id: createdEmployee.id ? createdEmployee.id.toString() : nextId
-            };
+        this.userService.register(employeeToCreate).subscribe({
+          next: (createdUser: User) => {
+            const newEmployeeWithStringId = this.convertUserToEmployee(createdUser);
             
             // Update in original array
             const originalIndex = this.employees.findIndex(employee => employee.id === tempId);
             if (originalIndex !== -1) {
-              this.employees[originalIndex] = employeeWithStringId;
+              this.employees[originalIndex] = newEmployeeWithStringId;
             } else {
-              // Add to original array if not found
-              this.employees.unshift(employeeWithStringId);
+              this.employees.unshift(newEmployeeWithStringId);
             }
             
             // Update edit cache
-            this.editCache[employeeWithStringId.id] = {
+            this.editCache[newEmployeeWithStringId.id] = {
               edit: false,
-              data: employeeWithStringId
+              data: newEmployeeWithStringId
             };
             delete this.editCache[tempId];
             
             this.message.success(`Employee ${newEmployee.firstName} ${newEmployee.lastName} created successfully!`);
-            window.location.reload();
-            
-            // Re-filter to apply current search
             this.filterEmployees(this.searchValue);
           },
           error: (error) => {
             console.error('Registration failed:', error);
             this.message.error('Failed to create employee. Please try again.');
-            
-            // Remove the temporary employee on error
             this.employees = this.employees.filter(e => e.id !== tempId);
             this.filterEmployees(this.searchValue);
           }
@@ -300,7 +327,9 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
   }
 
   private updateExistingEmployee(id: string, updatedEmployee: Employee, index: number, originalIndex: number): void {
-    const cleanPayload = {
+    // Create User object with proper number id
+    const userToUpdate: User = {
+      id: parseInt(id),
       firstName: updatedEmployee.firstName,
       middleName: updatedEmployee.middleName,
       lastName: updatedEmployee.lastName,
@@ -308,46 +337,28 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
       department: updatedEmployee.department,
       position: updatedEmployee.position,
       username: updatedEmployee.username,
-      email: updatedEmployee.email
+      email: updatedEmployee.email,
+      password: updatedEmployee.password
     };
     
-    const passwordValue = updatedEmployee.password;
-    if (passwordValue && passwordValue.trim() && passwordValue !== '••••••••') {
-      (cleanPayload as any).password = passwordValue;
-    }
-    
-    this.authService.updateEmployee(id, cleanPayload).subscribe({
-      next: (response) => {
-        const responseWithStringId = {
-          ...response,
-          id: response.id ? response.id.toString() : id
-        };
+    this.userService.updateUser(id, userToUpdate).subscribe({
+      next: (updatedUser: User) => {
+        const updatedEmployeeWithStringId = this.convertUserToEmployee(updatedUser);
         
-        // Update in filtered array
         if (index !== -1) {
-          this.filteredEmployees[index] = {
-            ...this.filteredEmployees[index],
-            ...responseWithStringId
-          };
+          this.filteredEmployees[index] = updatedEmployeeWithStringId;
         }
         
-        // Update in original array
         if (originalIndex !== -1) {
-          this.employees[originalIndex] = {
-            ...this.employees[originalIndex],
-            ...responseWithStringId
-          };
+          this.employees[originalIndex] = updatedEmployeeWithStringId;
         }
         
         this.editCache[id] = {
           edit: false,
-          data: { ...this.filteredEmployees[index] }
+          data: updatedEmployeeWithStringId
         };
         
         this.message.success('Employee updated successfully!');
-        window.location.reload();
-        
-        // Re-filter in case the update affects search results
         this.filterEmployees(this.searchValue);
       },
       error: (error) => {
@@ -404,14 +415,13 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.authService.deleteEmployee(id).subscribe({
+    this.userService.deleteUser(id).subscribe({
       next: () => {
         this.employees = this.employees.filter(e => e.id !== id);
         this.filteredEmployees = this.filteredEmployees.filter(e => e.id !== id);
         delete this.editCache[id];
         this.message.success('Deleted successfully!');
         this.filterEmployees(this.searchValue);
-        window.location.reload();
       },
       error: () => this.message.error('Delete failed!')
     });
@@ -443,7 +453,6 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
       return fieldValue.length > 0;
     });
     
-    // Check password only for new employees
     if (employeeId.startsWith('temp_')) {
       const passwordValue = employeeData.password ? employeeData.password.toString().trim() : '';
       const passwordValid = passwordValue.length > 0;
@@ -497,7 +506,7 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
   }
 
   private loadDashboardStats(): void {
-    this.authService.getAdminCount().subscribe({
+    this.adminService.getAdminCount().subscribe({
       next: (count) => {
         this.adminCount = count;
       },
@@ -506,7 +515,7 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
       }
     });
     
-    this.authService.getEmployeeCount().subscribe({
+    this.userService.getUserCount().subscribe({
       next: (count) => {
         this.employeeCount = count;
       },
@@ -515,6 +524,7 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
       }
     });
   }
+  
   exportTableToPDF(): void {
     if (!this.filteredEmployees || this.filteredEmployees.length === 0) {
       this.message.warning('No employee data to export');
@@ -527,18 +537,15 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
       const doc = new jsPDF('landscape');
       const currentDate = new Date().toLocaleDateString();
       
-      // Title
       doc.setFontSize(18);
-      doc.setTextColor(81, 98, 250); // Match your button color #5162fa
+      doc.setTextColor(81, 98, 250);
       doc.text('Employee Report', 14, 20);
       
-      // Subtitle
       doc.setFontSize(11);
       doc.setTextColor(100, 100, 100);
       doc.text(`Generated on: ${currentDate}`, 14, 28);
       doc.text(`Total Employees: ${this.filteredEmployees.length}`, 14, 35);
       
-      // Prepare table data
       const headers = [
         ['ID', 'First Name', 'Middle Name', 'Last Name', 'Contact', 
          'Department', 'Position', 'Username', 'Email']
@@ -556,7 +563,6 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
         employee.email || 'N/A'
       ]);
       
-      // Add table to PDF
       autoTable(doc, {
         head: headers,
         body: data,
@@ -569,7 +575,7 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
           lineWidth: 0.1
         },
         headStyles: {
-          fillColor: [81, 98, 250], // Match your button color
+          fillColor: [81, 98, 250],
           textColor: [255, 255, 255],
           fontStyle: 'bold'
         },
@@ -577,20 +583,19 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
           fillColor: [245, 245, 245]
         },
         columnStyles: {
-          0: { cellWidth: 20 }, // ID
-          1: { cellWidth: 25 }, // First Name
-          2: { cellWidth: 25 }, // Middle Name
-          3: { cellWidth: 25 }, // Last Name
-          4: { cellWidth: 30 }, // Contact
-          5: { cellWidth: 30 }, // Department
-          6: { cellWidth: 30 }, // Position
-          7: { cellWidth: 25 }, // Username
-          8: { cellWidth: 45 }  // Email
+          0: { cellWidth: 20 },
+          1: { cellWidth: 25 },
+          2: { cellWidth: 25 },
+          3: { cellWidth: 25 },
+          4: { cellWidth: 30 },
+          5: { cellWidth: 30 },
+          6: { cellWidth: 30 },
+          7: { cellWidth: 25 },
+          8: { cellWidth: 45 }
         },
         margin: { top: 45 }
       });
       
-      // Add page numbers
       const pageCount = (doc as any).internal.getNumberOfPages();
       for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
@@ -603,7 +608,6 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
         );
       }
       
-      // Save the PDF
       doc.save(`Employee-report-${currentDate.replace(/\//g, '-')}.pdf`);
       this.message.success('PDF exported successfully!');
       
@@ -615,69 +619,63 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
     }
   }
 
-exportTableToExcel() {
-   //Check if there's data to export
-  if (!this.filteredEmployees || this.filteredEmployees.length === 0) {
-    this.message.warning('No employee data to export');
-    return;
-  }
+  exportTableToExcel() {
+    if (!this.filteredEmployees || this.filteredEmployees.length === 0) {
+      this.message.warning('No employee data to export');
+      return;
+    }
 
-  this.isLoading = true;
-  
-  const currentDate = new Date();
-  
-  //Prepare clean data for export
-  const exportData = this.filteredEmployees.map(employee => ({
-    'Employee ID': employee.id.startsWith('temp_') ? 'New' : employee.id,
-    'First Name': employee.firstName,
-    'Middle Name': employee.middleName || '-',
-    'Last Name': employee.lastName,
-    'Full Name': `${employee.firstName} ${employee.middleName ? employee.middleName + ' ' : ''}${employee.lastName}`.trim(),
-    'Contact Number': employee.contact,
-    'Department': employee.department,
-    'Position': employee.position,
-    'Username': employee.username,
-    'Email': employee.email
-  }));
-  
-  //Create filename
-  const fileName = `Employee-Report_${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
-  
-  try {
-    // Create CSV with proper formatting using Papa Parse
-    const csv = Papa.unparse(exportData, {
-      delimiter: ",",
-      header: true,
-      quotes: true,
-      quoteChar: '"',
-      escapeChar: '"',
-      escapeFormulae: true, // Security: prevents CSV injection
-      skipEmptyLines: true,
-      newline: "\r\n" // Windows-compatible line endings
-    });
+    this.isLoading = true;
     
-    //Create and download the file
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' }); // BOM for Excel UTF-8
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
+    const currentDate = new Date();
     
-    link.href = url;
-    link.download = `${fileName}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    const exportData = this.filteredEmployees.map(employee => ({
+      'Employee ID': employee.id.startsWith('temp_') ? 'New' : employee.id,
+      'First Name': employee.firstName,
+      'Middle Name': employee.middleName || '-',
+      'Last Name': employee.lastName,
+      'Full Name': `${employee.firstName} ${employee.middleName ? employee.middleName + ' ' : ''}${employee.lastName}`.trim(),
+      'Contact Number': employee.contact,
+      'Department': employee.department,
+      'Position': employee.position,
+      'Username': employee.username,
+      'Email': employee.email
+    }));
     
-    this.message.success(`Exported ${this.filteredEmployees.length} employee records successfully`);
+    const fileName = `Employee-Report_${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
     
-  } catch (error) {
-    console.error('Employee export error:', error);
-    this.message.error('Failed to export employee data');
-  } finally {
-    this.isLoading = false;
+    try {
+      const csv = Papa.unparse(exportData, {
+        delimiter: ",",
+        header: true,
+        quotes: true,
+        quoteChar: '"',
+        escapeChar: '"',
+        escapeFormulae: true,
+        skipEmptyLines: true,
+        newline: "\r\n"
+      });
+      
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      
+      link.href = url;
+      link.download = `${fileName}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      this.message.success(`Exported ${this.filteredEmployees.length} employee records successfully`);
+      
+    } catch (error) {
+      console.error('Employee export error:', error);
+      this.message.error('Failed to export employee data');
+    } finally {
+      this.isLoading = false;
+    }
   }
-    
-   }
 
   ngOnDestroy() {
     if (this.timer) {

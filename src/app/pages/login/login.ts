@@ -45,15 +45,15 @@ export class LoginComponent {
 
   const { username, password } = this.validateForm.getRawValue();
 
-  this.auth.login(username, password).subscribe({
-    next: (adminData) => {
-      console.log('Admin login successful:', adminData);
-      this.msg.success('Admin login successful');
-      this.router.navigate(['main/chart']); 
-    },
-    error: (error) => {
-      console.error('Admin login failed:', error);
-      this.msg.error('Invalid admin username or password');
+    this.auth.login(username, password).subscribe({
+      next: (adminData: any) => {
+        console.log('Admin login successful:', adminData);
+        this.msg.success('Admin login successful');
+        this.router.navigate(['main/chart']); 
+      },
+      error: (error: any) => {
+        console.error('Admin login failed:', error);
+        this.msg.error('Invalid admin username or password');
       }
     });
   }
