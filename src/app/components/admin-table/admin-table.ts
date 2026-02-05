@@ -17,6 +17,8 @@ import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import * as Papa from 'papaparse';
 
+import { AdminService } from '../../service/admin-service/admin';
+
 export interface UserData {
   id: string;
   username: string;
@@ -60,6 +62,7 @@ export class AdminTable implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
+    private adminService: AdminService, 
     private message: NzMessageService,
     private router: Router
   ) {}
@@ -67,7 +70,7 @@ export class AdminTable implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadDataFromApi();
     this.loadCurrentUser();
-    this.authService.currentUser$.subscribe(user => {
+    this.authService.currentUser$.subscribe((user: any) => {
       console.log('User observable updated:', user);
       this.currentUser = user;
     });
@@ -86,8 +89,8 @@ export class AdminTable implements OnInit, OnDestroy {
 
   private loadDataFromApi(): void {
     this.isLoading = true;
-    this.authService.getAllUsers().subscribe({
-      next: (data) => {
+    this.adminService.getAllAdmins().subscribe({ 
+      next: (data: any[]) => {
         this.listOfData = data.map(user => ({
           id: user.id.toString(),
           username: user.username || '',
@@ -101,7 +104,7 @@ export class AdminTable implements OnInit, OnDestroy {
         this.isLoading = false;
         this.message.success('Data loaded successfully!');
       },
-      error: (error) => {
+      error: (error: any) => {
         this.message.error('Failed to load data from server.');
         this.isLoading = false;
       }
@@ -203,7 +206,7 @@ export class AdminTable implements OnInit, OnDestroy {
       this.registerAdminWithManualId(adminData, id, index, originalIndex);
     } else {
       // Existing admin - update
-      this.authService.updateUser(id, adminData).subscribe({
+      this.adminService.updateAdmin(id, adminData).subscribe({ 
         next: () => {
           if (index !== -1) {
             this.filteredData[index] = { ...adminData };
@@ -219,7 +222,7 @@ export class AdminTable implements OnInit, OnDestroy {
           // Re-filter after update
           this.filterAdmins(this.searchValue);
         },
-        error: () => {
+        error: (error: any) => { 
           this.message.error('Failed to update admin');
         }
       });
@@ -247,8 +250,8 @@ export class AdminTable implements OnInit, OnDestroy {
   }
 
   private registerAdminWithManualId(newAdmin: any, tempId: string, index: number, originalIndex: number): void {
-    this.authService.getAllUsers().subscribe({
-      next: (existingAdmins: any) => {
+    this.adminService.getAllAdmins().subscribe({ 
+      next: (existingAdmins: any[]) => {
         let maxId = 0;
         if (existingAdmins && existingAdmins.length > 0) {
           const numericIds = existingAdmins
@@ -274,7 +277,7 @@ export class AdminTable implements OnInit, OnDestroy {
           access: 'admin'
         };
         
-        this.authService.createUser(adminWithId).subscribe({
+        this.adminService.createAdmin(adminWithId).subscribe({ 
           next: (createdAdmin: any) => {
             const adminWithStringId = {
               ...createdAdmin,
@@ -303,7 +306,7 @@ export class AdminTable implements OnInit, OnDestroy {
             // Re-filter after creation
             this.filterAdmins(this.searchValue);
           },
-          error: (error) => {
+          error: (error: any) => {
             console.error('Registration failed:', error);
             this.message.error('Registration failed. Please try again.');
             
@@ -313,7 +316,7 @@ export class AdminTable implements OnInit, OnDestroy {
           }
         });
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Failed to get existing admins:', error);
         this.message.error('Failed to connect to server. Please try again.');
       }
@@ -324,7 +327,7 @@ export class AdminTable implements OnInit, OnDestroy {
     if (!id.startsWith('temp_')) {
       const userId = parseInt(id) || id;
       
-      this.authService.deleteUser(userId).subscribe({
+      this.adminService.deleteAdmin(userId).subscribe({
         next: () => {
           this.listOfData = this.listOfData.filter(item => item.id !== id);
           this.filteredData = this.filteredData.filter(item => item.id !== id);
@@ -333,7 +336,7 @@ export class AdminTable implements OnInit, OnDestroy {
           this.filterAdmins(this.searchValue);
           window.location.reload();
         },
-        error: (error) => {
+        error: (error: any) => {
           this.message.error('Failed to delete user. Please try again.');
         }
       });
@@ -421,20 +424,20 @@ export class AdminTable implements OnInit, OnDestroy {
   }
 
   private loadDashboardStats(): void {
-    this.authService.getAdminCount().subscribe({
-      next: (count) => {
+    this.adminService.getAdminCount().subscribe({
+      next: (count: number) => {
         this.adminCount = count;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Failed to load admin count:', error);
       }
     });
     
-    this.authService.getEmployeeCount().subscribe({
-      next: (count) => {
+    this.authService.getEmployeeCount().subscribe({ 
+      next: (count: number) => {
         this.employeeCount = count;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Failed to load employee count:', error);
       }
     });
@@ -455,7 +458,7 @@ exportTableToPDF(): void {
     
     // Title
     doc.setFontSize(18);
-    doc.setTextColor(81, 98, 250); // Match your button color #5162fa
+    doc.setTextColor(81, 98, 250);
     doc.text('Admin Users Report', 14, 20);
     
     // Subtitle
@@ -464,7 +467,7 @@ exportTableToPDF(): void {
     doc.text(`Generated on: ${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`, 14, 28);
     doc.text(`Total Admins: ${this.filteredData.length}`, 14, 35);
     
-    // Add search filter info if applicable
+    // Add search filter 
     if (this.searchValue.trim()) {
       doc.text(`Search Filter: "${this.searchValue}"`, 14, 42);
     }
@@ -553,7 +556,7 @@ exportTableToPDF(): void {
   
   const currentDate = new Date();
   
-  // Prepare clean data for export (no passwords, formatted labels)
+
   const exportData = this.filteredData.map(item => ({
     'ID': item.id.startsWith('temp_') ? 'New' : item.id,
     'Username': item.username,

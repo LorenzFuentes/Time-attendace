@@ -1,6 +1,5 @@
-// your.component.ts
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../service/auth';
+import { AttendanceService } from '../../service/attendance-service/attendance'; 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -15,9 +14,11 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzCalendarModule } from 'ng-zorro-antd/calendar';
+
 @Component({
   selector: 'app-attendance.table',
-   imports: [
+  standalone: true,
+  imports: [
     CommonModule,
     FormsModule,
     HttpClientModule,
@@ -40,7 +41,7 @@ export class AttendanceTable implements OnInit {
   isLoading = false;
   editCache: { [key: string]: { edit: boolean; data: any } } = {};
 
-  constructor(private attendanceService: AuthService) {}
+  constructor(private attendanceService: AttendanceService) {} 
 
   ngOnInit(): void {
     this.loadAttendanceData();
@@ -49,13 +50,13 @@ export class AttendanceTable implements OnInit {
   loadAttendanceData(): void {
     this.isLoading = true;
     this.attendanceService.getAttendance().subscribe({
-      next: (data) => {
+      next: (data: any[]) => { 
         this.attendanceData = data;
         this.filteredData = [...data];
         this.updateEditCache();
         this.isLoading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading attendance data:', error);
         this.isLoading = false;
       }
@@ -71,35 +72,36 @@ export class AttendanceTable implements OnInit {
     });
   }
 
-   getStatusLabel(status: string): string {
-  const statusMap: { [key: string]: string } = {
-    'present': 'Present',
-    'absent': 'Absent',
-    'late': 'Late',
-    'leave': 'On Leave'
-  };
-  return statusMap[status] || status;
-    }
+  getStatusLabel(status: string): string {
+    const statusMap: { [key: string]: string } = {
+      'present': 'Present',
+      'absent': 'Absent',
+      'late': 'Late',
+      'leave': 'On Leave'
+    };
+    return statusMap[status] || status;
+  }
 
-    getStatusColor(status: string): string {
-      const colorMap: { [key: string]: string } = {
-        'present': 'green',
-        'absent': 'red',
-        'late': 'orange',
-        'leave': 'blue'
-      };
-      return colorMap[status] || 'default';
-    }
-    getStatusStyle(status: string): any {
-      const styles: any = {
-        'border-radius': '16px',
-        'padding': '4px 12px',
-        'font-size': '12px',
-        'font-weight': '500',
-        'backdrop-filter': 'blur(4px)'
-      };
-      return styles;
-    }
+  getStatusColor(status: string): string {
+    const colorMap: { [key: string]: string } = {
+      'present': 'green',
+      'absent': 'red',
+      'late': 'orange',
+      'leave': 'blue'
+    };
+    return colorMap[status] || 'default';
+  }
+  
+  getStatusStyle(status: string): any {
+    const styles: any = {
+      'border-radius': '16px',
+      'padding': '4px 12px',
+      'font-size': '12px',
+      'font-weight': '500',
+      'backdrop-filter': 'blur(4px)'
+    };
+    return styles;
+  }
 
   startEdit(id: string): void {
     this.editCache[id].edit = true;
@@ -119,7 +121,14 @@ export class AttendanceTable implements OnInit {
     this.editCache[id].edit = false;
     
     // Update to server
-    this.attendanceService.updateAttendance(index + 1, this.attendanceData[index]).subscribe();
+    this.attendanceService.updateAttendance(index + 1, this.attendanceData[index]).subscribe({
+      next: () => {
+        console.log('Attendance updated successfully');
+      },
+      error: (error: any) => { 
+        console.error('Error updating attendance:', error);
+      }
+    });
   }
 
   deleteRecord(id: string): void {
@@ -129,6 +138,10 @@ export class AttendanceTable implements OnInit {
         next: () => {
           this.attendanceData.splice(index, 1);
           this.filteredData = [...this.attendanceData];
+          delete this.editCache[id];
+        },
+        error: (error: any) => { 
+          console.error('Error deleting attendance:', error);
         }
       });
     }

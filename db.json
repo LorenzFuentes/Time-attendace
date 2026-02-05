@@ -388,10 +388,10 @@
   "admin": [
     {
       "id": "1",
-      "username": "lorenz",
-      "password": "admin123",
+      "username": "seb",
+      "password": "lorenz",
       "email": "test",
-      "fullname": "Lorenz Sebastian C. Fuentes",
+      "fullname": "Lorenz Fuentes",
       "access": "admin"
     },
     {

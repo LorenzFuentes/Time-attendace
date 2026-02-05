@@ -9,6 +9,8 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { AuthService } from '../../service/auth';
+import { AdminService } from '../../service/admin-service/admin'; 
+import { UserService } from '../../service/user-service/user';
 
 @Component({
   selector: 'app-main-layout',
@@ -28,7 +30,12 @@ export class MainLayout implements OnInit, OnDestroy {
 
   private timer: any; 
 
-  constructor(private router: Router, private authService: AuthService) {
+  constructor(
+    private router: Router, 
+    private authService: AuthService,
+    private adminService: AdminService,
+    private userService: UserService 
+  ) {
     this.updateDateTime();
   }
 
@@ -78,23 +85,30 @@ export class MainLayout implements OnInit, OnDestroy {
   }
 
   private loadDashboardStats(): void {
-    this.authService.getAdminCount().subscribe({
-      next: (count) => {
+    // Use adminService for admin count
+    this.adminService.getAdminCount().subscribe({
+      next: (count: number) => {
         this.adminCount = count;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Failed to load admin count:', error);
       }
     });
     
-    this.authService.getEmployeeCount().subscribe({
-      next: (count) => {
-        this.employeeCount = count;
-      },
-      error: (error) => {
-        console.error('Failed to load employee count:', error);
-      }
-    });
+    // use it for employee count
+    if (this.userService && this.userService.getUserCount) {
+      this.userService.getUserCount().subscribe({
+        next: (count: number) => {
+          this.employeeCount = count;
+        },
+        error: (error: any) => {
+          console.error('Failed to load employee count:', error);
+        }
+      });
+    } else {
+      console.warn('UserService not available for employee count');
+      this.employeeCount = 0;
+    }
   }
 
   getDisplayName(user: any): string {

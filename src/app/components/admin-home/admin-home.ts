@@ -12,6 +12,8 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzResultModule } from 'ng-zorro-antd/result';
 import { AuthService } from '../../service/auth';
+import { AdminService } from '../../service/admin-service/admin';
+import { UserService } from '../../service/user-service/user';
 
 @Component({
   selector: 'app-admin-home',
@@ -43,7 +45,9 @@ export class AdminHomeComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private adminService: AdminService, 
+    private userService: UserService 
   ) {}
 
   ngOnInit(): void {
@@ -85,7 +89,7 @@ export class AdminHomeComponent implements OnInit {
   }
 
   private subscribeToUserUpdates(): void {
-    this.authService.currentUser$.subscribe(user => {
+    this.authService.currentUser$.subscribe((user: any) => {
       if (user) {
         this.currentUser = user;
       }
@@ -94,9 +98,12 @@ export class AdminHomeComponent implements OnInit {
 
   private loadUserCounts(): void {
     if (this.currentUser?.role === 'admin') {
-      this.authService.getAllEmployee().subscribe(employees => {
+      // Use userService for employee count
+      this.userService.getAllUsers().subscribe((employees: any[]) => { 
         this.employeeCount = employees.length;
-        this.authService.getAdminCount().subscribe(count => {
+        
+        // Use adminService for admin count
+        this.adminService.getAdminCount().subscribe((count: number) => {
           this.adminCount = count;
           this.totalUsers = this.employeeCount + this.adminCount;
         });
@@ -148,10 +155,6 @@ export class AdminHomeComponent implements OnInit {
     this.authService.logout();
     this.router.navigate(['']);
   }
-
-  // getDashboard(): void {
-  //   this.router.navigate(['main']);
-  // }
 
   getAdminTable(): void {
     this.router.navigate(['/main/admin-table']);
