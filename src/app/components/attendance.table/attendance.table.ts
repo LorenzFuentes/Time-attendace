@@ -33,7 +33,7 @@ import { NzCalendarModule } from 'ng-zorro-antd/calendar';
     NzCalendarModule
   ],
   templateUrl: './attendance.table.html',
-  styleUrls: ['./attendance.table.scss']
+  styleUrls: ['../../app.scss']
 })
 export class AttendanceTable implements OnInit {
   attendanceData: any[] = [];

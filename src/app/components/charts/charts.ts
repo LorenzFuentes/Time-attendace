@@ -17,7 +17,7 @@ import { User } from '../../model/post';
   standalone: true,
   imports: [NzIconModule, NgApexchartsModule, CommonModule],
   templateUrl: './charts.html',
-  styleUrls: ['./charts.scss'],
+  styleUrls: ['../../app.scss'],
 })
 export class Charts implements OnInit {
   public pieChartOptions: any;
