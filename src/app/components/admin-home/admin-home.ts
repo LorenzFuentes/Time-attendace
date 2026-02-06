@@ -32,7 +32,7 @@ import { UserService } from '../../service/user-service/user';
     NzResultModule
   ],
   templateUrl: './admin-home.html',
-  styleUrls: ['./admin-home.scss']
+  styleUrls: ['../../app.scss']
 })
 export class AdminHomeComponent implements OnInit {
   isCollapsed = false;

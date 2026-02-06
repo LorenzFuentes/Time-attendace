@@ -38,7 +38,7 @@ export interface Employee {
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NzInputModule, NzPopconfirmModule, NzTableModule, NzButtonModule, NzSelectModule, NzTagModule, NzIconModule,],
   templateUrl: './employee-table.html',
-  styleUrl: './employee-table.scss'
+  styleUrl: '../../app.scss'
 })
 export class EmployeeTableComponent implements OnInit, OnDestroy { 
   editCache: { [key: string]: { edit: boolean; data: Employee } } = {};  
