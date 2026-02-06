@@ -10,6 +10,7 @@ import { Charts } from './components/charts/charts';
 import { Calendar } from './components/calendar/calendar';
 import { AttendanceTable } from './components/attendance.table/attendance.table';
 import { LeaveTable } from './components/leave.table/leave.table';
+import { UserHomeComponent } from './components/user-home/user-home';
 export const routes: Routes = [
   { path: '', component: LandingPage, },
   { path: 'login', component: LoginComponent },
@@ -23,4 +24,5 @@ export const routes: Routes = [
       { path: 'attendance', component: AttendanceTable},
       { path: 'leave', component: LeaveTable}
   ]},
+  { path: 'user', component: UserHomeComponent }
 ];
