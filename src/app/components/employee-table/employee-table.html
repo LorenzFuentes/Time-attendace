@@ -112,12 +112,12 @@
                     <td>
                         <div class="btn-container">
                             <button class="edit-btn" (click)="startEdit(employee.id)">
-                                Edit
+                                <nz-icon nzType="edit" nzTheme="outline" />
                             </button>
                             <button class="delete-btn" nz-popconfirm 
                                     nzPopconfirmTitle="Delete this employee?" 
                                     (nzOnConfirm)="deleteEmployee(employee.id)">
-                                Delete
+                                <nz-icon nzType="delete" nzTheme="outline" />
                             </button>
                         </div>
                     </td>

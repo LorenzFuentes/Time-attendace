@@ -32,7 +32,7 @@ import { LeaveService } from '../../service/leave-service/leave';
     NzIconModule
   ],
   templateUrl: './leave.table.html',
-  styleUrls: ['./leave.table.scss']
+  styleUrls: ['../../app.scss']
 })
 export class LeaveTable implements OnInit {
   leaveData: any[] = [];
