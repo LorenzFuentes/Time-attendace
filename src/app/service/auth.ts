@@ -41,17 +41,25 @@ export class AuthService {
     login(username: string, password: string): Observable<any> {
       return new Observable(observer => {
         this.checkAdminLogin(username, password).subscribe({
-          next: (admin) => {
+          next: (adminData) => {
             // Admin login successful
-            observer.next(admin);
+            const response = {
+              ...adminData,
+              userType: 'admin'
+            };
+            observer.next(response);
             observer.complete();
           },
           error: (adminError) => {
-            // Admin failed, try user login
+            // try user login
             this.checkUserLogin(username, password).subscribe({
-              next: (user) => {
+              next: (userData) => {
                 // User login successful
-                observer.next(user);
+                const response = {
+                  ...userData,
+                  userType: 'user'
+                };
+                observer.next(response);
                 observer.complete();
               },
               error: (userError) => {
