@@ -70,26 +70,43 @@
               </div>
               
               <div class="detail-item" *ngIf="currentUser.access">
-                <span class="detail-label">Access Level</span>
-                <span class="detail-value">
-                  <nz-tag nzColor="purple" style="background-color: rgba(156, 39, 176, 0.3); border: 1px solid #9c27b0; border-radius: 10px; color: rgb(204, 46, 204);">Admin</nz-tag>
-                </span>
-              </div>
-              
-              <div class="detail-item">
-                <span class="detail-label">Account Type</span>
-                <span class="detail-value">
-                  <nz-tag nzColor="red" style="background-color: rgba(252, 99, 99, 0.3);  border: 1px solid #fa5151;  border-radius: 10px; color: red;">Administrator</nz-tag>
-                </span>
-              </div>
-              
-              <div class="detail-item">
-                <span class="detail-label">Status</span>
-                <span class="detail-value">
-                  <nz-tag nzColor="success" style="background-color: rgba(76, 175, 80, 0.3); border: 1px solid #4caf50; border-radius: 10px; color: rgb(6, 218, 6);">Active</nz-tag>
-                </span>
-              </div>
-              
+                  <span class="detail-label">Access Level</span>
+                  <span class="detail-value">
+                    <nz-tag nzColor="purple" 
+                            style="background-color: rgba(156, 39, 176, 0.3) !important; 
+                                  border: 1px solid #9c27b0 !important; 
+                                  border-radius: 10px !important; 
+                                  color: rgb(204, 46, 204) !important;">
+                      Admin
+                    </nz-tag>
+                  </span>
+                </div>
+
+                <div class="detail-item">
+                  <span class="detail-label">Account Type</span>
+                  <span class="detail-value">
+                    <nz-tag nzColor="red" 
+                            style="background-color: rgba(252, 99, 99, 0.3) !important; 
+                                  border: 1px solid #fa5151 !important; 
+                                  border-radius: 10px !important; 
+                                  color: red !important;">
+                      Administrator
+                    </nz-tag>
+                  </span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Status</span>
+                  <span class="detail-value">
+                    <nz-tag nzColor="success" 
+                            style="background-color: rgba(8, 244, 8, 0.311)  !important; 
+                                  border: 1px solid #4caf50 !important; 
+                                  border-radius: 10px !important; 
+                                  color: rgb(9, 168, 14)!important;">
+                      Active
+                    </nz-tag>
+                  </span>
+                </div>
+                              
               <div class="detail-item">
                 <span class="detail-label">Last Login</span>
                 <span class="detail-value">{{ date | date: 'medium' }}</span>

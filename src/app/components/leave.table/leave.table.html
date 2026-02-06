@@ -110,10 +110,10 @@
             </td>
             <td>{{ record['date-of-approval'] || 'N/A' }}</td>
             <td>
-              <button class="edit-btn" (click)="startEdit(record.id)">
+              <button class="edit-btn-lv" (click)="startEdit(record.id)">
                 Edit
               </button>
-              <button class="delete-btn" nz-popconfirm 
+              <button class="delete-btn-lv" nz-popconfirm 
                       nzPopconfirmTitle="Delete this leave record?" 
                       (nzOnConfirm)="deleteRecord(record.id)">
                 Delete
