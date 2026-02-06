@@ -111,12 +111,12 @@
             <td>{{ record['date-of-approval'] || 'N/A' }}</td>
             <td>
               <button class="edit-btn-lv" (click)="startEdit(record.id)">
-                Edit
+                <nz-icon nzType="edit" nzTheme="outline" />
               </button>
               <button class="delete-btn-lv" nz-popconfirm 
                       nzPopconfirmTitle="Delete this leave record?" 
                       (nzOnConfirm)="deleteRecord(record.id)">
-                Delete
+                <nz-icon nzType="delete" nzTheme="outline" />
               </button>
             </td>
           </ng-container>

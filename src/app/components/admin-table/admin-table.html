@@ -106,10 +106,10 @@
                     </td>
                     <td>
                         <button class="edit-btn" (click)="startEdit(data.id)">
-                            Edit
+                            <nz-icon nzType="edit" nzTheme="outline" />
                         </button>
                         <button class="delete-btn" nz-popconfirm nzPopconfirmTitle="Delete this user?" (nzOnConfirm)="deleteUser(data.id)">
-                            Delete
+                            <nz-icon nzType="delete" nzTheme="outline" />
                         </button>
                     </td>
                 </ng-container>
