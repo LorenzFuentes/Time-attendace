@@ -2,8 +2,16 @@
   <div class="header-container">
     <h2>Leave Management</h2>
     <div class="header-right">
-      <button nz-button nzType="primary" (click)="startAddNew()" [disabled]="isAddingNew" class="add-lv-btn">
+      <!-- <button nz-button nzType="primary" (click)="startAddNew()" [disabled]="isAddingNew" class="add-lv-btn">
         <i nz-icon nzType="plus"></i> Add New Leave
+      </button> -->
+      <button class="pdf-btn">
+        <nz-icon nzType="file-pdf" nzTheme="outline" class="pdf-icon" />
+        Export PDF
+      </button>
+      <button class="csv-btn">
+        <nz-icon nzType="file-pdf" nzTheme="outline" class="pdf-icon" />
+        Export CSV
       </button>
     </div>
   </div>

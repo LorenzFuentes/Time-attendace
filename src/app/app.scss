@@ -850,3 +850,71 @@ nz-avatar {
     color: #a588be;
   }
 }
+
+/* Custom modal styles */
+::ng-deep .ant-modal {
+  /* Modal container */
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+::ng-deep .ant-modal-header {
+  /* Modal header */
+  background: linear-gradient(135deg, #4C1D95 0%, #6D28D9 100%);
+  border-bottom: none;
+  padding: 20px 24px;
+}
+
+::ng-deep .ant-modal-title {
+  /* Modal title */
+  color: white !important;
+  font-size: 18px !important;
+  font-weight: 600;
+}
+
+::ng-deep .ant-modal-body {
+  /* Modal body */
+  padding: 24px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+::ng-deep .ant-modal-footer {
+  /* Modal footer */
+  border-top: 1px solid #f0f0f0;
+  padding: 16px 24px;
+}
+
+::ng-deep .ant-modal-close {
+  /* Close button */
+  color: white !important;
+}
+
+::ng-deep .ant-modal-close:hover {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Custom form styles inside modal */
+::ng-deep .attendance-modal .ant-form-item {
+  margin-bottom: 16px;
+}
+
+::ng-deep .attendance-modal .ant-form-item-label > label {
+  font-weight: 500;
+  color: #333;
+}
+
+/* Custom input styles */
+::ng-deep .attendance-modal .ant-input,
+::ng-deep .attendance-modal .ant-select-selector,
+::ng-deep .attendance-modal .ant-picker {
+  border-radius: 6px !important;
+  border: 1px solid #d9d9d9 !important;
+}
+
+::ng-deep .attendance-modal .ant-input:focus,
+::ng-deep .attendance-modal .ant-select-focused .ant-select-selector,
+::ng-deep .attendance-modal .ant-picker-focused {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1) !important;
+}
