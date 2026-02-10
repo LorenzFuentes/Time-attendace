@@ -1,0 +1,37 @@
+<div class="welcome-container">
+  <div class="welcome-card">
+    <div class="header">
+      <h1 class="welcome-title">Welcome, <span class="user-name">{{userName}}</span>!</h1>
+      <p class="subtitle">We're glad to have you back</p>
+    </div>
+    
+    <div class="content">
+      <div class="date-info">
+        <span>{{currentDate | date:'fullDate'}}</span>
+      </div>
+      <div class="message">
+        <p>Your application is ready to use. Here's what you can do:</p>
+      </div>
+      
+      <div class="features-list">
+        <div class="feature-item" *ngFor="let feature of features">
+          <span>{{feature}}</span>
+        </div>
+      </div>
+      
+      <div class="actions">
+        <button class="btn primary">
+          Start Guided Tour
+        </button>
+        <button class="btn secondary">
+          Go to Dashboard
+        </button>
+      </div>
+    </div>
+    <div class="footer">
+      <p class="tip">
+        <strong>Lorenz Fuentes 2026</strong>
+      </p>
+    </div>
+  </div>
+</div>
