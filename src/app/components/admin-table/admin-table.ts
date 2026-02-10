@@ -33,7 +33,7 @@ export interface UserData {
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NzInputModule, NzPopconfirmModule, NzTableModule, NzButtonModule, NzSelectModule, NzTagModule, NzIconModule,],
   templateUrl: './admin-table.html',
-  styleUrls: ['./admin-table.scss']
+  styleUrls: ['../../app.scss']
 })
 export class AdminTable implements OnInit, OnDestroy {
   editCache: { [key: string]: { edit: boolean; data: UserData } } = {};

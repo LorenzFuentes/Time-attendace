@@ -8,7 +8,7 @@ import { NzCalendarModule } from 'ng-zorro-antd/calendar';
   selector: 'app-calendar',
   imports: [DatePipe, FormsModule, NzAlertModule, NzCalendarModule],
   templateUrl: './calendar.html',
-  styleUrl: './calendar.scss',
+  styleUrl: '../../app.scss',
 })
 export class Calendar {
   constructor(private router: Router){}
