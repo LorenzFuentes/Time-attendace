@@ -7,7 +7,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #0A0A0A;
+    background-color: #F5F7FA;
     position: relative;
     overflow: hidden;
 }
@@ -17,9 +17,9 @@
     width: 90%;
     max-width: 1100px;
     min-height: 520px;
-    background: #0A0A0A;
+    background: #FFFFFF;
     border-radius: 30px;
-    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.5);
+    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.05);
     overflow: hidden;
     flex-wrap: wrap;
     position: relative;
@@ -36,7 +36,7 @@
     background: linear-gradient(135deg, #1780C7 0%, #a588be 100%);
     padding: 40px;
     border-radius: 30px 70px 70px 30px;
-    box-shadow: 8px 0 16px rgba(0, 0, 0, 0.5);
+    box-shadow: 8px 0 16px rgba(0, 0, 0, 0.08);
 }
 
 .login-left h1 {
@@ -77,7 +77,7 @@
     text-align: left;
     margin-bottom: 24px;
     font-weight: 600;
-    color: #FFFFFF;
+    color: #2f2f22;
     border-bottom: 2px solid #a588be;
     width: fit-content;
 }
@@ -87,36 +87,36 @@ input {
     font-size: 16px;
     border-radius: 4px;
     padding-left: 12px;
-    background-color: #1A1A1A;
-    color: #FFFFFF;
-    border: 1px solid #333333;
+    background-color: #FFFFFF;
+    color: #2f2f22;
+    border: 1px solid #E0E0E0;
 }
 
 .ant-input-affix-wrapper,
 .ant-input-affix-wrapper-focused {
-    background-color: #1A1A1A !important;
-    border: 1px solid #333333 !important;
+    background-color: #FFFFFF !important;
+    border: 1px solid #E0E0E0 !important;
     box-shadow: none !important;
     border-radius: 5px;
 }
 
 .ant-input-affix-wrapper input {
-    background-color: #1A1A1A;
+    background-color: #FFFFFF;
     border: none;
     height: 48px;
     padding-left: 12px;
-    color: #FFFFFF;
+    color: #2f2f22;
     border-radius: 10px;
 }
 
 .ant-input-affix-wrapper input::placeholder {
-    color: #888888;
+    color: #AAAAAA;
 }
 
 input[formControlName="username"],
 input[formControlName="password"] {
-    background-color: #1A1A1A;
-    color: #FFFFFF;
+    background-color: #FFFFFF;
+    color: #2f2f22;
 }
 
 .login-form-button {
@@ -162,13 +162,13 @@ input[formControlName="password"] {
     font-size: 16px;
     font-weight: 600;
     border-radius: 6px;
-    color: #CCCCCC;
+    color: #666666;
 }
 
 span {
     height: 48px;
     font-size: 16px;
-    color: #CCCCCC;
+    color: #666666;
 }
 
 .gradient-background {
@@ -187,22 +187,41 @@ span {
     filter: blur(60px);
 }
 
+/* Four spheres with subtle colors for white background */
 .sphere-1 {
-    width: 40vw;
-    height: 40vw;
-    background: linear-gradient(40deg, #a588be, #1780C7);
-    top: -10%;
-    left: -10%;
+    width: 30vw;
+    height: 23vw;
+    background: linear-gradient(40deg, rgba(165, 136, 190, 0.25), rgba(165, 136, 190, 0.15));
+    top: -5%;
+    left: -5%;
     animation: float-1 15s ease-in-out infinite alternate;
 }
 
 .sphere-2 {
-    width: 45vw;
-    height: 45vw;
-    background: linear-gradient(40deg, #a588be, #80c65E);
-    bottom: -20%;
-    right: -10%;
+    width: 30vw;
+    height: 23vw;
+    background: linear-gradient(240deg, rgba(247, 176, 91, 0.2), rgba(247, 176, 91, 0.1));
+    top: -5%;
+    right: -5%;
     animation: float-2 18s ease-in-out infinite alternate;
+}
+
+.sphere-3 {
+    width: 30vw;
+    height: 23vw;
+    background: linear-gradient(120deg, rgba(23, 128, 199, 0.18), rgba(23, 128, 199, 0.08));
+    bottom: -5%;
+    left: -5%;
+    animation: float-3 20s ease-in-out infinite alternate;
+}
+
+.sphere-4 {
+    width: 30vw;
+    height: 23vw;
+    background: linear-gradient(300deg, rgba(128, 198, 94, 0.2), rgba(128, 198, 94, 0.1));
+    bottom: -5%;
+    right: -5%;
+    animation: float-4 22s ease-in-out infinite alternate;
 }
 
 // .noise-overlay {
@@ -224,9 +243,46 @@ span {
     height: 100%;
     background-size: 40px 40px;
     background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
     z-index: 2;
+}
+
+/* Animation keyframes */
+@keyframes float-1 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        transform: translate(10%, 10%) scale(1.1);
+    }
+}
+
+@keyframes float-2 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        transform: translate(-10%, 10%) scale(1.1);
+    }
+}
+
+@keyframes float-3 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        transform: translate(10%, -10%) scale(1.1);
+    }
+}
+
+@keyframes float-4 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        transform: translate(-10%, -10%) scale(1.1);
+    }
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
@@ -269,6 +325,13 @@ span {
         overflow: auto;
         padding: 20px 0;
     }
+    
+    /* Adjust spheres for mobile */
+    .sphere-1, .sphere-2, .sphere-3, .sphere-4 {
+        width: 40vw;
+        height: 30vw;
+        filter: blur(40px);
+    }
 }
 
 @media (max-width: 480px) {
@@ -284,5 +347,12 @@ span {
     .register-form-button {
         font-size: 14px;
         height: 48px;
+    }
+    
+    /* Further adjust spheres for mobile */
+    .sphere-1, .sphere-2, .sphere-3, .sphere-4 {
+        width: 50vw;
+        height: 35vw;
+        filter: blur(30px);
     }
 }

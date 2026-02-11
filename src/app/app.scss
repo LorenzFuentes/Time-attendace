@@ -1,21 +1,19 @@
 /* Import font first */
 @import url('https://api.fontshare.com/v2/css?f[]=synonym@400&f[]=chillax@600&display=swap');
 
-
-
-
 .inner-content {
     padding: 20px;
-    background: #0A0A0A;
+    background: #FFFFFF;
     min-height: auto;
     height: auto;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     // border: 1px solid #3A3A3A;
     max-width: 100%;
     box-sizing: border-box;
     margin-bottom: 0;
 }
+
 /* Dashboard Styles */
 .dashboard-txt {
     color: #a588be;
@@ -28,9 +26,6 @@
     padding-bottom: 4px;
 }
 
-
-
-
 .dashboard-container {
     display: flex;
     gap: 16px;
@@ -38,35 +33,26 @@
     flex-wrap: wrap;
 }
 
-
-
-
 .stat-card {
     flex: 1;
     min-width: 220px;
-    background: #0A0A0A;
-    background: linear-gradient(135deg, #0A0A0A 0%, #0A0A0A 100%);
+    background: #FFFFFF;
+    background: linear-gradient(135deg, #FFFFFF 0%, #FFFFFF 100%);
     border-radius: 8px;
     padding: 16px;
-    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
-    -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
-    -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.05);
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.05);
+    -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.05);
     // border: 1px solid #3A3A3A;
     display: flex;
     align-items: center;
     transition: all 0.2s ease;
 }
 
-
-
-
 .stat-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(165, 136, 190, 0.4);
+    box-shadow: 0 4px 12px rgba(165, 136, 190, 0.15);
 }
-
-
-
 
 .card-icon {
     margin-right: 16px;
@@ -75,119 +61,83 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(10, 10, 10, 0.05);
+    background: rgba(0, 0, 0, 0.02);
 }
-
-
-
 
 .card-icon .icon {
     font-size: 24px;
 }
 
-
-
-
 .card-content {
     flex: 1;
 }
 
-
-
-
 .card-title {
     font-size: 12px;
     font-weight: 600;
-    color: #CCCCCC;
+    color: #4A4A4A;
     margin: 0 0 6px 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-
-
-
 .card-count {
     font-size: 24px;
     font-weight: 600;
-    color: #FFFFFF;
+    color: #2f2f22;
     margin: 0 0 4px 0;
     line-height: 1.2;
 }
 
-
-
-
 .card-subtitle {
     font-size: 12px;
-    color: #AAAAAA;
+    color: #666666;
     margin: 0;
 }
-
-
-
 
 .card-datetime {
     font-size: 18px;
     font-weight: 600;
-    color: #FFFFFF;
+    color: #2f2f22;
     margin: 0 0 4px 0;
     line-height: 1.2;
 }
 
-
-
-
 .card-date {
     font-size: 12px;
-    color: #AAAAAA;
+    color: #666666;
     margin: 0;
 }
 
-
-
-
 /* Card color variants */
 .admin-card .card-icon {
-    background: rgba(128, 198, 94, 0.2);
+    background: rgba(128, 198, 94, 0.1);
     color: #80c65E;
 }
 
-
-
-
 .employee-card .card-icon {
-    background: rgba(23, 128, 199, 0.2);
+    background: rgba(23, 128, 199, 0.1);
     color: #1780C7;
 }
 
-
-
-
 .datetime-card .card-icon {
-    background: rgba(165, 136, 190, 0.2);
+    background: rgba(165, 136, 190, 0.1);
     color: #a588be;
 }
 
-
-
-
 .table-container {
     padding: 16px;
-    background: #0A0A0A;
+    background: #FFFFFF;
     min-height: auto;
     height: auto;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     // border: 1px solid #3A3A3A;
     max-width: 100%;
     box-sizing: border-box;
     margin-bottom: 0;
     margin-top: 16px;
 }
-
-
-
 
 /* Table Header */
 .header-container {
@@ -197,28 +147,19 @@
     margin-bottom: 20px;
 }
 
-
-
-
 h2 {
     margin: 0;
     font-size: 20px;
     font-weight: 600;
-    color: #FFFFFF;
+    color: #2f2f22;
     font-family: 'Chillax', sans-serif;
 }
-
-
-
 
 .header-right {
     display: flex;
     align-items: center;
     gap: 12px;
 }
-
-
-
 
 /* Buttons */
 .refresh-btn {
@@ -238,16 +179,10 @@ h2 {
     transition: all 0.2s ease;
 }
 
-
-
-
 .refresh-btn:hover {
     transform: rotate(90deg);
     background-color: #9379b0;
 }
-
-
-
 
 .addUser-btn, .pdf-btn, .csv-btn {
     border-radius: 6px;
@@ -266,53 +201,32 @@ h2 {
     transition: all 0.2s ease;
 }
 
-
-
-
 .addUser-btn {
     background-color: #80c65E;
     width: auto;
 }
 
-
-
-
 .addUser-btn:hover {
     background-color: #6ba84a;
 }
-
-
-
 
 .pdf-btn {
     background-color: #f7b05b;
     width: auto;
 }
 
-
-
-
 .pdf-btn:hover {
     background-color: #e69a3e;
 }
-
-
-
 
 .csv-btn {
     background-color: #1780C7;
     width: auto;
 }
 
-
-
-
 .csv-btn:hover {
     background-color: #126aa3;
 }
-
-
-
 
 .edit-btn {
     background: #80c65E;
@@ -329,16 +243,10 @@ h2 {
     transition: all 0.2s ease;
 }
 
-
-
-
 .edit-btn:hover {
     transform: translateY(-1px);
     background-color: #6ba84a;
 }
-
-
-
 
 .delete-btn {
     background: #f7b05b;
@@ -355,16 +263,10 @@ h2 {
     transition: all 0.2s ease;
 }
 
-
-
-
 .delete-btn:hover {
     transform: translateY(-1px);
     background-color: #e69a3e;
 }
-
-
-
 
 .edit-btn-lv {
     background: #80c65E;
@@ -381,16 +283,10 @@ h2 {
     transition: all 0.2s ease;
 }
 
-
-
-
 .edit-btn-lv:hover {
     transform: translateY(-1px);
     background-color: #6ba84a;
 }
-
-
-
 
 .delete-btn-lv {
     background: #f7b05b;
@@ -407,13 +303,11 @@ h2 {
     transition: all 0.2s ease;
 }
 
-
-
-
 .delete-btn-lv:hover {
     transform: translateY(-1px);
     background-color: #e69a3e;
 }
+
 /* Search Input */
 nz-input-search {
     padding-top: 12px;
@@ -421,48 +315,36 @@ nz-input-search {
     max-width: 250px;
 }
 
-
-
-
 input {
     border-radius: 6px;
-    background: #1A1A1A;
-    color: #FFFFFF;
+    background: #FFFFFF;
+    color: #2f2f22;
     font-size: 13px;
     padding: 8px 12px;
     height: 36px;
-    border: 1px solid #333333;
+    border: 1px solid #E0E0E0;
 }
-
-
-
 
 input:focus {
     border-color: #a588be;
-    box-shadow: 0 0 0 2px rgba(165, 136, 190, 0.3);
+    box-shadow: 0 0 0 2px rgba(165, 136, 190, 0.1);
     outline: none;
-    color: #FFFFFF;
+    color: #2f2f22;
 }
-
-
-
 
 // Chart
 #chart-container {
     padding: 20px;
-    background: #0A0A0A;
+    background: #FFFFFF;
     min-height: auto;
     height: auto;
     border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
     // border: 1px solid #3A3A3A;
     max-width: 100%;
     box-sizing: border-box;
     margin-top: 16px;
 }
-
-
-
 
 .charts-grid {
     display: grid;
@@ -470,20 +352,14 @@ input:focus {
     gap: 20px;
 }
 
-
-
-
 .chart-card {
-    background: #0A0A0A;
+    background: #FFFFFF;
     border-radius: 10px;
     padding: 20px;
     // border: 1px solid #3A3A3A;
     transition: transform 0.3s, box-shadow 0.3s;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
-
-
-
 
 .chart-header {
     display: flex;
@@ -494,18 +370,12 @@ input:focus {
     border-bottom: 1px solid #a588be;
 }
 
-
-
-
 .chart-title {
-    color: #FFFFFF;
+    color: #2f2f2f;
     margin: 0;
     flex: 1;
     font-size: 18px;
 }
-
-
-
 
 .chart-download-btn {
     background: transparent;
@@ -519,42 +389,31 @@ input:focus {
     transition: all 0.2s ease;
     min-width: 40px;
     min-height: 40px;
-    color: #FFFFFF;
+    color: #2f2f2f;
 }
-
-
-
 
 .chart-download-btn:hover {
     background: #a588be;
     border-color: #a588be;
     transform: translateY(-1px);
-    box-shadow: 0 3px 10px rgba(165, 136, 190, 0.3);
+    box-shadow: 0 3px 10px rgba(165, 136, 190, 0.2);
     color: #FFFFFF;
 }
-
-
-
 
 .chart-download-btn:active {
     transform: translateY(0);
 }
 
-
-
-
 .chart-download-btn svg {
     transition: transform 0.3s ease;
-    fill: #FFFFFF;
+    fill: #2f2f2f;
 }
-
-
-
 
 .chart-download-btn:hover svg {
     transform: scale(1.1);
     fill: #FFFFFF;
 }
+
 /* Table Deep Styling */
 :host ::ng-deep {
     .ant-input-search .ant-input-suffix .anticon {
@@ -565,11 +424,11 @@ input:focus {
         // border: 1px solid #3A3A3A;
         border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
    
     .ant-table {
-        background: #0A0A0A;
+        background: #FFFFFF;
         // border: 1px solid #3A3A3A;
     }
    
@@ -583,16 +442,16 @@ input:focus {
     }
    
     .ant-table-tbody > tr > td {
-        background-color: #0A0A0A;
-        color: #FFFFFF;
-        border-bottom: 1px solid #333333 !important;
+        background-color: #FFFFFF;
+        color: #2f2f22;
+        border-bottom: 1px solid #F0F0F0 !important;
         padding: 10px 16px !important;
         font-size: 13px;
         line-height: 1.4;
     }
    
     .ant-table-tbody > tr:hover > td {
-        background-color: rgba(165, 136, 190, 0.15) !important;
+        background-color: rgba(165, 136, 190, 0.05) !important;
     }
    
     .ant-table-tbody > tr:last-child > td {
@@ -606,14 +465,14 @@ input:focus {
     }
    
     .ant-pagination .ant-pagination-item-link {
-        background-color: #1A1A1A !important;
+        background-color: #FFFFFF !important;
         // border: 1px solid #3A3A3A !important;
-        color: #FFFFFF !important;
+        color: #2f2f22 !important;
         font-size: 12px;
         padding: 6px 10px;
         height: 32px;
         border-radius: 4px;
-        border: 1px solid #333333;
+        border: 1px solid #E0E0E0;
     }
    
     .ant-pagination .ant-pagination-item-link:hover {
@@ -628,12 +487,12 @@ input:focus {
         height: 32px;
         line-height: 30px;
         border-radius: 4px;
-        border: 1px solid #333333;
-        background-color: #1A1A1A;
+        border: 1px solid #E0E0E0;
+        background-color: #FFFFFF;
     }
    
     .ant-pagination .ant-pagination-item a {
-        color: #FFFFFF !important;
+        color: #2f2f22 !important;
     }
    
     .ant-pagination .ant-pagination-item:hover {
@@ -664,9 +523,6 @@ input:focus {
         color: #FFFFFF;
     }
 
-
-
-
     .ant-input-search-button {
         background-color: #a588be !important;
         border-color: #a588be !important;
@@ -692,13 +548,10 @@ input:focus {
         color: #ffffff !important;
     }
 
-
-
-
     .ant-tag {
         color: #f7b05b !important;
-        background: linear-gradient(135deg, rgba(247, 176, 91, 0.2) 0%, rgba(247, 176, 91, 0.3) 100%) !important;
-        border: 1px solid rgba(247, 176, 91, 0.4) !important;
+        background: linear-gradient(135deg, rgba(247, 176, 91, 0.08) 0%, rgba(247, 176, 91, 0.12) 100%) !important;
+        border: 1px solid rgba(247, 176, 91, 0.2) !important;
         border-radius: 16px !important;
         padding: 4px 12px !important;
         font-size: 12px !important;
@@ -707,58 +560,36 @@ input:focus {
     }
 }
 
-
-
-
-
-
-
-
- /* Attendance status colors */
+/* Attendance status colors */
 .ant-tag.ant-tag-green {
   color: #80c65E !important;
-  background: linear-gradient(135deg, rgba(128, 198, 94, 0.2) 0%, rgba(128, 198, 94, 0.3) 100%) !important;
-  border: 1px solid rgba(128, 198, 94, 0.25) !important;
+  background: linear-gradient(135deg, rgba(128, 198, 94, 0.08) 0%, rgba(128, 198, 94, 0.12) 100%) !important;
+  border: 1px solid rgba(128, 198, 94, 0.15) !important;
 }
-
-
-
 
 .ant-tag.ant-tag-red {
   color: #f7b05b !important;
-  background: linear-gradient(135deg, rgba(247, 176, 91, 0.2) 0%, rgba(247, 176, 91, 0.3) 100%) !important;
-  border: 1px solid rgba(247, 176, 91, 0.25) !important;
+  background: linear-gradient(135deg, rgba(247, 176, 91, 0.08) 0%, rgba(247, 176, 91, 0.12) 100%) !important;
+  border: 1px solid rgba(247, 176, 91, 0.15) !important;
 }
-
-
-
 
 .ant-tag.ant-tag-orange {
   color: #f7b05b !important;
-  background: linear-gradient(135deg, rgba(247, 176, 91, 0.2) 0%, rgba(247, 176, 91, 0.3) 100%) !important;
-  border: 1px solid rgba(247, 176, 91, 0.25) !important;
+  background: linear-gradient(135deg, rgba(247, 176, 91, 0.08) 0%, rgba(247, 176, 91, 0.12) 100%) !important;
+  border: 1px solid rgba(247, 176, 91, 0.15) !important;
 }
-
-
-
 
 .ant-tag.ant-tag-blue {
   color: #1780C7 !important;
-  background: linear-gradient(135deg, rgba(23, 128, 199, 0.2) 0%, rgba(23, 128, 199, 0.3) 100%) !important;
-  border: 1px solid rgba(23, 128, 199, 0.25) !important;
+  background: linear-gradient(135deg, rgba(23, 128, 199, 0.08) 0%, rgba(23, 128, 199, 0.12) 100%) !important;
+  border: 1px solid rgba(23, 128, 199, 0.15) !important;
 }
-
-
-
 
 .ant-tag.ant-tag-purple {
   color: #a588be !important;
-  background: linear-gradient(135deg, rgba(165, 136, 190, 0.2) 0%, rgba(165, 136, 190, 0.3) 100%) !important;
-  border: 1px solid rgba(165, 136, 190, 0.25) !important;
+  background: linear-gradient(135deg, rgba(165, 136, 190, 0.08) 0%, rgba(165, 136, 190, 0.12) 100%) !important;
+  border: 1px solid rgba(165, 136, 190, 0.15) !important;
 }
-
-
-
 
 /* Common tag styles */
 .ant-tag {
@@ -769,21 +600,12 @@ input:focus {
   backdrop-filter: blur(4px) !important;
 }
 
-
-
-
 // Admin Profile
-
-
-
 
 .profile-content-wrapper {
     max-width: 1200px;
     margin: 0 auto;
 }
-
-
-
 
 /* Profile header section (Profile)*/
 .profile-header {
@@ -830,17 +652,11 @@ input:focus {
     }
 }
 
-
-
-
 /* Avatar styling (Profile)*/
 nz-avatar {
     background: #f7b05b !important;
     color: #FFFFFF !important;
 }
-
-
-
 
 /* Main content layout (Profile)*/
 .profile-content-row {
@@ -849,17 +665,11 @@ nz-avatar {
     flex-wrap: wrap;
 }
 
-
-
-
 .profile-details-col {
     flex: 3;
     min-width: 300px;
-    background-color: #0A0A0A;
+    background-color: #FFFFFF;
 }
-
-
-
 
 .quick-actions-col {
     flex: 1;
@@ -867,32 +677,22 @@ nz-avatar {
     max-width: 300px !important;
 }
 
-
-
-
-
-
-
-
 /* Card styling */
 :host ::ng-deep .ant-card,
 :host ::ng-deep .ant-card-head,
 :host ::ng-deep .ant-card-body {
-    background: #0A0A0A !important;
-    color: #FFFFFF !important;
+    background: #FFFFFF !important;
+    color: #2f2f2f !important;
     // border-color: #3A3A3A !important;
 }
 
-
-
-
 ::ng-deep .ant-card {
-    background: #0A0A0A;
+    background: #FFFFFF;
     // border: 1px solid #3A3A3A;
-    color: #FFFFFF;
+    color: #2f2f2f;
    
     .ant-card-head {
-        background: #0A0A0A;
+        background: #FFFFFF;
         min-height: 48px !important;
         padding: 0 16px !important;
         // border-bottom: 1px solid #5162fa;
@@ -900,16 +700,13 @@ nz-avatar {
         .ant-card-head-title {
             font-size: 16px !important;
             padding: 12px 0 !important;
-            color: #FFFFFF;
+            color: #2f2f2f;
         }
     }
     .ant-card-body {
         padding: 16px !important;
     }
 }
-
-
-
 
 /* Quick actions card (Profile)*/
 .quick-actions-card {
@@ -928,11 +725,11 @@ nz-avatar {
         gap: 8px;
         height: 48px;
         padding: 0 16px;
-        background: #1A1A1A;
+        background: #F5F7FA;
         // border: 1px solid #3A3A3A;
-        color: #FFFFFF;
+        color: #2f2f2f;
         transition: all 0.3s;
-        border: 1px solid #333333;
+        border: 1px solid #E0E0E0;
        
         &:hover {
             background: #a588be;
@@ -942,7 +739,7 @@ nz-avatar {
        
         nz-icon {
             font-size: 14px !important;
-            color: #FFFFFF;
+            color: #2f2f2f;
         }
        
         span {
@@ -952,60 +749,42 @@ nz-avatar {
     }
 }
 
-
-
-
 /* Details grid layout (Profile)*/
 .details-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 12px !important;
-    background-color: #0A0A0A;
+    background-color: #FFFFFF;
 }
-
-
-
 
 .detail-item {
     padding: 8px 0 !important;
     border-bottom: 1px solid #a588be;
-    background-color: #0A0A0A;
+    background-color: #FFFFFF;
 }
-
-
-
 
 .detail-label {
     display: block;
     font-size: 12px !important;
     margin-bottom: 2px !important;
-    color: #AAAAAA;
+    color: #666666;
 }
-
-
-
 
 .detail-value {
     display: block;
     font-size: 14px !important;
     font-weight: 500;
-    color: #FFFFFF;
+    color: #2f2f2f;
 }
-
-
-
 
 /* System stats card */
 .stats-card {
     margin-top: 16px;
-    background: #0A0A0A;
+    background: #FFFFFF;
 }
 
-
-
-
 .system-stats {
-    background: #0A0A0A;
+    background: #FFFFFF;
     border-radius: 8px;
     .system-stat-item {
         display: flex;
@@ -1024,49 +803,35 @@ nz-avatar {
         .system-stat-info {
             .system-stat-value {
                 font-weight: 600;
-                color: #FFFFFF;
+                color: #2f2f2f;
                 font-size: 15px;
             }
            
             .system-stat-label {
-                color: #AAAAAA;
+                color: #666666;
                 font-size: 13px;
             }
         }
     }
 }
 
-
-
-
 .system-stats .system-stat-item:nth-child(2) nz-icon {
     color: #1780C7;
 }
-
-
-
 
 .system-stats .system-stat-item:nth-child(3) nz-icon {
     color: #a588be;
 }
 
-
-
-
 .system-stats .system-stat-item:nth-child(4) nz-icon {
     color: #f7b05b;
 }
 
-
-
-
-// Calendar
-
-// Calendar - DARK MODE
+// Calendar - WHITE MODE
 
 :host ::ng-deep {
     .cln-txt {
-        color: #fff;
+        color: #2f2f2f;
         font-family: 'Chillax', sans-serif;
     }
   /* Calendar header */
@@ -1074,12 +839,12 @@ nz-avatar {
     background: #a588be;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    
   }
+  
   .ant-select-selector,.ant-radio-button-wrapper {
-      background: #1A1A1A !important;
-      border-color: #333333 !important;
-      color: #FFFFFF !important;
+      background: #F5F5F5 !important;
+      border-color: #E0E0E0 !important;
+      color: #2f2f2f !important;
       margin-right: 10px;
       border-radius: 5px;
   }
@@ -1091,25 +856,25 @@ nz-avatar {
   
   /* Calendar cell numbers - normal days */
   .ant-picker-calendar .ant-picker-cell .ant-picker-cell-inner {
-    color: #FFFFFF !important;
+    color: #2f2f2f !important;
   }
   
   /* Calendar cell numbers - today */
   .ant-picker-calendar .ant-picker-cell-today .ant-picker-cell-inner {
-    color: #FFFFFF;
+    color: #2f2f2f;
     border: 2px solid #1780C7;
   }
   
   /* Calendar cell numbers - selected day */
   .ant-picker-calendar .ant-picker-cell-selected .ant-picker-cell-inner {
-    background: #402a53 !important;
+    background: #a588be !important;
     color: #FFFFFF !important;
   }
   
   /* Calendar cell numbers - hover state */
   .ant-picker-calendar .ant-picker-cell:hover .ant-picker-cell-inner {
-    color: #FFFFFF !important;
-    background: rgba(165, 136, 190, 0.2) !important;
+    color: #2f2f2f !important;
+    background: rgba(165, 136, 190, 0.1) !important;
   }
   
   // Calendar panel
@@ -1117,28 +882,30 @@ nz-avatar {
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
     border: 1px solid #a588be;
+    background: #FFFFFF;
   }
   
   /* Calendar body background */
   .ant-picker-calendar .ant-picker-panel .ant-picker-body {
-    background: #0A0A0A;
+    background: #FFFFFF;
   }
   
   /* Calendar cell background */
   .ant-picker-calendar .ant-picker-cell {
-    background: #0A0A0A;
+    background: #FFFFFF;
   }
   
   /* Calendar cell hover background */
   .ant-picker-calendar .ant-picker-cell:hover {
-    background: rgba(165, 136, 190, 0.1);
+    background: rgba(165, 136, 190, 0.05);
   }
+  
   .ant-alert {
-    background: #1A1A1A;
+    background: #FFFFFF;
     border: 2px solid #a588be;
     border-radius: 6px;
     margin-bottom: 16px;
-    color: #FFFFFF;
+    color: #2f2f2f;
   }
   
   .ant-alert-message {
@@ -1147,9 +914,9 @@ nz-avatar {
   }
   
   .ant-alert-info {
-    background: #1A1A1A;
+    background: #FFFFFF;
     border-color: #a588be;
-    color: #FFFFFF;
+    color: #2f2f2f;
   }
   
   .ant-alert-info .ant-alert-icon {
@@ -1158,22 +925,22 @@ nz-avatar {
   
   /* Calendar weekend cells */
   .ant-picker-calendar .ant-picker-cell.ant-picker-cell-weekend .ant-picker-cell-inner {
-    color: #CCCCCC !important;
+    color: #666666 !important;
   }
   
   /* Calendar disabled cells */
   .ant-picker-calendar .ant-picker-cell.ant-picker-cell-disabled .ant-picker-cell-inner {
-    color: #666666 !important;
+    color: #CCCCCC !important;
   }
   
   /* Calendar year/month selectors */
   .ant-picker-calendar .ant-picker-header {
-    background: #0A0A0A;
-    color: #FFFFFF;
+    background: #FFFFFF;
+    color: #2f2f2f;
   }
   
   .ant-picker-calendar .ant-picker-header button {
-    color: #FFFFFF;
+    color: #2f2f2f;
   }
   
   .ant-picker-calendar .ant-picker-header button:hover {
@@ -1183,18 +950,18 @@ nz-avatar {
   /* Calendar month/year panel */
   .ant-picker-calendar .ant-picker-month-panel,
   .ant-picker-calendar .ant-picker-year-panel {
-    background: #0A0A0A;
+    background: #FFFFFF;
   }
   
   .ant-picker-calendar .ant-picker-month-panel-cell .ant-picker-month-panel-cell-inner,
   .ant-picker-calendar .ant-picker-year-panel-cell .ant-picker-year-panel-cell-inner {
-    color: #FFFFFF;
+    color: #2f2f2f;
   }
   
   .ant-picker-calendar .ant-picker-month-panel-cell:hover .ant-picker-month-panel-cell-inner,
   .ant-picker-calendar .ant-picker-year-panel-cell:hover .ant-picker-year-panel-cell-inner {
-    background: rgba(165, 136, 190, 0.2);
-    color: #FFFFFF;
+    background: rgba(165, 136, 190, 0.1);
+    color: #2f2f2f;
   }
 }
 
@@ -1205,18 +972,12 @@ nz-avatar {
   overflow: hidden;
 }
 
-
-
-
 ::ng-deep .ant-modal-header {
   /* Modal header */
   background: linear-gradient(135deg, #80c65E 0%, #a588be 100%);
   border-bottom: none;
   padding: 20px 24px;
 }
-
-
-
 
 ::ng-deep .ant-modal-title {
   /* Modal title */
@@ -1225,78 +986,54 @@ nz-avatar {
   font-weight: 600;
 }
 
-
-
-
 ::ng-deep .ant-modal-body {
   /* Modal body */
   padding: 24px;
   max-height: 70vh;
   overflow-y: auto;
-  background: #0A0A0A;
-  color: #FFFFFF;
+  background: #FFFFFF;
+  color: #2f2f2f;
 }
-
-
-
 
 ::ng-deep .ant-modal-footer {
   /* Modal footer */
-  border-top: 1px solid #333333;
+  border-top: 1px solid #E0E0E0;
   padding: 16px 24px;
-  background: #0A0A0A;
+  background: #FFFFFF;
 }
-
-
-
 
 ::ng-deep .ant-modal-close {
   /* Close button */
   color: white !important;
 }
 
-
-
-
 ::ng-deep .ant-modal-close:hover {
   color: rgba(255, 255, 255, 0.8) !important;
 }
-
-
-
 
 /* Custom form styles inside modal */
 ::ng-deep .attendance-modal .ant-form-item {
   margin-bottom: 16px;
 }
 
-
-
-
 ::ng-deep .attendance-modal .ant-form-item-label > label {
   font-weight: 500;
-  color: #FFFFFF;
+  color: #2f2f2f;
 }
-
-
-
 
 /* Custom input styles */
 ::ng-deep .attendance-modal .ant-input,
 ::ng-deep .attendance-modal .ant-select-selector,
 ::ng-deep .attendance-modal .ant-picker {
   border-radius: 6px !important;
-  border: 1px solid #333333 !important;
-  background: #1A1A1A !important;
-  color: #FFFFFF !important;
+  border: 1px solid #E0E0E0 !important;
+  background: #FFFFFF !important;
+  color: #2f2f2f !important;
 }
-
-
-
 
 ::ng-deep .attendance-modal .ant-input:focus,
 ::ng-deep .attendance-modal .ant-select-focused .ant-select-selector,
 ::ng-deep .attendance-modal .ant-picker-focused {
   border-color: #a588be !important;
-  box-shadow: 0 0 0 2px rgba(165, 136, 190, 0.2) !important;
+  box-shadow: 0 0 0 2px rgba(165, 136, 190, 0.1) !important;
 }

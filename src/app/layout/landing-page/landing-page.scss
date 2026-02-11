@@ -7,7 +7,7 @@
 .page {
   font-family: 'Inter', 'Helvetica Neue', sans-serif;
   overflow: hidden;
-  background-color: #0A0A0A;
+  background-color: #FFFFFF;
   height: 100vh;
   display: flex;
   align-items: center;
@@ -87,21 +87,39 @@
 }
 
 .sphere-1 {
-    width: 40vw;
-    height: 40vw;
-    background: linear-gradient(40deg, #1780C7, #a588be);
-    top: -10%;
-    left: -10%;
+    width: 30vw;
+    height: 23vw;
+    background: linear-gradient(40deg, #a588be7d, #a588be74);
+    top: -5%;
+    left: -5%;
     animation: float-1 15s ease-in-out infinite alternate;
 }
 
 .sphere-2 {
-    width: 45vw;
-    height: 45vw;
-    background: linear-gradient(240deg, #1780C7, #a588be);
-    bottom: -20%;
-    right: -10%;
+    width: 30vw;
+    height: 23vw;
+    background: linear-gradient(240deg, #f7b15b71, #f7b15b71);
+    top: -5%;
+    right: -5%;
     animation: float-2 18s ease-in-out infinite alternate;
+}
+
+.sphere-3 {
+    width: 30vw;
+    height: 23vw;
+    background: linear-gradient(120deg, #1781c770, #1781c76e);
+    bottom: -5%;
+    left: -5%;
+    animation: float-3 20s ease-in-out infinite alternate;
+}
+
+.sphere-4 {
+    width: 30vw;
+    height: 23vw;
+    background: linear-gradient(300deg, #81c65e71, #80c65e71);
+    bottom: -5%;
+    right: -5%;
+    animation: float-4 22s ease-in-out infinite alternate;
 }
 
 .noise-overlay {
@@ -128,18 +146,25 @@
         transform: translate(0, 0) scale(1);
     }
     100% {
-        transform: translate(-10%, -5%) scale(1.15);
+        transform: translate(-10%, 10%) scale(1.1);
     }
 }
 
 @keyframes float-3 {
     0% {
         transform: translate(0, 0) scale(1);
-        opacity: 0.3;
     }
     100% {
-        transform: translate(-5%, 10%) scale(1.05);
-        opacity: 0.6;
+        transform: translate(10%, -10%) scale(1.1);
+    }
+}
+
+@keyframes float-4 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        transform: translate(-10%, -10%) scale(1.1);
     }
 }
 
@@ -151,8 +176,8 @@
     height: 100%;
     background-size: 40px 40px;
     background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+        linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
     z-index: 2;
 }
 
@@ -166,3 +191,4 @@
         transform: translate(-50%, -50%) scale(1.1);
     }
 }
+

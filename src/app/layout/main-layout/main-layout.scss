@@ -1,28 +1,29 @@
 :host ::ng-deep .ant-layout {
     height: 100vh;
     min-height: 100vh;
-    background-color: #101010;
+    background-color: #F5F7FA;
 }
+
 :host ::ng-deep .ant-layout-sider {
     height: 100vh;
     overflow: auto;
     position: fixed;
     left: 0;
     z-index: 100;
-    background: linear-gradient(179deg, rgba(10,10,10,1) 0%, rgba(10,10,10,1) 55%, rgba(165, 136, 190, 0.2) 100%);
-    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(179deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 55%, rgba(165, 136, 190, 0.1) 100%);
+    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.05);
     overflow-x: hidden !important;
     overflow-y: auto !important;
 }
 
 :host ::ng-deep .ant-layout-sider .ant-menu {
     background-color: transparent;
-    color: #FFFFFF;
+    color: #2f2f22;
     border-right: none;
 }
 
 :host ::ng-deep .ant-layout-sider .ant-menu-item {
-    color: #FFFFFF;
+    color: #2f2f22;
 }
 
 :host ::ng-deep .ant-layout-sider .ant-menu-item:hover {
@@ -31,8 +32,9 @@
 }
 
 :host ::ng-deep .ant-layout-sider .ant-menu-submenu-title {
-    color: #FFFFFF;
+    color: #2f2f22;
 }
+
 :host ::ng-deep .ant-layout-sider .ant-menu-submenu-title:hover {
     color: #FFFFFF;
     background-color: #a588be;
@@ -73,7 +75,7 @@ h1 {
 }
 
 nz-header {
-    background: #0A0A0A;
+    background: #FFFFFF;
     padding: 0;
     position: sticky;
     top: 0;
@@ -82,9 +84,9 @@ nz-header {
 }
 
 .main-header {
-    background: #0A0A0A;
+    background: #FFFFFF;
     padding: 0;
-    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.5);
+    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.03);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -103,7 +105,7 @@ nz-header {
         padding-right: 24px;
        
         .welcome-text {
-            color: #FFFFFF;
+            color: #2f2f22;
             font-size: 14px;
             font-weight: 500;
         }
@@ -127,7 +129,7 @@ nz-content {
     flex: 5;
     overflow-y: auto;
     overflow-x: hidden;
-    background-color: #101010;
+    background-color: #F5F7FA;
     transition: margin-left 0.2s;
     margin-left: 50px;
     width: 95%;
@@ -155,7 +157,7 @@ nz-content {
 nz-footer {
     text-align: center;
     padding: 24px 50px;
-    background-color: #0A0A0A;
-    color: #FFFFFF;
-    border-top: 1px solid #333333;
+    background-color: #FFFFFF;
+    color: #2f2f2f;
+    border-top: 1px solid #E0E0E0;
 }
