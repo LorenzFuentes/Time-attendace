@@ -7,7 +7,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #FCFFFD;
+    background-color: #0A0A0A;
     position: relative;
     overflow: hidden;
 }
@@ -17,9 +17,9 @@
     width: 90%;
     max-width: 1100px;
     min-height: 520px;
-    background: #FCFFFD;
+    background: #0A0A0A;
     border-radius: 30px;
-    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);
+    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.5);
     overflow: hidden;
     flex-wrap: wrap;
     position: relative;
@@ -33,10 +33,10 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background: linear-gradient(90deg, rgba(81, 98, 250, 1) 0%, rgb(37, 37, 88) 100%);
+    background: linear-gradient(135deg, #1780C7 0%, #a588be 100%);
     padding: 40px;
     border-radius: 30px 70px 70px 30px;
-    box-shadow: 8px 0 16px rgba(0, 0, 0, 0.429);
+    box-shadow: 8px 0 16px rgba(0, 0, 0, 0.5);
 }
 
 .login-left h1 {
@@ -77,8 +77,8 @@
     text-align: left;
     margin-bottom: 24px;
     font-weight: 600;
-    color: #2f2f22;
-    border-bottom: 2px solid #5162fa;
+    color: #FFFFFF;
+    border-bottom: 2px solid #a588be;
     width: fit-content;
 }
 
@@ -87,33 +87,36 @@ input {
     font-size: 16px;
     border-radius: 4px;
     padding-left: 12px;
+    background-color: #1A1A1A;
+    color: #FFFFFF;
+    border: 1px solid #333333;
 }
 
 .ant-input-affix-wrapper,
 .ant-input-affix-wrapper-focused {
-    background-color: #FCFFFD !important;
-    border: 1px solid black !important;
+    background-color: #1A1A1A !important;
+    border: 1px solid #333333 !important;
     box-shadow: none !important;
     border-radius: 5px;
 }
 
 .ant-input-affix-wrapper input {
-    background-color: #FCFFFD;
+    background-color: #1A1A1A;
     border: none;
     height: 48px;
     padding-left: 12px;
-    color: 2f2f22;
+    color: #FFFFFF;
     border-radius: 10px;
 }
 
 .ant-input-affix-wrapper input::placeholder {
-    color: #2f2f22;
+    color: #888888;
 }
 
 input[formControlName="username"],
 input[formControlName="password"] {
-    background-color: #37353E;
-    color: #2f2f22;
+    background-color: #1A1A1A;
+    color: #FFFFFF;
 }
 
 .login-form-button {
@@ -122,7 +125,7 @@ input[formControlName="password"] {
     font-size: 18px;
     font-weight: 700;
     border-radius: 6px;
-    background-color: #5162fa;
+    background-color: #1780C7;
     color: #fff;
     // outline: 1px solid #fff;
     border: none;
@@ -134,17 +137,22 @@ input[formControlName="password"] {
     font-size: 16px;
     font-weight: 700;
     border-radius: 6px;
-    background-color: #5162fa;
+    background-color: #80c65E;
     color: #fff;
     // outline: 1px solid #fff;
     border: none;
     margin-top: 24px;
 }
 
-.login-form-button:hover,
+.login-form-button:hover {
+    color: #FFFFFF;
+    background-color: #a588be;
+    transition: 0.3s;
+}
+
 .register-form-button:hover {
-    color: #5162fa;
-    background-color: #ddd;
+    color: #FFFFFF;
+    background-color: #6ba84a;
     transition: 0.3s;
 }
 
@@ -154,13 +162,13 @@ input[formControlName="password"] {
     font-size: 16px;
     font-weight: 600;
     border-radius: 6px;
-    color: #2f2f22;
+    color: #CCCCCC;
 }
 
 span {
     height: 48px;
     font-size: 16px;
-    color: #2f2f22;
+    color: #CCCCCC;
 }
 
 .gradient-background {
@@ -182,7 +190,8 @@ span {
 .sphere-1 {
     width: 40vw;
     height: 40vw;
-    background: linear-gradient(40deg,#000000 , #5162fa);    top: -10%;
+    background: linear-gradient(40deg, #a588be, #1780C7);
+    top: -10%;
     left: -10%;
     animation: float-1 15s ease-in-out infinite alternate;
 }
@@ -190,7 +199,8 @@ span {
 .sphere-2 {
     width: 45vw;
     height: 45vw;
-    background: linear-gradient(40deg,#000000 , #5162fa);    bottom: -20%;
+    background: linear-gradient(40deg, #a588be, #80c65E);
+    bottom: -20%;
     right: -10%;
     animation: float-2 18s ease-in-out infinite alternate;
 }
@@ -214,8 +224,8 @@ span {
     height: 100%;
     background-size: 40px 40px;
     background-image: 
-        linear-gradient(to right, rgba(3, 3, 3, 0.100) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.100) 1px, transparent 1px);
+        linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
     z-index: 2;
 }
 
