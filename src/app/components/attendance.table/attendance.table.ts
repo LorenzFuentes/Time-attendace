@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { AttendanceService } from '../../service/attendance-service/attendance'; 
+import { AttendanceService } from '../../service/attendance-service/attendance';
 import { UserService } from '../../service/user-service/user';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { getISOWeek } from 'date-fns';
+import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd/i18n';
 
 // NG-ZORRO Modules
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -72,23 +74,33 @@ export class AttendanceTable implements OnInit {
   currentDate: string = '';
   searchValue: string = '';
 
+  // Modal properties
   isAddModalVisible = false;
+  addAttendanceForm!: FormGroup;
+  selectedEmployee: Employee | null = null;
   employeeList: Employee[] = [];
   isEmployeesLoading = false;
   
   private searchSubject = new Subject<string>();
   private searchSubscription!: Subscription;
 
+  // Date picker properties
+  date = null;
+  isEnglish = false;
+
   constructor(
-    private attendanceService: AttendanceService, 
+    private attendanceService: AttendanceService,
     private userService: UserService,
     private message: NzMessageService,
-    private modal: NzModalService
-  ) {} 
+    private fb: FormBuilder,
+    private modal: NzModalService,
+    private i18n: NzI18nService
+  ) {}
 
   ngOnInit(): void {
     this.loadAttendanceData();
     this.loadEmployeeList();
+    this.initForm();
 
     this.searchSubscription = this.searchSubject
       .pipe(debounceTime(300))
@@ -97,41 +109,267 @@ export class AttendanceTable implements OnInit {
       });
   }
 
-  // MODAL METHODS 
+  // ========== DATE PICKER METHODS ==========
+  onChange(result: Date): void {
+    console.log('onChange: ', result);
+  }
+
+  getWeek(result: Date): void {
+    console.log('week: ', getISOWeek(result));
+  }
+
+  changeLanguage(): void {
+    this.i18n.setLocale(this.isEnglish ? zh_CN : en_US);
+    this.isEnglish = !this.isEnglish;
+  }
+
+  // ========== MODAL METHODS ==========
+  initForm(): void {
+    this.addAttendanceForm = this.fb.group({
+      employeeId: [null, [Validators.required]],
+      date: [null, [Validators.required]],
+      timeIn: [null, [Validators.required]],
+      timeOut: [null],
+      status: ['present', [Validators.required]]
+    });
+  }
+
   showAddModal(): void {
+    if (this.employeeList.length === 0) {
+      this.loadEmployeeList();
+    }
+    
     this.isAddModalVisible = true;
+    this.selectedEmployee = null;
+    this.addAttendanceForm.reset({
+      status: 'present'
+    });
   }
 
   handleCancel(): void {
     this.isAddModalVisible = false;
+    this.addAttendanceForm.reset();
+    this.selectedEmployee = null;
   }
 
+  handleOk(): void {
+    if (this.isFormValid()) {
+      const formValue = this.addAttendanceForm.value;
+      const selectedEmp = this.employeeList.find(emp => emp.id === formValue.employeeId);
+      
+      if (selectedEmp) {
+        // Generate the next numerical ID as string
+        const nextId = this.generateNextId().toString();
+        
+        const newAttendance: any = {
+          id: nextId,
+          date: this.formatDate(formValue.date),
+          employeeId: formValue.employeeId,
+          firstName: selectedEmp.firstName,
+          lastName: selectedEmp.lastName,
+          position: selectedEmp.position,
+          department: selectedEmp.department,
+          'time-in': this.formatTime(formValue.timeIn),
+          'time-out': formValue.timeOut ? this.formatTime(formValue.timeOut) : '--',
+          status: formValue.status
+        };
 
+        // Save to service
+        this.saveAttendance(newAttendance);
+      }
+    }
+  }
 
-  //  TABLE EDIT METHODS 
-  onEditEmployeeChange(date: string, employeeId: string): void {
+  saveAttendance(newAttendance: any): void {
+    this.attendanceService.addAttendance(newAttendance).subscribe({
+      next: (response) => {
+        this.attendanceData.push(response);
+        this.filteredData = [...this.attendanceData];
+        this.updateEditCache();
+        
+        // Show success message and close modal
+        this.message.success('Attendance record added successfully!');
+        this.isAddModalVisible = false;
+        this.addAttendanceForm.reset();
+        this.selectedEmployee = null;
+      },
+      error: (error) => {
+        console.error('Error adding attendance:', error);
+        this.message.error('Failed to add attendance record');
+      }
+    });
+  }
+
+  generateNextId(): number {
+    if (this.attendanceData.length === 0) {
+      return 1;
+    }
+    
+    const ids = this.attendanceData
+      .map(item => item.id)
+      .filter(id => id !== undefined && id !== null)
+      .map(id => {
+        const num = Number(id);
+        return isNaN(num) ? 0 : num;
+      });
+    
+    if (ids.length === 0) {
+      return 1;
+    }
+    
+    const maxId = Math.max(...ids);
+    return maxId + 1;
+  }
+
+  onEmployeeChange(employeeId: string): void {
+    this.selectedEmployee = this.employeeList.find(emp => emp.id === employeeId) || null;
+  }
+
+  isFormValid(): boolean {
+    return this.addAttendanceForm.valid && !!this.addAttendanceForm.value.employeeId;
+  }
+
+  // ========== TABLE EDIT METHODS ==========
+  updateEditCache(): void {
+    this.editCache = {};
+    this.attendanceData.forEach(item => {
+      // Use ID as the key instead of date
+      this.editCache[item.id] = {
+        edit: false,
+        data: { ...item }
+      };
+    });
+  }
+
+  startEdit(id: string): void {
+    if (this.editCache[id]) {
+      // Make sure we have the latest data in the edit cache
+      const record = this.attendanceData.find(item => item.id === id);
+      if (record) {
+        this.editCache[id].data = { ...record };
+      }
+      this.editCache[id].edit = true;
+    }
+  }
+
+  cancelEdit(id: string): void {
+    const record = this.attendanceData.find(item => item.id === id);
+    if (record) {
+      this.editCache[id] = {
+        data: { ...record },
+        edit: false
+      };
+    }
+  }
+
+  saveEdit(id: string): void {
+    if (!this.isEditFormValid(id)) {
+      this.message.error('Please fill all required fields');
+      return;
+    }
+
+    const index = this.attendanceData.findIndex(item => item.id === id);
+    if (index !== -1 && this.editCache[id]) {
+      const existingId = this.attendanceData[index].id?.toString() || '';
+      
+      // Get the edited data
+      const updatedData = {
+        ...this.editCache[id].data,
+        id: existingId
+      };
+      
+      // Call service to update
+      this.attendanceService.updateAttendance(existingId, updatedData).subscribe({
+        next: () => {
+          // Update local data
+          Object.assign(this.attendanceData[index], updatedData);
+          
+          // Update filtered data if not searching
+          if (!this.searchValue.trim()) {
+            this.filteredData = [...this.attendanceData];
+          } else {
+            // Re-apply current search filter
+            this.filterAttendance(this.searchValue);
+          }
+          
+          // Exit edit mode
+          this.editCache[id].edit = false;
+          
+          // Update the cache with the new data
+          this.editCache[id].data = { ...this.attendanceData[index] };
+          
+          this.message.success('Attendance updated successfully');
+        },
+        error: (error: any) => {
+          console.error('Error updating attendance:', error);
+          this.message.error('Failed to update attendance');
+        }
+      });
+    }
+  }
+
+  deleteRecord(id: string): void {
+    const index = this.attendanceData.findIndex(item => item.id === id);
+    if (index !== -1) {
+      const recordId = this.attendanceData[index].id?.toString() || '';
+      
+      this.attendanceService.deleteAttendance(recordId).subscribe({
+        next: () => {
+          // Remove from local data
+          this.attendanceData.splice(index, 1);
+          
+          // Update filtered data
+          if (!this.searchValue.trim()) {
+            this.filteredData = [...this.attendanceData];
+          } else {
+            this.filteredData = this.attendanceData.filter(item => {
+              return (
+                item.firstName?.toLowerCase().includes(this.searchValue.toLowerCase()) ||
+                item.lastName?.toLowerCase().includes(this.searchValue.toLowerCase()) ||
+                item.position?.toLowerCase().includes(this.searchValue.toLowerCase()) ||
+                item.department?.toLowerCase().includes(this.searchValue.toLowerCase())
+              );
+            });
+          }
+          
+          // Remove from edit cache
+          delete this.editCache[id];
+          
+          this.message.success('Attendance deleted successfully');
+        },
+        error: (error: any) => {
+          console.error('Error deleting attendance:', error);
+          this.message.error('Failed to delete attendance');
+        }
+      });
+    }
+  }
+
+  onEditEmployeeChange(id: string, employeeId: string): void {
     const selectedEmp = this.employeeList.find(emp => emp.id === employeeId);
-    if (selectedEmp && this.editCache[date]) {
-      this.editCache[date].data.firstName = selectedEmp.firstName;
-      this.editCache[date].data.lastName = selectedEmp.lastName;
-      this.editCache[date].data.position = selectedEmp.position;
-      this.editCache[date].data.department = selectedEmp.department;
-      this.editCache[date].data.employeeId = employeeId;
+    if (selectedEmp && this.editCache[id]) {
+      this.editCache[id].data.firstName = selectedEmp.firstName;
+      this.editCache[id].data.lastName = selectedEmp.lastName;
+      this.editCache[id].data.position = selectedEmp.position;
+      this.editCache[id].data.department = selectedEmp.department;
+      this.editCache[id].data.employeeId = employeeId;
     }
   }
 
   getEmployeePosition(employeeId: string): string {
+    if (!employeeId) return '';
     const emp = this.employeeList.find(e => e.id === employeeId);
     return emp ? emp.position : '';
   }
 
   getEmployeeDepartment(employeeId: string): string {
+    if (!employeeId) return '';
     const emp = this.employeeList.find(e => e.id === employeeId);
     return emp ? emp.department : '';
   }
 
-  isEditFormValid(date: string): boolean {
-    const data = this.editCache[date]?.data;
+  isEditFormValid(id: string): boolean {
+    const data = this.editCache[id]?.data;
     if (!data) return false;
     
     return !!(
@@ -142,90 +380,7 @@ export class AttendanceTable implements OnInit {
     );
   }
 
-  loadAttendanceData(): void {
-    this.isLoading = true;
-    this.attendanceService.getAttendance().subscribe({
-      next: (data: any[]) => { 
-        this.attendanceData = data;
-        this.filteredData = [...data];
-        this.updateEditCache();
-        this.isLoading = false;
-      },
-      error: (error: any) => {
-        console.error('Error loading attendance data:', error);
-        this.isLoading = false;
-      }
-    });
-  }
-
-  updateEditCache(): void {
-    this.editCache = {};
-    this.attendanceData.forEach(item => {
-      this.editCache[item.date] = {
-        edit: false,
-        data: { ...item }
-      };
-    });
-  }
-
-  startEdit(date: string): void {
-    if (this.editCache[date]) {
-      this.editCache[date].edit = true;
-    }
-  }
-
-  cancelEdit(date: string): void {
-    const record = this.attendanceData.find(item => item.date === date);
-    if (record) {
-      this.editCache[date] = {
-        data: { ...record },
-        edit: false
-      };
-    }
-  }
-
-  saveEdit(date: string): void {
-    if (!this.isEditFormValid(date)) {
-      this.message.error('Please fill all required fields');
-      return;
-    }
-
-    const index = this.attendanceData.findIndex(item => item.date === date);
-    if (index !== -1 && this.editCache[date]) {
-      // Update to server (only edit functionality works)
-      this.attendanceService.updateAttendance(index + 1, this.editCache[date].data).subscribe({
-        next: () => {
-          Object.assign(this.attendanceData[index], this.editCache[date].data);
-          this.editCache[date].edit = false;
-          this.message.success('Attendance updated successfully');
-        },
-        error: (error: any) => { 
-          console.error('Error updating attendance:', error);
-          this.message.error('Failed to update attendance');
-        }
-      });
-    }
-  }
-
-  deleteRecord(date: string): void {
-    const index = this.attendanceData.findIndex(item => item.date === date);
-    if (index !== -1) {
-      this.attendanceService.deleteAttendance(index + 1).subscribe({
-        next: () => {
-          this.attendanceData.splice(index, 1);
-          this.filteredData = [...this.attendanceData];
-          delete this.editCache[date];
-          this.message.success('Attendance deleted successfully');
-        },
-        error: (error: any) => { 
-          console.error('Error deleting attendance:', error);
-          this.message.error('Failed to delete attendance');
-        }
-      });
-    }
-  }
-
-  //  EMPLOYEE METHODS 
+  // ========== EMPLOYEE METHODS ==========
   loadEmployeeList(): void {
     this.isEmployeesLoading = true;
     this.userService.getAllUsers().subscribe({
@@ -240,7 +395,7 @@ export class AttendanceTable implements OnInit {
           phone: user.phone || user.mobile || ''
         }));
         
-        this.employeeList = this.employeeList.filter(emp => 
+        this.employeeList = this.employeeList.filter(emp =>
           emp.firstName && emp.lastName && emp.firstName !== 'Unknown' && emp.lastName !== 'User'
         );
         
@@ -248,32 +403,83 @@ export class AttendanceTable implements OnInit {
       },
       error: (error) => {
         console.error('Error loading employees:', error);
+        this.message.error('Failed to load employee list');
         this.isEmployeesLoading = false;
+        this.loadEmployeesFromAttendanceData();
       }
     });
   }
 
-  //  UTILITY METHODS 
+  loadEmployeesFromAttendanceData(): void {
+    const uniqueEmployees = new Map();
+    this.attendanceData.forEach(record => {
+      if (record.firstName && record.lastName) {
+        const key = `${record.firstName}-${record.lastName}`;
+        if (!uniqueEmployees.has(key)) {
+          uniqueEmployees.set(key, {
+            id: record.employeeId || record.id || key,
+            firstName: record.firstName,
+            lastName: record.lastName,
+            position: record.position || 'Not specified',
+            department: record.department || 'Not specified'
+          });
+        }
+      }
+    });
+    
+    this.employeeList = Array.from(uniqueEmployees.values());
+  }
+
+  loadAttendanceData(): void {
+    this.isLoading = true;
+    this.attendanceService.getAttendance().subscribe({
+      next: (data: any[]) => {
+        this.attendanceData = data;
+        this.filteredData = [...data];
+        this.updateEditCache();
+        this.isLoading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading attendance data:', error);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  // ========== UTILITY METHODS ==========
   disabledFutureDates = (current: Date): boolean => {
     return current > new Date();
   }
 
-  //  SEARCH AND FILTER 
+  formatDate(date: Date): string {
+    if (!date) return '';
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  formatTime(time: Date): string {
+    if (!time) return '';
+    const hours = time.getHours().toString().padStart(2, '0');
+    const minutes = time.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
+  // ========== SEARCH AND FILTER ==========
   private filterAttendance(searchTerm: string): void {
     if (!searchTerm.trim()) {
       this.filteredData = [...this.attendanceData];
-      this.updateEditCache();
-      return;
+    } else {
+      this.filteredData = this.attendanceData.filter(item => {
+        return (
+          item.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.position?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.department?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
     }
-
-    this.filteredData = this.attendanceData.filter(item => {
-      return (
-        item.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.position?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.department?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    });
     this.updateEditCache();
   }
 
@@ -284,7 +490,7 @@ export class AttendanceTable implements OnInit {
   onSearchClick(): void {
     this.filterAttendance(this.searchValue);
   }
-    
+  
   getStatusLabel(status: string): string {
     const statusMap: { [key: string]: string } = {
       'present': 'Present',
@@ -298,16 +504,15 @@ export class AttendanceTable implements OnInit {
 
   getStatusColor(status: string): string {
     const colorMap: { [key: string]: string } = {
-      'present': 'green',
-      'absent': 'red',
-      'late': 'orange',
-      'leave': 'blue',
-      'half-day': 'cyan'
+      'present': 'green',    
+      'absent': 'red',       
+      'late': 'orange',     
+      'leave': 'blue',       
+      'half-day': 'purple'  
     };
     return colorMap[status] || 'default';
   }
 
-  //  EXPORT METHODS 
   exportTableToPDF(): void {
     if (!this.filteredData || this.filteredData.length === 0) {
       this.message.warning('No attendance data to export');
@@ -322,7 +527,7 @@ export class AttendanceTable implements OnInit {
 
       // Title
       doc.setFontSize(18);
-      doc.setTextColor(81, 98, 250);
+      doc.setTextColor(147,121,176);
       doc.text('Employee Attendance Report', 14, 20);
       
       // Subtitle
@@ -364,7 +569,7 @@ export class AttendanceTable implements OnInit {
           halign: 'left'
         },
         headStyles: {
-          fillColor: [81, 98, 250],
+          fillColor: [147,121,176],
           textColor: [255, 255, 255],
           fontStyle: 'bold',
           lineWidth: 0.1
@@ -441,7 +646,7 @@ export class AttendanceTable implements OnInit {
         escapeChar: '"',
         escapeFormulae: true,
         skipEmptyLines: true,
-        newline: "\r\n" 
+        newline: "\r\n"
       });
     
       const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
@@ -466,10 +671,10 @@ export class AttendanceTable implements OnInit {
 
   updateDateTime(): void {
     const now = new Date();
-    this.currentDateTime = now.toLocaleTimeString([], { 
-      hour: '2-digit', 
+    this.currentDateTime = now.toLocaleTimeString([], {
+      hour: '2-digit',
       minute: '2-digit',
-      hour12: true 
+      hour12: true
     });
     this.currentDate = now.toLocaleDateString([], {
       weekday: 'long',
