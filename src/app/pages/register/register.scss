@@ -3,14 +3,14 @@
 }
 
 :host ::ng-deep .ant-select-dropdown {
-    background-color: #FCFFFD !important;
-    border-color: #FCFFFD !important;
+    background-color: #FFFFFF !important;
+    border-color: #E0E0E0 !important;
 }
 
 :host ::ng-deep .ant-select-selector {
-    background-color: #FCFFFD !important;
-    border-color: #2f2f22 !important;
-    color: #FFFFFF !important;
+    background-color: #FFFFFF !important;
+    border-color: #E0E0E0 !important;
+    color: #2f2f22 !important;
 }
 
 .register-page {
@@ -18,7 +18,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #FCFFFD;
+    background-color: #F5F7FA;
     position: relative;
     overflow: hidden;
 }
@@ -28,9 +28,9 @@
     width: 90%;
     max-width: 1100px;
     min-height: 520px;
-    background: #FCFFFD;
+    background: #FFFFFF;
     border-radius: 30px;
-    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);
+    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.05);
     overflow: hidden;
     flex-wrap: wrap;
     position: relative;
@@ -63,13 +63,13 @@ nz-form-label {
     margin-bottom: 4px;
     font-size: 10px;
     font-weight: 500;
-    color: #2f2f22;
+    color: #666666;
     width: 100%;
 }
 
 nz-form-label[nzRequired]::after {
     content: " *";
-    color: #ff4d4f;
+    color: #f7b05b;
     font-size: 10px;
 }
 
@@ -83,13 +83,14 @@ input {
     border-radius: 4px;
     padding: 0 10px;
     width: 100%;
-    border: 1px solid #2f2f22;
-    background-color: #FCFFFD;
+    border: 1px solid #E0E0E0;
+    background-color: #FFFFFF;
+    color: #2f2f22;
 }
 
 ::placeholder {
     font-size: 12px;
-    color: #2f2f22;
+    color: #AAAAAA;
 }
 
 nz-select .ant-select-selector {
@@ -105,6 +106,7 @@ nz-select .ant-select-selector {
     font-size: 11px;
     margin-top: 2px;
     line-height: 1.2;
+    color: #f7b05b;
 }
 
 .title-side {
@@ -114,12 +116,12 @@ nz-select .ant-select-selector {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background: linear-gradient(90deg, rgba(81, 98, 250, 1) 0%, rgb(37, 37, 88) 100%);
+    background: linear-gradient(135deg, #1780C7 0%, #a588be 100%);
     padding: 25px;
     border-radius: 60px 25px 25px 60px;
-    box-shadow: -7px 3px 17px 0px rgba(0, 0, 0, 0.75);
-    -webkit-box-shadow: -7px 3px 17px 0px rgba(0, 0, 0, 0.75);
-    -moz-box-shadow: -7px 3px 17px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: -7px 3px 17px 0px rgba(0, 0, 0, 0.08);
+    -webkit-box-shadow: -7px 3px 17px 0px rgba(0, 0, 0, 0.08);
+    -moz-box-shadow: -7px 3px 17px 0px rgba(0, 0, 0, 0.08);
 }
 
 .register-title {
@@ -139,7 +141,7 @@ nz-select .ant-select-selector {
 }
 
 h2 {
-    border-bottom: 2px solid #5162fa;
+    border-bottom: 2px solid #a588be;
     width: fit-content;
     font-size: 1.5rem;
     color: #2f2f22;
@@ -151,22 +153,23 @@ h2 {
     font-size: 16px;
     font-weight: 700;
     border-radius: 6px;
-    background-color: #5162fa;
+    background-color: #1780C7;
     color: #fff;
     border: none;
     margin-top: 24px;
 }
 
 .register-button:hover {
-    color: #5162fa;
-    background-color: #fff;
+    color: #FFFFFF;
+    background-color: #a588be;
     transition: 0.3s;
-    border: 1px solid #5162fa;
+    border: 1px solid #a588be;
 }
 
 .register-button:disabled {
-    background-color: #a8a8a8;
+    background-color: #E0E0E0;
     cursor: not-allowed;
+    color: #999999;
 }
 
 .login-button {
@@ -175,25 +178,26 @@ h2 {
     font-size: 16px;
     font-weight: 700;
     border-radius: 6px;
-    background-color: #5162fa;
+    background-color: #80c65E;
     color: #fff;
     border: none;
     margin-top: 24px;
 }
 
 .login-button:hover {
-    color: #5162fa;
-    background-color: #e6e6e6;
+    color: #FFFFFF;
+    background-color: #6ba84a;
     transition: 0.3s;
 }
 
 p {
     font-size: 14px;
-    color: #ddd;
+    color: #FFFFFF;
     margin: 0;
     line-height: 1.4;
     text-align: center;
     margin-bottom: 8px;
+    opacity: 0.9;
 }
 
 .gradient-background {
@@ -212,22 +216,41 @@ p {
     filter: blur(60px);
 }
 
+/* Four subtle spheres for white background */
 .sphere-1 {
-    width: 40vw;
-    height: 40vw;
-    background: linear-gradient(40deg,#000 , #5162fa);
-    top: -10%;
-    left: -10%;
+    width: 30vw;
+    height: 23vw;
+    background: linear-gradient(40deg, rgba(165, 136, 190, 0.2), rgba(165, 136, 190, 0.1));
+    top: -5%;
+    left: -5%;
     animation: float-1 15s ease-in-out infinite alternate;
 }
 
 .sphere-2 {
-    width: 45vw;
-    height: 45vw;
-    background: linear-gradient(40deg,#000 , #5162fa);
-    bottom: -20%;
-    right: -10%;
+    width: 30vw;
+    height: 23vw;
+    background: linear-gradient(240deg, rgba(247, 176, 91, 0.15), rgba(247, 176, 91, 0.05));
+    top: -5%;
+    right: -5%;
     animation: float-2 18s ease-in-out infinite alternate;
+}
+
+.sphere-3 {
+    width: 30vw;
+    height: 23vw;
+    background: linear-gradient(120deg, rgba(23, 128, 199, 0.15), rgba(23, 128, 199, 0.05));
+    bottom: -5%;
+    left: -5%;
+    animation: float-3 20s ease-in-out infinite alternate;
+}
+
+.sphere-4 {
+    width: 30vw;
+    height: 23vw;
+    background: linear-gradient(300deg, rgba(128, 198, 94, 0.15), rgba(128, 198, 94, 0.05));
+    bottom: -5%;
+    right: -5%;
+    animation: float-4 22s ease-in-out infinite alternate;
 }
 
 .grid-overlay {
@@ -238,19 +261,54 @@ p {
     height: 100%;
     background-size: 40px 40px;
     background-image: 
-        linear-gradient(to right, rgba(3, 3, 3, 0.100) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.100) 1px, transparent 1px);
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
     z-index: 2;
 }
 
 .form-label {
-    color: #999 !important;
+    color: #666666 !important;
 }
 
-
-
 .form-label .required {
-    color: #5162fa !important;
+    color: #a588be !important;
+}
+
+/* Animation keyframes */
+@keyframes float-1 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        transform: translate(10%, 10%) scale(1.1);
+    }
+}
+
+@keyframes float-2 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        transform: translate(-10%, 10%) scale(1.1);
+    }
+}
+
+@keyframes float-3 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        transform: translate(10%, -10%) scale(1.1);
+    }
+}
+
+@keyframes float-4 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        transform: translate(-10%, -10%) scale(1.1);
+    }
 }
 
 @media (max-width: 1024px) {
@@ -303,6 +361,13 @@ p {
     
     .register-form {
         max-width: 280px;
+    }
+    
+    /* Adjust spheres for tablet */
+    .sphere-1, .sphere-2, .sphere-3, .sphere-4 {
+        width: 40vw;
+        height: 30vw;
+        filter: blur(40px);
     }
 }
 
@@ -357,6 +422,13 @@ p {
     
     .register-form {
         max-width: 260px;
+    }
+    
+    /* Adjust spheres for mobile */
+    .sphere-1, .sphere-2, .sphere-3, .sphere-4 {
+        width: 50vw;
+        height: 35vw;
+        filter: blur(30px);
     }
 }
 

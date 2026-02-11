@@ -7,7 +7,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #FCFFFD;
+    background-color: #F5F7FA;
     position: relative;
     overflow: hidden;
 }
@@ -17,9 +17,9 @@
     width: 90%;
     max-width: 1100px;
     min-height: 520px;
-    background: #FCFFFD;
+    background: #FFFFFF;
     border-radius: 30px;
-    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.31);
+    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.05);
     overflow: hidden;
     flex-wrap: wrap;
     position: relative;
@@ -33,10 +33,10 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background: linear-gradient(90deg, rgba(81, 98, 250, 1) 0%, rgb(37, 37, 88) 100%);
+    background: linear-gradient(135deg, #1780C7 0%, #a588be 100%);
     padding: 40px;
     border-radius: 30px 70px 70px 30px;
-    box-shadow: 8px 0 16px rgba(0, 0, 0, 0.429);
+    box-shadow: 8px 0 16px rgba(0, 0, 0, 0.08);
 }
 
 .login-left h1 {
@@ -78,7 +78,7 @@
     margin-bottom: 24px;
     font-weight: 600;
     color: #2f2f22;
-    border-bottom: 2px solid #5162fa;
+    border-bottom: 2px solid #a588be;
     width: fit-content;
 }
 
@@ -87,32 +87,35 @@ input {
     font-size: 16px;
     border-radius: 4px;
     padding-left: 12px;
+    background-color: #FFFFFF;
+    color: #2f2f22;
+    border: 1px solid #E0E0E0;
 }
 
 .ant-input-affix-wrapper,
 .ant-input-affix-wrapper-focused {
-    background-color: #FCFFFD !important;
-    border: 1px solid black !important;
+    background-color: #FFFFFF !important;
+    border: 1px solid #E0E0E0 !important;
     box-shadow: none !important;
     border-radius: 5px;
 }
 
 .ant-input-affix-wrapper input {
-    background-color: #FCFFFD;
+    background-color: #FFFFFF;
     border: none;
     height: 48px;
     padding-left: 12px;
-    color: 2f2f22;
+    color: #2f2f22;
     border-radius: 10px;
 }
 
 .ant-input-affix-wrapper input::placeholder {
-    color: #2f2f22;
+    color: #AAAAAA;
 }
 
 input[formControlName="username"],
 input[formControlName="password"] {
-    background-color: #37353E;
+    background-color: #FFFFFF;
     color: #2f2f22;
 }
 
@@ -122,7 +125,7 @@ input[formControlName="password"] {
     font-size: 18px;
     font-weight: 700;
     border-radius: 6px;
-    background-color: #5162fa;
+    background-color: #1780C7;
     color: #fff;
     // outline: 1px solid #fff;
     border: none;
@@ -134,17 +137,22 @@ input[formControlName="password"] {
     font-size: 16px;
     font-weight: 700;
     border-radius: 6px;
-    background-color: #5162fa;
+    background-color: #80c65E;
     color: #fff;
     // outline: 1px solid #fff;
     border: none;
     margin-top: 24px;
 }
 
-.login-form-button:hover,
+.login-form-button:hover {
+    color: #FFFFFF;
+    background-color: #a588be;
+    transition: 0.3s;
+}
+
 .register-form-button:hover {
-    color: #5162fa;
-    background-color: #ddd;
+    color: #FFFFFF;
+    background-color: #6ba84a;
     transition: 0.3s;
 }
 
@@ -154,13 +162,13 @@ input[formControlName="password"] {
     font-size: 16px;
     font-weight: 600;
     border-radius: 6px;
-    color: #2f2f22;
+    color: #666666;
 }
 
 span {
     height: 48px;
     font-size: 16px;
-    color: #2f2f22;
+    color: #666666;
 }
 
 .gradient-background {
@@ -179,20 +187,41 @@ span {
     filter: blur(60px);
 }
 
+/* Four spheres with subtle colors for white background */
 .sphere-1 {
-    width: 40vw;
-    height: 40vw;
-    background: linear-gradient(40deg,#000000 , #5162fa);    top: -10%;
-    left: -10%;
+    width: 30vw;
+    height: 23vw;
+    background: linear-gradient(40deg, rgba(165, 136, 190, 0.25), rgba(165, 136, 190, 0.15));
+    top: -5%;
+    left: -5%;
     animation: float-1 15s ease-in-out infinite alternate;
 }
 
 .sphere-2 {
-    width: 45vw;
-    height: 45vw;
-    background: linear-gradient(40deg,#000000 , #5162fa);    bottom: -20%;
-    right: -10%;
+    width: 30vw;
+    height: 23vw;
+    background: linear-gradient(240deg, rgba(247, 176, 91, 0.2), rgba(247, 176, 91, 0.1));
+    top: -5%;
+    right: -5%;
     animation: float-2 18s ease-in-out infinite alternate;
+}
+
+.sphere-3 {
+    width: 30vw;
+    height: 23vw;
+    background: linear-gradient(120deg, rgba(23, 128, 199, 0.18), rgba(23, 128, 199, 0.08));
+    bottom: -5%;
+    left: -5%;
+    animation: float-3 20s ease-in-out infinite alternate;
+}
+
+.sphere-4 {
+    width: 30vw;
+    height: 23vw;
+    background: linear-gradient(300deg, rgba(128, 198, 94, 0.2), rgba(128, 198, 94, 0.1));
+    bottom: -5%;
+    right: -5%;
+    animation: float-4 22s ease-in-out infinite alternate;
 }
 
 // .noise-overlay {
@@ -214,9 +243,46 @@ span {
     height: 100%;
     background-size: 40px 40px;
     background-image: 
-        linear-gradient(to right, rgba(3, 3, 3, 0.100) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.100) 1px, transparent 1px);
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
     z-index: 2;
+}
+
+/* Animation keyframes */
+@keyframes float-1 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        transform: translate(10%, 10%) scale(1.1);
+    }
+}
+
+@keyframes float-2 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        transform: translate(-10%, 10%) scale(1.1);
+    }
+}
+
+@keyframes float-3 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        transform: translate(10%, -10%) scale(1.1);
+    }
+}
+
+@keyframes float-4 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        transform: translate(-10%, -10%) scale(1.1);
+    }
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
@@ -259,6 +325,13 @@ span {
         overflow: auto;
         padding: 20px 0;
     }
+    
+    /* Adjust spheres for mobile */
+    .sphere-1, .sphere-2, .sphere-3, .sphere-4 {
+        width: 40vw;
+        height: 30vw;
+        filter: blur(40px);
+    }
 }
 
 @media (max-width: 480px) {
@@ -274,5 +347,12 @@ span {
     .register-form-button {
         font-size: 14px;
         height: 48px;
+    }
+    
+    /* Further adjust spheres for mobile */
+    .sphere-1, .sphere-2, .sphere-3, .sphere-4 {
+        width: 50vw;
+        height: 35vw;
+        filter: blur(30px);
     }
 }

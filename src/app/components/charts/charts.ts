@@ -136,12 +136,12 @@ export class Charts implements OnInit {
         type: "pie",
       },
       labels: this.positions,
-      colors: ["#4C1D95", "#6D28D9", "#8B5CF6", "#A78BFA", "#C4B5FD",  
-              "#2E1065", "#5B21B6", "#7C3AED", "#9333EA", "#A855F7", 
-              "#C084FC", "#D8B4FE", "#E9D5FF", "#F3E8FF", "#FAF5FF",  
-              "#EC4899", "#F472B6", "#F9A8D4", "#FBCFE8",            
-              "#0EA5E9", "#38BDF8", "#7DD3FC", "#BAE6FD",            
-              "#10B981", "#34D399", "#6EE7B7", "#A7F3D0"],
+      colors: ["#0F7B5A", "#1A9F6B", "#2DC47C", "#5FE19C", "#9CF0C2",  
+              "#0A5C44", "#0E7C5C", "#159B74", "#1EB88B", "#2AD4A2", 
+              "#4BE6B7", "#7CF0CD", "#A8F7E0", "#D4FBEF", "#F0FFFA",  
+              "#F97316", "#FB923C", "#FDBA74", "#FED7AA",            
+              "#0891B2", "#0AA5C2", "#3BC9DB", "#7BE0F0",            
+              "#0B6B4D", "#139C6B", "#42C98F", "#8EEDB7"],
       legend: {
         position: "right",
         fontSize: "14px",
@@ -181,9 +181,13 @@ export class Charts implements OnInit {
         }
       },
       colors: [
-        "#4C1D95", "#6D28D9", "#8B5CF6", "#A78BFA", "#C4B5FD",
-        "#7C3AED", "#9333EA", "#A855F7", "#C084FC"
-      ],
+        "#0F7B5A", "#1A9F6B", "#2DC47C", "#5FE19C", "#9CF0C2",  
+          "#0A5C44", "#0E7C5C", "#159B74", "#1EB88B", "#2AD4A2", 
+          "#4BE6B7", "#7CF0CD", "#A8F7E0", "#D4FBEF", "#F0FFFA",  
+          "#F97316", "#FB923C", "#FDBA74", "#FED7AA",            
+          "#0891B2", "#0AA5C2", "#3BC9DB", "#7BE0F0",            
+          "#0B6B4D", "#139C6B", "#42C98F", "#8EEDB7"
+                ],
       plotOptions: {
         bar: {
           columnWidth: '50%',
