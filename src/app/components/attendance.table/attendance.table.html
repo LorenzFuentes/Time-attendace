@@ -12,8 +12,9 @@
       </nz-input-group>
     </div>
     <div class="header-right">
-      <button nz-button nzType="primary" class="addUser-btn" (click)="showAddModal()">
-        <i nz-icon nzType="plus"></i> Add New Attendance
+      <button class="addUser-btn" (click)="showAddModal()"> 
+          <nz-icon nzType="plus" nzTheme="outline" class="add-icon" />
+          Add Attendance
       </button>
       <button class="pdf-btn" (click)="exportTableToPDF()">
         <nz-icon nzType="file-pdf" nzTheme="outline" class="pdf-icon" />
@@ -23,12 +24,8 @@
         <nz-icon nzType="file-pdf" nzTheme="outline" class="pdf-icon" />
         Export CSV
       </button>
-
-
     </div>
   </div>
-
-
   <!-- Modal for Adding New Attendance -->
   <nz-modal
     [(nzVisible)]="isAddModalVisible"

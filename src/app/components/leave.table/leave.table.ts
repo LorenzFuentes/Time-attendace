@@ -12,6 +12,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import { LeaveService } from '../../service/leave-service/leave';
 import jsPDF from 'jspdf';
@@ -31,7 +33,9 @@ import * as Papa from 'papaparse';
     NzSelectModule,
     NzPopconfirmModule,
     NzDatePickerModule,
-    NzIconModule
+    NzIconModule,
+    NzModalModule, // Add this
+    NzTabsModule, 
   ],
   templateUrl: './leave.table.html',
   styleUrls: ['../../app.scss']
@@ -49,7 +53,40 @@ export class LeaveTable implements OnInit {
   private searchSubscription!: Subscription;
 
 
+  isPendingModalVisible = false;
   
+  pendingLeaves = [
+    {
+      id: '1',
+      name: 'Lorenz Fuentes',
+      department: 'IT',
+      leaveType: 'Vacation',
+      dateFrom: '2024-03-15',
+      dateTo: '2024-03-20',
+      reason: 'Family vacation',
+      status: 'Pending'
+    },
+    {
+      id: '2',
+      name: 'Marc Zapata',
+      department: 'HR',
+      leaveType: 'Sick Leave',
+      dateFrom: '2024-03-10',
+      dateTo: '2024-03-12',
+      reason: 'Medical leave',
+      status: 'Pending'
+    },
+    {
+      id: '3',
+      name: 'Ralph Cruz',
+      department: 'Operations',
+      leaveType: 'Emergency Leave',
+      dateFrom: '2024-03-05',
+      dateTo: '2024-03-07',
+      reason: 'Family emergency',
+      status: 'Pending'
+    }
+  ];
   constructor(private leaveService: LeaveService, private message: NzMessageService,) {}
 
   ngOnInit(): void {
@@ -87,7 +124,6 @@ export class LeaveTable implements OnInit {
     });
   }
 
-  // Status Color
   getApprovalColor(approval: string): string {
     const colorMap: { [key: string]: string } = {
       'Approved': 'green',
@@ -187,6 +223,37 @@ export class LeaveTable implements OnInit {
       data['date-from']?.trim() &&
       data.reason?.trim()
     );
+  }
+
+  // Simple modal methods
+  showPendingModal(): void {
+    this.isPendingModalVisible = true;
+  }
+
+  handleCancelModal(): void {
+    this.isPendingModalVisible = false;
+  }
+
+  approveLeave(item: any): void {
+    this.message.success(`Approved leave for ${item.name}`);
+    // Remove from pending
+    const index = this.pendingLeaves.indexOf(item);
+    if (index > -1) {
+      this.pendingLeaves.splice(index, 1);
+    }
+  }
+
+  rejectLeave(item: any): void {
+    this.message.warning(`Rejected leave for ${item.name}`);
+    // Remove from pending
+    const index = this.pendingLeaves.indexOf(item);
+    if (index > -1) {
+      this.pendingLeaves.splice(index, 1);
+    }
+  }
+
+  getPendingCount(): number {
+    return this.pendingLeaves.length;
   }
 
   exportToPDF(): void { 
