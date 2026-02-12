@@ -23,86 +23,106 @@
         <nz-icon nzType="file-pdf" nzTheme="outline" class="pdf-icon" />
         Export CSV
       </button>
+
+
     </div>
   </div>
 
 
-  <nz-modal 
-    [(nzVisible)]="isAddModalVisible" 
-    nzTitle="Add New Attendance" 
-    (nzOnCancel)="handleCancel()" 
-    (nzOnOk)="handleCancel()" 
+  <!-- Modal for Adding New Attendance -->
+  <nz-modal
+    [(nzVisible)]="isAddModalVisible"
+    nzTitle="Add New Attendance"
+    (nzOnCancel)="handleCancel()"
+    (nzOnOk)="handleOk()"
+    [nzOkDisabled]="!isFormValid()"
     nzClassName="attendance-modal"
     [nzWidth]="600">
-    
+   
     <div *nzModalContent>
-      <form nz-form>
-        
+      <form nz-form [formGroup]="addAttendanceForm">
+       
+        <!-- Employee Selection -->
         <nz-form-item>
           <nz-form-label [nzSpan]="6" nzRequired>Employee</nz-form-label>
-          <nz-form-control [nzSpan]="18">
-            <nz-select 
-              nzShowSearch 
+          <nz-form-control [nzSpan]="18" nzErrorTip="Please select an employee">
+            <nz-select
+              formControlName="employeeId"
+              nzShowSearch
               nzPlaceHolder="Select Employee"
-              >
-              <nz-option nzLabel="John Doe" nzValue="1"></nz-option>
-              <nz-option nzLabel="Jane Smith" nzValue="2"></nz-option>
-              <nz-option nzLabel="Bob Johnson" nzValue="3"></nz-option>
+              (ngModelChange)="onEmployeeChange($event)"
+              [nzLoading]="isEmployeesLoading">
+              <nz-option
+                *ngFor="let employee of employeeList"
+                [nzLabel]="employee.firstName + ' ' + employee.lastName"
+                [nzValue]="employee.id">
+              </nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
 
-        <nz-form-item>
+
+        <!-- Auto-filled Employee Info -->
+        <nz-form-item *ngIf="selectedEmployee">
           <nz-form-label [nzSpan]="6">Position</nz-form-label>
           <nz-form-control [nzSpan]="18">
-            <input nz-input readonly value="Software Developer">
+            <input nz-input [readonly]="true" [value]="selectedEmployee.position">
           </nz-form-control>
         </nz-form-item>
 
-        <nz-form-item>
+
+        <nz-form-item *ngIf="selectedEmployee">
           <nz-form-label [nzSpan]="6">Department</nz-form-label>
           <nz-form-control [nzSpan]="18">
-            <input nz-input readonly value="IT Department">
+            <input nz-input [readonly]="true" [value]="selectedEmployee.department">
           </nz-form-control>
         </nz-form-item>
 
+
+        <!-- Date -->
         <nz-form-item>
           <nz-form-label [nzSpan]="6" nzRequired>Date</nz-form-label>
-          <nz-form-control [nzSpan]="18">
-            <nz-date-picker 
+          <nz-form-control [nzSpan]="18" nzErrorTip="Please select a date">
+            <nz-date-picker
+              formControlName="date"
               style="width: 100%;"
-              >
+              [nzDisabledDate]="disabledFutureDates">
             </nz-date-picker>
           </nz-form-control>
         </nz-form-item>
 
+
+        <!-- Time In -->
         <nz-form-item>
           <nz-form-label [nzSpan]="6" nzRequired>Time In</nz-form-label>
-          <nz-form-control [nzSpan]="18">
-            <nz-time-picker 
+          <nz-form-control [nzSpan]="18" nzErrorTip="Please enter time in">
+            <nz-time-picker
+              formControlName="timeIn"
               style="width: 100%;"
-              [nzFormat]="'HH:mm'"
-             >
+              [nzFormat]="'HH:mm'">
             </nz-time-picker>
           </nz-form-control>
         </nz-form-item>
 
 
+        <!-- Time Out -->
         <nz-form-item>
           <nz-form-label [nzSpan]="6">Time Out</nz-form-label>
           <nz-form-control [nzSpan]="18">
-            <nz-time-picker 
+            <nz-time-picker
+              formControlName="timeOut"
               style="width: 100%;"
-              [nzFormat]="'HH:mm'"
-              >
+              [nzFormat]="'HH:mm'">
             </nz-time-picker>
           </nz-form-control>
         </nz-form-item>
 
+
+        <!-- Status -->
         <nz-form-item>
           <nz-form-label [nzSpan]="6" nzRequired>Status</nz-form-label>
-          <nz-form-control [nzSpan]="18">
-            <nz-select style="width: 100%;" >
+          <nz-form-control [nzSpan]="18" nzErrorTip="Please select status">
+            <nz-select formControlName="status" style="width: 100%;">
               <nz-option nzValue="present" nzLabel="Present"></nz-option>
               <nz-option nzValue="absent" nzLabel="Absent"></nz-option>
               <nz-option nzValue="late" nzLabel="Late"></nz-option>
@@ -115,8 +135,9 @@
     </div>
   </nz-modal>
 
-  <!-- Attendance Table -->
-  <nz-table #attendanceTable nzBordered [nzData]="filteredData" nzTableLayout="fixed" 
+
+  <!-- Table for displaying and INLINE EDITING existing records -->
+  <nz-table #attendanceTable nzBordered [nzData]="filteredData" nzTableLayout="fixed"
             [nzLoading]="isLoading" [nzPageSize]="10" [nzShowPagination]="true">
     <thead>
       <tr>
@@ -131,9 +152,9 @@
       </tr>
     </thead>
     <tbody>
-      <!-- Existing attendance records -->
+      <!-- Existing attendance records with inline editing -->
       <tr *ngFor="let record of attendanceTable.data">
-        <ng-container *ngIf="!editCache[record.date]?.edit; else editTemplate">
+        <ng-container *ngIf="!editCache[record.id]?.edit; else editTemplate">
           <td>{{ record.date }}</td>
           <td>{{ record.firstName }} {{ record.lastName }}</td>
           <td>{{ record.position }}</td>
@@ -146,51 +167,59 @@
             </nz-tag>
           </td>
           <td>
-            <button class="edit-btn" (click)="startEdit(record.date)">
+            
+            <button class="edit-btn" (click)="startEdit(record.id)">
               <nz-icon nzType="edit" nzTheme="outline" />
             </button>
-            <button class="delete-btn" nz-popconfirm 
-                    nzPopconfirmTitle="Delete this attendance record?" 
-                    (nzOnConfirm)="deleteRecord(record.date)">
+            <button class="delete-btn" nz-popconfirm
+                    nzPopconfirmTitle="Delete this attendance record?"
+                    (nzOnConfirm)="deleteRecord(record.id)">
               <nz-icon nzType="delete" nzTheme="outline" />
             </button>
           </td>
         </ng-container>
-        
+       
         <!-- Inline Edit Template -->
         <ng-template #editTemplate>
           <td>
-            <input nz-input [(ngModel)]="editCache[record.date].data.date" 
-                   placeholder="YYYY-MM-DD" [class.invalid]="!editCache[record.date].data.date.trim()"/>
+            
+            <input nz-input [(ngModel)]="editCache[record.id].data.date"
+                   placeholder="YYYY-MM-DD" [class.invalid]="!editCache[record.id].data.date.trim()"/>
           </td>
           <td>
-            <nz-select [(ngModel)]="editCache[record.date].data.employeeId" style="width: 100%;"
+            
+            <nz-select [(ngModel)]="editCache[record.id].data.employeeId" style="width: 100%;"
                        nzPlaceHolder="Select Employee" nzShowSearch
-                       (ngModelChange)="onEditEmployeeChange(record.date, $event)">
-              <nz-option *ngFor="let employee of employeeList" 
+                       (ngModelChange)="onEditEmployeeChange(record.id, $event)">
+              <nz-option *ngFor="let employee of employeeList"
                         [nzLabel]="employee.firstName + ' ' + employee.lastName"
                         [nzValue]="employee.id">
               </nz-option>
             </nz-select>
           </td>
           <td>
-            <input nz-input [value]="getEmployeePosition(editCache[record.date].data.employeeId) || editCache[record.date].data.position" 
+            
+            <input nz-input [value]="getEmployeePosition(editCache[record.id].data.employeeId) || editCache[record.id].data.position"
                    [readonly]="true" placeholder="Position"/>
           </td>
           <td>
-            <input nz-input [value]="getEmployeeDepartment(editCache[record.date].data.employeeId) || editCache[record.date].data.department" 
+            
+            <input nz-input [value]="getEmployeeDepartment(editCache[record.id].data.employeeId) || editCache[record.id].data.department"
                    [readonly]="true" placeholder="Department"/>
           </td>
           <td>
-            <input nz-input [(ngModel)]="editCache[record.date].data['time-in']" 
+            
+            <input nz-input [(ngModel)]="editCache[record.id].data['time-in']"
                    placeholder="HH:MM"/>
           </td>
           <td>
-            <input nz-input [(ngModel)]="editCache[record.date].data['time-out']" 
+            
+            <input nz-input [(ngModel)]="editCache[record.id].data['time-out']"
                    placeholder="HH:MM"/>
           </td>
           <td>
-            <nz-select [(ngModel)]="editCache[record.date].data.status" style="width: 100%;">
+            
+            <nz-select [(ngModel)]="editCache[record.id].data.status" style="width: 100%;">
               <nz-option nzValue="present" nzLabel="Present"></nz-option>
               <nz-option nzValue="absent" nzLabel="Absent"></nz-option>
               <nz-option nzValue="late" nzLabel="Late"></nz-option>
@@ -199,13 +228,14 @@
             </nz-select>
           </td>
           <td>
-            <button nz-button nzType="primary" size="small" 
-                    (click)="saveEdit(record.date)" 
-                    [disabled]="!isEditFormValid(record.date)">
+            
+            <button nz-button nzType="primary" size="small"
+                    (click)="saveEdit(record.id)"
+                    [disabled]="!isEditFormValid(record.id)">
               Save
             </button>
-            <button nz-button nzType="default" size="small" 
-                    (click)="cancelEdit(record.date)">
+            <button nz-button nzType="default" size="small"
+                    (click)="cancelEdit(record.id)">
               Cancel
             </button>
           </td>
