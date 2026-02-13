@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-
+import { NzMessageService } from 'ng-zorro-antd/message';
 // NG-ZORRO Modules
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTagModule } from 'ng-zorro-antd/tag';
@@ -12,9 +12,11 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-
+import { debounceTime, Subject, Subscription } from 'rxjs';
 import { LeaveService } from '../../service/leave-service/leave';
-
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import * as Papa from 'papaparse';
 @Component({
   selector: 'app-leave-table',
   standalone: true,
@@ -40,25 +42,24 @@ export class LeaveTable implements OnInit {
   isLoading = false;
   editCache: { [key: string]: { edit: boolean; data: any } } = {};
 
-  // For adding new leave
-  isAddingNew = false;
-  newLeaveData = {
-    firstName: '',
-    lastName: '',
-    position: '',
-    department: '',
-    apply: 'leave',
-    'date-to': '',
-    'date-from': '',
-    reason: '',
-    approval: 'Pending',
-    'date-of-approval': ''
-  };
+  searchValue: string = '';
 
-  constructor(private leaveService: LeaveService) {}
+  private timer: any; 
+  private searchSubject = new Subject<string>();
+  private searchSubscription!: Subscription;
+
+
+  
+  constructor(private leaveService: LeaveService, private message: NzMessageService,) {}
 
   ngOnInit(): void {
     this.loadLeaveData();
+
+    this.searchSubscription = this.searchSubject
+      .pipe(debounceTime(300))
+      .subscribe(searchTerm => {
+        this.filterAttendance(searchTerm);
+      });
   }
 
   loadLeaveData(): void {
@@ -117,6 +118,29 @@ export class LeaveTable implements OnInit {
     return typeMap[type] || type;
   }
 
+  private filterAttendance(searchTerm: string): void {
+    if (!searchTerm.trim()) {
+      this.filteredData = [...this.leaveData];
+    } else {
+      this.filteredData = this.leaveData.filter(item => {
+        return (
+          item.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.position?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.department?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
+    }
+    this.updateEditCache();
+  }
+
+  onSearch(): void {
+    this.searchSubject.next(this.searchValue);
+  }
+
+  onSearchClick(): void {
+    this.filterAttendance(this.searchValue);
+  }
   startEdit(id: string): void {
     this.editCache[id].edit = true;
   }
@@ -154,47 +178,6 @@ export class LeaveTable implements OnInit {
       });
     }
   }
-
-  startAddNew(): void {
-    this.isAddingNew = true;
-    // Generate a temporary ID for the new record
-    const tempId = 'temp_' + Date.now();
-    this.editCache[tempId] = {
-      edit: true,
-      data: { ...this.newLeaveData, id: tempId }
-    };
-    this.filteredData = [{ ...this.newLeaveData, id: tempId }, ...this.filteredData];
-  }
-
-  cancelAddNew(tempId: string): void {
-    this.isAddingNew = false;
-    // Remove the temporary record from the filtered data
-    this.filteredData = this.filteredData.filter(item => item.id !== tempId);
-    delete this.editCache[tempId];
-  }
-
-  saveNewRecord(tempId: string): void {
-    const newRecord = this.editCache[tempId].data;
-    
-    // Remove temp ID before sending to server
-    const recordToSave = { ...newRecord };
-    delete recordToSave.id;
-    
-    this.leaveService.addLeaveRecord(recordToSave).subscribe({
-      next: (response: any) => { // Add type annotation
-        // Replace temp record with server response
-        const index = this.filteredData.findIndex(item => item.id === tempId);
-        if (index !== -1) {
-          this.filteredData[index] = response;
-          this.leaveData.push(response);
-        }
-        this.isAddingNew = false;
-        delete this.editCache[tempId];
-      },
-      error: (error: any) => console.error('Error adding leave:', error)
-    });
-  }
-
   isFormValid(id: string): boolean {
     const data = this.editCache[id].data;
     return !!(
@@ -204,5 +187,160 @@ export class LeaveTable implements OnInit {
       data['date-from']?.trim() &&
       data.reason?.trim()
     );
+  }
+
+  exportToPDF(): void { 
+    if (!this.filteredData || this.filteredData.length === 0) {
+      this.message.warning('No attendance data to export');
+      return;
+    }
+
+    this.isLoading = true;
+
+    try{
+      const doc = new jsPDF('landscape');
+      const currentDate = new Date();
+
+      doc.setFontSize(18);
+      doc.setTextColor(147, 121, 176);
+      doc.text('Employee Leave Report', 14, 22);
+
+      doc.setFontSize(11);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Generated on: ${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`, 14, 28);
+      doc.text(`Total Employee Leave Records: ${this.filteredData.length}`, 14, 35);
+
+      if (this.searchValue.trim()) {
+        doc.text(`Search Filter: "${this.searchValue}"`, 14, 42);
+      }
+
+      const header = [
+        ['Employee Name', 'Position', 'Department', 'Leave Type', 'Date From', 'Date To', 'Reason', 'Status','Approval Status']
+      ];
+
+      const data = this.filteredData.map(item => [
+        item.firstName + ' ' + item.lastName || 'N/A',
+        item.position || 'N/A',
+        item.department || 'N/A',
+        item.apply || 'N/A',
+        item['date-from'] || 'N/A',
+        item['date-to'] || 'N/A',
+        item.reason || 'N/A',
+        item.approval || 'N/A',
+        item['date-of-approval'] || 'N/A'
+      ]);
+
+      autoTable(doc, {
+        head: header,
+        body: data,
+        startY: this.searchValue.trim() ? 50 : 45,
+        theme: 'grid',
+        styles: {
+          fontSize: 9,
+          cellPadding: 4,
+          overflow: 'linebreak',
+          lineWidth: 0.1,
+          halign: 'left'
+        },
+        headStyles: {
+          fillColor: [147,121,176],
+          textColor: [255, 255, 255],
+          fontStyle: 'bold',
+          lineWidth: 0.1
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245]
+        },
+        columnStyles: {
+          0: { cellWidth: 35 },
+          1: { cellWidth: 35 },
+          2: { cellWidth: 45 },
+          3: { cellWidth: 30 },
+          4: { cellWidth: 30 },
+          5: { cellWidth: 25 },
+          6: { cellWidth: 25 },
+          7: { cellWidth: 25 },
+          8: { cellWidth: 25 }
+        },
+        margin: { top: this.searchValue.trim() ? 50 : 45 }
+      });
+
+      const pageCount = (doc as any).internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(10);
+        doc.setTextColor(150, 150, 150);
+        doc.text(
+          `Page ${i} of ${pageCount}`,
+          doc.internal.pageSize.width - 40,
+          doc.internal.pageSize.height - 10
+        );
+      }
+      
+      const fileName = `leave-report-${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}.pdf`;
+      doc.save(fileName);
+      
+      this.message.success(`PDF exported with ${this.filteredData.length} leave records!`);
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+      this.message.error('Failed to export PDF. Please try again.');
+    } finally {
+      this.isLoading = false;
+
+    }
+  }
+
+  exportToCSV() {
+    if (!this.filteredData || this.filteredData.length === 0) {
+      this.message.warning('No leave data to export');
+      return;
+    }
+
+    this.isLoading = true;
+
+    const exportData = this.filteredData.map(item => ({
+      'Employee Name': item.firstName + ' ' + item.lastName || 'N/A',
+      'Position': item.position || 'N/A',
+      'Department': item.department || 'N/A',
+      'Leave Type': item.apply || 'N/A',
+      'Date From': item['date-from'] || 'N/A',
+      'Date To': item['date-to'] || 'N/A',
+      'Reason': item.reason || 'N/A',
+      'Status': item.approval || 'N/A',
+      'Approval Date': item['date-of-approval'] || 'N/A'
+    }));
+
+    const fileName = `leave-report-${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${new Date().getDate().toString().padStart(2, '0')}.xlsx`;
+    
+    try {
+      const csv = Papa.unparse(exportData, {
+        delimiter: ",",
+        header: true,
+        quotes: true,
+        quoteChar: '"',
+        escapeChar: '"',
+        escapeFormulae: true,
+        skipEmptyLines: true,
+        newline: "\r\n"
+      });
+    
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      
+      link.href = url;
+      link.download = `${fileName}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      this.message.success('Export completed successfully');
+    } catch (error) {
+      console.error('Error exporting Excel:', error);
+      this.message.error('Failed to export Excel. Please try again.');
+    } finally {
+      this.isLoading = false;
+    }
   }
 }

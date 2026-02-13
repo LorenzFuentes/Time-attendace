@@ -1,16 +1,23 @@
 <div class="table-container">
   <div class="header-container">
-    <h2>Leave Management</h2>
+    <div class="header-left">
+      <h2>Leave Management</h2>
+      <nz-input-group nzSearch [nzAddOnAfter]="searchIcon">
+        <input nz-input [(ngModel)]="searchValue" (input)="onSearch()" placeholder="Search"/>
+        <ng-template #searchIcon>
+          <button nz-button nzType="primary" nzSearch (click)="onSearchClick()">
+            <i nz-icon nzType="search"></i>
+          </button>
+        </ng-template>
+      </nz-input-group>
+    </div>
     <div class="header-right">
-      <!-- <button nz-button nzType="primary" (click)="startAddNew()" [disabled]="isAddingNew" class="add-lv-btn">
-        <i nz-icon nzType="plus"></i> Add New Leave
-      </button> -->
-      <button class="pdf-btn">
+      <button class="pdf-btn" (click)="exportToPDF()">
         <nz-icon nzType="file-pdf" nzTheme="outline" class="pdf-icon" />
         Export PDF
       </button>
-      <button class="csv-btn">
-        <nz-icon nzType="file-pdf" nzTheme="outline" class="pdf-icon" />
+      <button class="csv-btn"  (click)="exportToCSV()">
+        <nz-icon nzType="file-excel" nzTheme="outline" class="csv-icon" />
         Export CSV
       </button>
     </div>
@@ -34,71 +41,6 @@
       </tr>
     </thead>
     <tbody>
-      <!-- Add new leave row (if in add mode) -->
-      <tr *ngIf="isAddingNew">
-        <ng-container *ngFor="let record of filteredData">
-          <ng-container *ngIf="record.id.startsWith('temp_')">
-            <td>New</td>
-            <td>
-              <input nz-input [(ngModel)]="editCache[record.id].data.firstName" 
-                     placeholder="First Name" style="width: 45%; margin-right: 5%;"/>
-              <input nz-input [(ngModel)]="editCache[record.id].data.lastName" 
-                     placeholder="Last Name" style="width: 45%;"/>
-            </td>
-            <td>
-              <input nz-input [(ngModel)]="editCache[record.id].data.position" 
-                     placeholder="Position"/>
-            </td>
-            <td>
-              <input nz-input [(ngModel)]="editCache[record.id].data.department" 
-                     placeholder="Department"/>
-            </td>
-            <td>
-              <nz-select [(ngModel)]="editCache[record.id].data.apply" style="width: 100%;">
-                <nz-option nzValue="leave" nzLabel="Leave"></nz-option>
-                <nz-option nzValue="sick" nzLabel="Sick Leave"></nz-option>
-                <nz-option nzValue="vacation" nzLabel="Vacation"></nz-option>
-                <nz-option nzValue="emergency" nzLabel="Emergency Leave"></nz-option>
-              </nz-select>
-            </td>
-            <td>
-              <input nz-input [(ngModel)]="editCache[record.id].data['date-from']" 
-                     placeholder="YYYY-MM-DD"/>
-            </td>
-            <td>
-              <input nz-input [(ngModel)]="editCache[record.id].data['date-to']" 
-                     placeholder="YYYY-MM-DD"/>
-            </td>
-            <td>
-              <input nz-input [(ngModel)]="editCache[record.id].data.reason" 
-                     placeholder="Reason"/>
-            </td>
-            <td>
-              <nz-select [(ngModel)]="editCache[record.id].data.approval" style="width: 100%;">
-                <nz-option nzValue="Pending" nzLabel="Pending"></nz-option>
-                <nz-option nzValue="Approved" nzLabel="Approved"></nz-option>
-                <nz-option nzValue="Rejected" nzLabel="Rejected"></nz-option>
-              </nz-select>
-            </td>
-            <td>
-              <input nz-input [(ngModel)]="editCache[record.id].data['date-of-approval']" 
-                     placeholder="YYYY-MM-DD"/>
-            </td>
-            <td>
-              <button nz-button nzType="primary" size="small" 
-                      (click)="saveNewRecord(record.id)" 
-                      [disabled]="!isFormValid(record.id)">
-                Save
-              </button>
-              <button nz-button nzType="default" size="small" 
-                      (click)="cancelAddNew(record.id)">
-                Cancel
-              </button>
-            </td>
-          </ng-container>
-        </ng-container>
-      </tr>
-
       <!-- Existing leave records -->
       <tr *ngFor="let record of leaveTable.data">
         <ng-container *ngIf="!record.id.startsWith('temp_')">
