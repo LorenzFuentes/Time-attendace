@@ -1,0 +1,50 @@
+<nz-layout>
+  <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+    <div class="logo">
+      <h1>InTime</h1>
+    </div>
+    <ul nz-menu nzTheme="dark" nzMode="inline">
+      <li nz-submenu nzTitle="User" nzIcon="user">
+        <ul>
+          <li nz-menu-item (click)="logout()" style="color: #ff4d4f;"><nz-icon nzType="logout"></nz-icon>&nbsp;&nbsp;Logout</li>
+        </ul>
+      </li>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header class="main-header">
+      <div class="header-content">
+        <nz-icon
+        class="trigger"
+        [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+        (click)="isCollapsed = !isCollapsed"
+        />
+        <div class="header-right">
+          <!-- Notification Button with Badge -->
+          <div class="notification-wrapper">
+            <button nz-button nzType="text" class="notification-btn">
+              <nz-icon nzType="bell" nzTheme="outline"></nz-icon>
+             <nz-badge [nzCount]="5" [nzShowZero]="false">
+                <span class="notification-badge"></span>
+              </nz-badge>
+            </button>
+          </div>
+          <span class="welcome-text">Welcome, {{ getDisplayName(currentUser) }}</span>
+          <nz-avatar 
+            [nzSize]="50" 
+            [nzText]="getInitials(currentUser)" 
+            [ngStyle]="{'background': '#a588be'}"
+          ></nz-avatar>
+        </div>
+      </div>
+    </nz-header>
+
+    <nz-content>
+      <div class="router-outlet-container">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+
+    <nz-footer>Lorenz Fuentes ©{{ date.getFullYear() }}</nz-footer>
+  </nz-layout>
+</nz-layout>

@@ -19,6 +19,7 @@ import { LeaveService } from '../../service/leave-service/leave';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as Papa from 'papaparse';
+
 @Component({
   selector: 'app-leave-table',
   standalone: true,
@@ -34,7 +35,7 @@ import * as Papa from 'papaparse';
     NzPopconfirmModule,
     NzDatePickerModule,
     NzIconModule,
-    NzModalModule, // Add this
+    NzModalModule,
     NzTabsModule, 
   ],
   templateUrl: './leave.table.html',
@@ -43,7 +44,9 @@ import * as Papa from 'papaparse';
 export class LeaveTable implements OnInit {
   leaveData: any[] = [];
   filteredData: any[] = [];
+  pendingLeaves: any[] = [];
   isLoading = false;
+  isPendingLoading = false;
   editCache: { [key: string]: { edit: boolean; data: any } } = {};
 
   searchValue: string = '';
@@ -55,39 +58,7 @@ export class LeaveTable implements OnInit {
 
   isPendingModalVisible = false;
   
-  pendingLeaves = [
-    {
-      id: '1',
-      name: 'Lorenz Fuentes',
-      department: 'IT',
-      leaveType: 'Vacation',
-      dateFrom: '2024-03-15',
-      dateTo: '2024-03-20',
-      reason: 'Family vacation',
-      status: 'Pending'
-    },
-    {
-      id: '2',
-      name: 'Marc Zapata',
-      department: 'HR',
-      leaveType: 'Sick Leave',
-      dateFrom: '2024-03-10',
-      dateTo: '2024-03-12',
-      reason: 'Medical leave',
-      status: 'Pending'
-    },
-    {
-      id: '3',
-      name: 'Ralph Cruz',
-      department: 'Operations',
-      leaveType: 'Emergency Leave',
-      dateFrom: '2024-03-05',
-      dateTo: '2024-03-07',
-      reason: 'Family emergency',
-      status: 'Pending'
-    }
-  ];
-  constructor(private leaveService: LeaveService, private message: NzMessageService,) {}
+  constructor(private leaveService: LeaveService, private message: NzMessageService) {}
 
   ngOnInit(): void {
     this.loadLeaveData();
@@ -110,7 +81,23 @@ export class LeaveTable implements OnInit {
       },
       error: (error: any) => { 
         console.error('Error loading leave data:', error);
+        this.message.error('Failed to load leave records');
         this.isLoading = false;
+      }
+    });
+  }
+
+  loadPendingLeaves(): void {
+    this.isPendingLoading = true;
+    this.leaveService.getLeaveRecords().subscribe({
+      next: (data: any[]) => {
+        this.pendingLeaves = data.filter(record => record.approval === 'Pending');
+        this.isPendingLoading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading pending leaves:', error);
+        this.message.error('Failed to load pending requests');
+        this.isPendingLoading = false;
       }
     });
   }
@@ -177,43 +164,63 @@ export class LeaveTable implements OnInit {
   onSearchClick(): void {
     this.filterAttendance(this.searchValue);
   }
-  startEdit(id: string): void {
-    this.editCache[id].edit = true;
-  }
+  
+  // startEdit(id: string): void {
+  //   this.editCache[id].edit = true;
+  // }
 
-  cancelEdit(id: string): void {
-    const index = this.leaveData.findIndex(item => item.id === id);
-    this.editCache[id] = {
-      data: { ...this.leaveData[index] },
-      edit: false
-    };
-  }
+  // cancelEdit(id: string): void {
+  //   const index = this.leaveData.findIndex(item => item.id === id);
+  //   this.editCache[id] = {
+  //     data: { ...this.leaveData[index] },
+  //     edit: false
+  //   };
+  // }
 
-  saveEdit(id: string): void {
-    const index = this.leaveData.findIndex(item => item.id === id);
-    Object.assign(this.leaveData[index], this.editCache[id].data);
-    this.editCache[id].edit = false;
+  // saveEdit(id: string): void {
+  //   const index = this.leaveData.findIndex(item => item.id === id);
+  //   Object.assign(this.leaveData[index], this.editCache[id].data);
+  //   this.editCache[id].edit = false;
     
-    // Update to server using LeaveService
-    this.leaveService.updateLeaveRecord(id, this.leaveData[index]).subscribe({
-      next: () => console.log('Leave record updated'),
-      error: (error: any) => console.error('Error updating leave:', error)
-    });
-  }
+  //   // Update to server using LeaveService
+  //   this.leaveService.updateLeaveRecord(id, this.leaveData[index]).subscribe({
+  //     next: () => {
+  //       console.log('Leave record updated');
+  //       this.message.success('Leave record updated successfully');
+  //       // Refresh pending list if modal is open
+  //       if (this.isPendingModalVisible) {
+  //         this.loadPendingLeaves();
+  //       }
+  //     },
+  //     error: (error: any) => {
+  //       console.error('Error updating leave:', error);
+  //       this.message.error('Failed to update leave record');
+  //     }
+  //   });
+  // }
 
-  deleteRecord(id: string): void {
-    const index = this.leaveData.findIndex(item => item.id === id);
-    if (index !== -1) {
-      this.leaveService.deleteLeaveRecord(id).subscribe({
-        next: () => {
-          this.leaveData.splice(index, 1);
-          this.filteredData = [...this.leaveData];
-          delete this.editCache[id];
-        },
-        error: (error: any) => console.error('Error deleting leave:', error) 
-      });
-    }
-  }
+  // deleteRecord(id: string): void {
+  //   this.leaveService.deleteLeaveRecord(id).subscribe({
+  //     next: () => {
+  //       const index = this.leaveData.findIndex(item => item.id === id);
+  //       if (index !== -1) {
+  //         this.leaveData.splice(index, 1);
+  //         this.filteredData = [...this.leaveData];
+  //         delete this.editCache[id];
+  //         this.message.success('Leave record deleted successfully');
+          
+  //         if (this.isPendingModalVisible) {
+  //           this.loadPendingLeaves();
+  //         }
+  //       }
+  //     },
+  //     error: (error: any) => {
+  //       console.error('Error deleting leave:', error);
+  //       this.message.error('Failed to delete leave record');
+  //     }
+  //   });
+  // }
+  
   isFormValid(id: string): boolean {
     const data = this.editCache[id].data;
     return !!(
@@ -225,9 +232,10 @@ export class LeaveTable implements OnInit {
     );
   }
 
-  // Simple modal methods
+  // Modal methods
   showPendingModal(): void {
     this.isPendingModalVisible = true;
+    this.loadPendingLeaves(); 
   }
 
   handleCancelModal(): void {
@@ -235,25 +243,68 @@ export class LeaveTable implements OnInit {
   }
 
   approveLeave(item: any): void {
-    this.message.success(`Approved leave for ${item.name}`);
-    // Remove from pending
-    const index = this.pendingLeaves.indexOf(item);
-    if (index > -1) {
-      this.pendingLeaves.splice(index, 1);
-    }
+    // Update the record status to Approved
+    const updatedRecord = { ...item, approval: 'Approved', 'date-of-approval': new Date().toISOString().split('T')[0] };
+    
+    this.leaveService.updateLeaveRecord(item.id, updatedRecord).subscribe({
+      next: () => {
+        this.message.success(`Approved leave for ${item.firstName} ${item.lastName}`);
+        
+        // Remove from pending list
+        const index = this.pendingLeaves.findIndex(p => p.id === item.id);
+        if (index > -1) {
+          this.pendingLeaves.splice(index, 1);
+        }
+        
+        // Update main table data
+        const mainIndex = this.leaveData.findIndex(d => d.id === item.id);
+        if (mainIndex > -1) {
+          this.leaveData[mainIndex] = updatedRecord;
+          this.filteredData = [...this.leaveData];
+          this.updateEditCache();
+        }
+      },
+      error: (error: any) => {
+        console.error('Error approving leave:', error);
+        this.message.error('Failed to approve leave');
+      }
+    });
   }
 
   rejectLeave(item: any): void {
-    this.message.warning(`Rejected leave for ${item.name}`);
-    // Remove from pending
-    const index = this.pendingLeaves.indexOf(item);
-    if (index > -1) {
-      this.pendingLeaves.splice(index, 1);
-    }
+    const updatedRecord = { ...item, approval: 'Rejected', 'date-of-approval': new Date().toISOString().split('T')[0] };
+    
+    this.leaveService.updateLeaveRecord(item.id, updatedRecord).subscribe({
+      next: () => {
+        this.message.warning(`Rejected leave for ${item.firstName} ${item.lastName}`);
+        
+
+        const index = this.pendingLeaves.findIndex(p => p.id === item.id);
+        if (index > -1) {
+          this.pendingLeaves.splice(index, 1);
+        }
+        
+
+        const mainIndex = this.leaveData.findIndex(d => d.id === item.id);
+        if (mainIndex > -1) {
+          this.leaveData[mainIndex] = updatedRecord;
+          this.filteredData = [...this.leaveData];
+          this.updateEditCache();
+        }
+      },
+      error: (error: any) => {
+        console.error('Error rejecting leave:', error);
+        this.message.error('Failed to reject leave');
+      }
+    });
   }
 
   getPendingCount(): number {
     return this.pendingLeaves.length;
+  }
+
+  getEmployeeName(record: any): string {
+    return `${record.firstName || ''} ${record.lastName || ''}`.trim() || 'N/A';
   }
 
   exportToPDF(): void { 
@@ -286,10 +337,10 @@ export class LeaveTable implements OnInit {
       ];
 
       const data = this.filteredData.map(item => [
-        item.firstName + ' ' + item.lastName || 'N/A',
+        this.getEmployeeName(item),
         item.position || 'N/A',
         item.department || 'N/A',
-        item.apply || 'N/A',
+        this.getApplyTypeLabel(item.apply) || 'N/A',
         item['date-from'] || 'N/A',
         item['date-to'] || 'N/A',
         item.reason || 'N/A',
@@ -353,7 +404,6 @@ export class LeaveTable implements OnInit {
       this.message.error('Failed to export PDF. Please try again.');
     } finally {
       this.isLoading = false;
-
     }
   }
 
@@ -366,10 +416,10 @@ export class LeaveTable implements OnInit {
     this.isLoading = true;
 
     const exportData = this.filteredData.map(item => ({
-      'Employee Name': item.firstName + ' ' + item.lastName || 'N/A',
+      'Employee Name': this.getEmployeeName(item),
       'Position': item.position || 'N/A',
       'Department': item.department || 'N/A',
-      'Leave Type': item.apply || 'N/A',
+      'Leave Type': this.getApplyTypeLabel(item.apply) || 'N/A',
       'Date From': item['date-from'] || 'N/A',
       'Date To': item['date-to'] || 'N/A',
       'Reason': item.reason || 'N/A',
@@ -377,7 +427,7 @@ export class LeaveTable implements OnInit {
       'Approval Date': item['date-of-approval'] || 'N/A'
     }));
 
-    const fileName = `leave-report-${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${new Date().getDate().toString().padStart(2, '0')}.xlsx`;
+    const fileName = `leave-report-${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${new Date().getDate().toString().padStart(2, '0')}`;
     
     try {
       const csv = Papa.unparse(exportData, {
@@ -404,10 +454,16 @@ export class LeaveTable implements OnInit {
       
       this.message.success('Export completed successfully');
     } catch (error) {
-      console.error('Error exporting Excel:', error);
-      this.message.error('Failed to export Excel. Please try again.');
+      console.error('Error exporting CSV:', error);
+      this.message.error('Failed to export CSV. Please try again.');
     } finally {
       this.isLoading = false;
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
     }
   }
 }

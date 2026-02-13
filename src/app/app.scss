@@ -1118,3 +1118,297 @@ nz-modal {
     }
   }
 }
+
+
+
+// USER PROFILE
+.user-dashboard {
+  padding: 24px;
+  background: #f0f2f5;
+  min-height: 100vh;
+
+  .welcome-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 24px 32px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+    .welcome-text {
+      h1 {
+        margin: 0;
+        color: #333;
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 8px 0 0;
+        color: #666;
+        font-size: 16px;
+      }
+    }
+
+    .current-time {
+      h2 {
+        margin: 0;
+        color: #9379b0;
+        font-size: 32px;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .time-tracking-section {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) auto;
+    gap: 24px;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+    .time-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 12px;
+
+      &.total-hours {
+        background: #f3e8ff;
+      }
+
+      .time-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        i {
+          font-size: 24px;
+          color: #9379b0;
+        }
+      }
+
+      .time-info {
+        display: flex;
+        flex-direction: column;
+
+        .time-label {
+          font-size: 14px;
+          color: #666;
+          margin-bottom: 4px;
+        }
+
+        .time-value {
+          font-size: 24px;
+          font-weight: 600;
+          color: #333;
+        }
+      }
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+
+      button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 30px;
+        font-size: 16px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+
+        i {
+          font-size: 18px;
+        }
+
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+
+      .time-in-btn {
+        background: #52c41a;
+        color: white;
+
+        &.active {
+          background: #389e0d;
+        }
+      }
+
+      .time-out-btn {
+        background: #ff4d4f;
+        color: white;
+
+        &.active {
+          background: #cf1322;
+        }
+      }
+
+      .leave-btn {
+        background: #9379b0;
+        color: white;
+      }
+    }
+  }
+
+  .leave-balances-section {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+
+    h3 {
+      margin: 0 0 20px 0;
+      color: #333;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .balance-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+
+      .balance-card {
+        background: white;
+        border: 1px solid #f0f0f0;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .balance-header {
+          padding: 12px 16px;
+          text-align: center;
+
+          .balance-type {
+            font-weight: 600;
+            color: #333;
+          }
+        }
+
+        .balance-body {
+          padding: 16px;
+
+          .balance-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+
+            .stat-item {
+              text-align: center;
+
+              .stat-label {
+                display: block;
+                font-size: 12px;
+                color: #999;
+                margin-bottom: 4px;
+              }
+
+              .stat-value {
+                font-size: 20px;
+                font-weight: 600;
+                color: #333;
+
+                &.remaining {
+                  color: #52c41a;
+                }
+              }
+            }
+          }
+
+          .progress-bar {
+            height: 6px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+
+            .progress-fill {
+              height: 100%;
+              border-radius: 3px;
+              transition: width 0.3s ease;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .history-section {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+
+    nz-tabset {
+      :host ::ng-deep .ant-tabs-nav {
+        margin-bottom: 20px;
+      }
+
+      nz-table {
+        th {
+          background: #f8f4ff;
+          color: #333;
+          font-weight: 600;
+        }
+
+        td {
+          color: #666;
+        }
+      }
+    }
+  }
+}
+
+nz-modal {
+  .ant-modal-header {
+    background: #9379b0;
+    
+    .ant-modal-title {
+      color: white;
+    }
+  }
+
+  .ant-modal-close {
+    color: white;
+  }
+
+  nz-form-item {
+    margin-bottom: 16px;
+  }
+
+  textarea {
+    resize: none;
+  }
+
+  .ant-checkbox-wrapper {
+    color: #666;
+  }
+}

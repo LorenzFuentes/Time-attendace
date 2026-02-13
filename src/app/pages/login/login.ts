@@ -55,7 +55,7 @@ export class LoginComponent {
         } else if (response.userType === 'user') {
           console.log('User login successful:', response);
           this.msg.success('User login successful');
-          this.router.navigate(['/user']); // User route
+          this.router.navigate(['user/home']); // User route
         }
       },
       error: (error: any) => {

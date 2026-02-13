@@ -1,37 +1,248 @@
-<div class="welcome-container">
-  <div class="welcome-card">
-    <div class="header">
-      <h1 class="welcome-title">Welcome, <span class="user-name">{{userName}}</span>!</h1>
-      <p class="subtitle">We're glad to have you back</p>
+<div class="user-dashboard">
+  <!-- Welcome Header -->
+  <div class="welcome-header">
+    <div class="welcome-text">
+      <h1>Welcome back, {{ userDisplayName }}!</h1>
+      <p>{{ currentUser?.position || 'Employee' }} • {{ currentUser?.department || '' }} • {{ currentDate | date:'fullDate' }}</p>
     </div>
-    
-    <div class="content">
-      <div class="date-info">
-        <span>{{currentDate | date:'fullDate'}}</span>
-      </div>
-      <div class="message">
-        <p>Your application is ready to use. Here's what you can do:</p>
-      </div>
-      
-      <div class="features-list">
-        <div class="feature-item" *ngFor="let feature of features">
-          <span>{{feature}}</span>
-        </div>
-      </div>
-      
-      <div class="actions">
-        <button class="btn primary">
-          Start Guided Tour
-        </button>
-        <button class="btn secondary">
-          Go to Dashboard
-        </button>
-      </div>
-    </div>
-    <div class="footer">
-      <p class="tip">
-        <strong>Lorenz Fuentes 2026</strong>
-      </p>
+    <div class="current-time">
+      <h2>{{ currentTime | date:'h:mm a' }}</h2>
     </div>
   </div>
+
+  <!-- Time Tracking Cards -->
+  <div class="time-tracking-section">
+    <div class="time-card">
+      <div class="time-icon">
+        <i nz-icon nzType="login" nzTheme="outline"></i>
+      </div>
+      <div class="time-info">
+        <span class="time-label">Time In</span>
+        <span class="time-value">{{ timeInTime ? (timeInTime | date:'h:mm a') : '--:--' }}</span>
+      </div>
+    </div>
+
+    <div class="time-card">
+      <div class="time-icon">
+        <i nz-icon nzType="logout" nzTheme="outline"></i>
+      </div>
+      <div class="time-info">
+        <span class="time-label">Time Out</span>
+        <span class="time-value">{{ timeOutTime ? (timeOutTime | date:'h:mm a') : '--:--' }}</span>
+      </div>
+    </div>
+
+    <div class="time-card total-hours">
+      <div class="time-icon">
+        <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
+      </div>
+      <div class="time-info">
+        <span class="time-label">Total Hours</span>
+        <span class="time-value">{{ totalHoursWorked }}</span>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button class="time-in-btn" 
+              [class.active]="!isTimedIn"
+              [disabled]="isTimedIn"
+              (click)="timeIn()">
+        <i nz-icon nzType="login" nzTheme="outline"></i>
+        Time In
+      </button>
+      <button class="time-out-btn" 
+              [class.active]="isTimedIn"
+              [disabled]="!isTimedIn"
+              (click)="timeOut()">
+        <i nz-icon nzType="logout" nzTheme="outline"></i>
+        Time Out
+      </button>
+      <button class="leave-btn" (click)="showLeaveModal()">
+        <i nz-icon nzType="file-add" nzTheme="outline"></i>
+        File Leave
+      </button>
+    </div>
+  </div>
+
+  <!-- Leave Balances -->
+  <div class="leave-balances-section">
+    <h3>Leave Balances</h3>
+    <div class="balance-cards">
+      <div class="balance-card" *ngFor="let balance of leaveBalances">
+        <div class="balance-header" [style.background]="balance.color + '20'">
+          <span class="balance-type">{{ balance.type }}</span>
+        </div>
+        <div class="balance-body">
+          <div class="balance-stats">
+            <div class="stat-item">
+              <span class="stat-label">Total</span>
+              <span class="stat-value">{{ balance.total }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Used</span>
+              <span class="stat-value">{{ balance.used }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Remaining</span>
+              <span class="stat-value remaining">{{ balance.remaining }}</span>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" 
+                 [style.width.%]="(balance.used / balance.total) * 100"
+                 [style.background]="balance.color">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs for History and Activity -->
+  <div class="history-section">
+    <nz-tabset nzSize="large">
+      <nz-tab nzTitle="Leave History">
+        <nz-table #leaveHistoryTable [nzData]="leaveHistory" nzBordered nzSize="middle">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Date From</th>
+              <th>Date To</th>
+              <th>Days</th>
+              <th>Reason</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let leave of leaveHistoryTable.data">
+              <td>{{ leave.type }}</td>
+              <td>{{ leave.dateFrom }}</td>
+              <td>{{ leave.dateTo }}</td>
+              <td>{{ leave.days }} day(s)</td>
+              <td>{{ leave.reason }}</td>
+              <td>
+                <nz-tag [nzColor]="getStatusColor(leave.status)">
+                  {{ leave.status }}
+                </nz-tag>
+              </td>
+            </tr>
+            <tr *ngIf="leaveHistory.length === 0">
+              <td colspan="6" style="text-align: center; padding: 20px;">
+                No leave history found
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-tab>
+      
+      <nz-tab nzTitle="Recent Activity">
+        <nz-table #activityTable [nzData]="recentActivity" nzBordered nzSize="middle">
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Details</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let activity of activityTable.data">
+              <td>
+                <nz-tag [nzColor]="activity.status === 'success' ? 'green' : 
+                                   activity.status === 'processing' ? 'gold' : 
+                                   activity.status === 'error' ? 'red' : 'blue'">
+                  {{ activity.action }}
+                </nz-tag>
+              </td>
+              <td>{{ activity.time }}</td>
+              <td>{{ activity.date }}</td>
+            </tr>
+            <tr *ngIf="recentActivity.length === 0">
+              <td colspan="3" style="text-align: center; padding: 20px;">
+                No recent activity
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-tab>
+    </nz-tabset>
+  </div>
+
+  <!-- File Leave Modal -->
+  <nz-modal 
+    [(nzVisible)]="isLeaveModalVisible" 
+    nzTitle="File Leave Request" 
+    (nzOnCancel)="handleCancelLeave()"
+    [nzWidth]="600"
+    [nzFooter]="modalFooter">
+    
+    <ng-container *nzModalContent>
+      <form nz-form>
+        <nz-form-item>
+          <nz-form-label nzRequired>Leave Type</nz-form-label>
+          <nz-form-control>
+            <nz-select [(ngModel)]="leaveRequest.type" name="leaveType" nzBlock>
+              <nz-option nzValue="vacation" nzLabel="Vacation Leave"></nz-option>
+              <nz-option nzValue="sick" nzLabel="Sick Leave"></nz-option>
+              <nz-option nzValue="emergency" nzLabel="Emergency Leave"></nz-option>
+              <nz-option nzValue="personal" nzLabel="Personal Leave"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Date From</nz-form-label>
+          <nz-form-control>
+            <nz-date-picker 
+              [(ngModel)]="leaveRequest.dateFrom" 
+              name="dateFrom"
+              nzFormat="yyyy-MM-dd"
+              nzStyle="width: 100%">
+            </nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Date To</nz-form-label>
+          <nz-form-control>
+            <nz-date-picker 
+              [(ngModel)]="leaveRequest.dateTo" 
+              name="dateTo"
+              nzFormat="yyyy-MM-dd"
+              nzStyle="width: 100%">
+            </nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Reason</nz-form-label>
+          <nz-form-control>
+            <textarea 
+              nz-input 
+              [(ngModel)]="leaveRequest.reason" 
+              name="reason"
+              rows="4"
+              placeholder="Please provide reason for leave">
+            </textarea>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-control>
+            <label nz-checkbox [(ngModel)]="leaveRequest.halfDay" name="halfDay">
+              Half Day (AM/PM)
+            </label>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </ng-container>
+
+    <ng-template #modalFooter>
+      <button nz-button nzType="default" (click)="handleCancelLeave()">
+        Cancel
+      </button>
+      <button nz-button nzType="primary" (click)="submitLeaveRequest()">
+        Submit Request
+      </button>
+    </ng-template>
+  </nz-modal>
 </div>

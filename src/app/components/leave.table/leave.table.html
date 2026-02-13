@@ -43,12 +43,12 @@
         <th>Reason</th>
         <th>Status</th>
         <th>Date Approved</th>
-        <th>Actions</th>
+        <!-- <th>Actions</th> -->
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let record of leaveTable.data">
-        <ng-container *ngIf="!editCache[record.id]?.edit; else editTemplate">
+        <ng-container *ngIf="!editCache[record.id]?.edit;">
           <td>{{ record.id }}</td>
           <td>{{ record.firstName }} {{ record.lastName }}</td>
           <td>{{ record.position }}</td>
@@ -63,7 +63,7 @@
             </nz-tag>
           </td>
           <td>{{ record['date-of-approval'] || 'N/A' }}</td>
-          <td>
+          <!-- <td>
             <button class="edit-btn-lv" (click)="startEdit(record.id)">
               <i nz-icon nzType="edit" nzTheme="outline"></i>
             </button>
@@ -72,11 +72,10 @@
                     (nzOnConfirm)="deleteRecord(record.id)">
               <i nz-icon nzType="delete" nzTheme="outline"></i>
             </button>
-          </td>
+          </td> -->
         </ng-container>
         
-        <ng-template #editTemplate>
-          <!-- Your existing edit template -->
+        <!-- <ng-template #editTemplate>
           <td>{{ record.id }}</td>
           <td>
             <input nz-input [(ngModel)]="editCache[record.id].data.firstName" 
@@ -134,63 +133,63 @@
               Cancel
             </button>
           </td>
-        </ng-template>
+        </ng-template> -->
       </tr>
     </tbody>
   </nz-table>
 
   <!-- Simple Pending Modal -->
-  <nz-modal 
-    [(nzVisible)]="isPendingModalVisible" 
-    nzTitle="Pending Leave Requests" 
-    (nzOnCancel)="handleCancelModal()"
-    [nzWidth]="800"
-    [nzFooter]="null">
-    
-    <ng-container *nzModalContent>
-      <nz-tabset>
-        <!-- Pending Tab -->
-        <nz-tab nzTitle="Pending ({{ pendingLeaves.length }})">
-          <nz-table #simplePendingTable [nzData]="pendingLeaves" nzBordered nzSize="small" [nzPageSize]="5">
-            <thead>
-              <tr>
-                <th>Employee</th>
-                <th>Department</th>
-                <th>Leave Type</th>
-                <th>Date Range</th>
-                <th>Reason</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of simplePendingTable.data">
-                <td>{{ item.name }}</td>
-                <td>{{ item.department }}</td>
-                <td>{{ item.leaveType }}</td>
-                <td>{{ item.dateFrom }} - {{ item.dateTo }}</td>
-                <td>{{ item.reason }}</td>
-                <td>
-                  <nz-tag nzColor="gold">Pending</nz-tag>
-                </td>
-                <td>
-                  <button nz-button nzType="link" nzSize="small" (click)="approveLeave(item)" style="color: #52c41a; margin-right: 8px;">
-                    <i nz-icon nzType="check-circle" nzTheme="outline"></i> Approve
-                  </button>
-                  <button nz-button nzType="link" nzSize="small" (click)="rejectLeave(item)" style="color: #ff4d4f;">
-                    <i nz-icon nzType="close-circle" nzTheme="outline"></i> Reject
-                  </button>
-                </td>
-              </tr>
-              <tr *ngIf="pendingLeaves.length === 0">
-                <td colspan="7" style="text-align: center; padding: 20px;">
-                  No pending leave requests
-                </td>
-              </tr>
-            </tbody>
-          </nz-table>
-        </nz-tab>
-      </nz-tabset>
-    </ng-container>
-  </nz-modal>
+ <nz-modal 
+  [(nzVisible)]="isPendingModalVisible" 
+  nzTitle="Pending Leave Requests" 
+  (nzOnCancel)="handleCancelModal()"
+  [nzWidth]="800"
+  [nzFooter]="null">
+  
+  <ng-container *nzModalContent>
+    <nz-tabset>
+      <!-- Pending Tab -->
+      <nz-tab nzTitle="Pending ({{ pendingLeaves.length }})">
+        <nz-table #simplePendingTable [nzData]="pendingLeaves" nzBordered nzSize="small" [nzPageSize]="5" [nzLoading]="isPendingLoading">
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Department</th>
+              <th>Leave Type</th>
+              <th>Date Range</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of simplePendingTable.data">
+              <td>{{ getEmployeeName(item) }}</td>
+              <td>{{ item.department || 'N/A' }}</td>
+              <td>{{ getApplyTypeLabel(item.apply) }}</td>
+              <td>{{ item['date-from'] || 'N/A' }} - {{ item['date-to'] || 'N/A' }}</td>
+              <td>{{ item.reason || 'N/A' }}</td>
+              <td>
+                <nz-tag nzColor="gold">Pending</nz-tag>
+              </td>
+              <td>
+                <button nz-button nzType="link" nzSize="small" (click)="approveLeave(item)" style="color: #52c41a; margin-right: 8px;">
+                  <i nz-icon nzType="check-circle" nzTheme="outline"></i> Approve
+                </button>
+                <button nz-button nzType="link" nzSize="small" (click)="rejectLeave(item)" style="color: #ff4d4f;">
+                  <i nz-icon nzType="close-circle" nzTheme="outline"></i> Reject
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="pendingLeaves.length === 0">
+              <td colspan="7" style="text-align: center; padding: 20px;">
+                No pending leave requests
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-tab>
+    </nz-tabset>
+  </ng-container>
+</nz-modal>
 </div>
