@@ -1,12 +1,20 @@
 <div class="user-dashboard">
   <!-- Welcome Header -->
+  <div class="notification-wrapper">
+    <button nz-button nzType="text" class="notification-btn">
+      <nz-icon nzType="bell" nzTheme="outline"> </nz-icon>
+      <nz-badge [nzCount]="5" [nzShowZero]="false">
+        <span class="notification-badge"></span>
+      </nz-badge>
+    </button>
+  </div>
   <div class="welcome-header">
     <div class="welcome-text">
       <h1>Welcome back, {{ userDisplayName }}!</h1>
       <p>{{ currentUser?.position || 'Employee' }} • {{ currentUser?.department || '' }} • {{ currentDate | date:'fullDate' }}</p>
     </div>
     <div class="current-time">
-      <h2>{{ currentTime | date:'h:mm a' }}</h2>
+      <h2>{{ currentTime | date:'h:mm:ss a' }}</h2>
     </div>
   </div>
 
@@ -142,22 +150,28 @@
               <th>Action</th>
               <th>Details</th>
               <th>Date</th>
+              <th>Status</th> 
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let activity of activityTable.data">
               <td>
                 <nz-tag [nzColor]="activity.status === 'success' ? 'green' : 
-                                   activity.status === 'processing' ? 'gold' : 
-                                   activity.status === 'error' ? 'red' : 'blue'">
+                                  activity.status === 'processing' ? 'gold' : 
+                                  activity.status === 'error' ? 'red' : 'blue'">
                   {{ activity.action }}
                 </nz-tag>
               </td>
               <td>{{ activity.time }}</td>
               <td>{{ activity.date }}</td>
+              <td>
+                <nz-tag *ngIf="activity.statusText" [nzColor]="activity.statusText === 'Late' ? 'orange' : 'green'">
+                  {{ activity.statusText }}
+                </nz-tag>
+              </td>
             </tr>
             <tr *ngIf="recentActivity.length === 0">
-              <td colspan="3" style="text-align: center; padding: 20px;">
+              <td colspan="4" style="text-align: center; padding: 20px;">
                 No recent activity
               </td>
             </tr>

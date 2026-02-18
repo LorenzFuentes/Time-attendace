@@ -543,8 +543,8 @@
       "date-from": "2026-02-13",
       "date-to": "2026-02-20",
       "reason": "asd",
-      "approval": "Pending",
-      "date-of-approval": ""
+      "approval": "Rejected",
+      "date-of-approval": "2026-02-18"
     },
     {
       "id": "2",
@@ -557,6 +557,48 @@
       "date-from": "2026-02-13",
       "date-to": "2026-02-16",
       "reason": "asd",
+      "approval": "Approved",
+      "date-of-approval": "2026-02-18"
+    },
+    {
+      "id": "3",
+      "userId": "1",
+      "firstName": "Lorenz",
+      "lastName": "Fuentes",
+      "position": "Frontend Developer",
+      "department": "CEU",
+      "apply": "sick",
+      "date-from": "2026-02-22",
+      "date-to": "2026-02-26",
+      "reason": "test",
+      "approval": "Pending",
+      "date-of-approval": ""
+    },
+    {
+      "id": "4",
+      "userId": "1",
+      "firstName": "Lorenz",
+      "lastName": "Fuentes",
+      "position": "Frontend Developer",
+      "department": "CEU",
+      "apply": "emergency",
+      "date-from": "2026-02-18",
+      "date-to": "2026-02-19",
+      "reason": "test",
+      "approval": "Pending",
+      "date-of-approval": ""
+    },
+    {
+      "id": "5",
+      "userId": "1",
+      "firstName": "Lorenz",
+      "lastName": "Fuentes",
+      "position": "Frontend Developer",
+      "department": "CEU",
+      "apply": "personal",
+      "date-from": "2026-02-19",
+      "date-to": "2026-02-19",
+      "reason": "ewqr",
       "approval": "Pending",
       "date-of-approval": ""
     }
@@ -609,6 +651,18 @@
       "time-in": "00:00",
       "time-out": "--",
       "status": "absent"
+    },
+    {
+      "id": "5",
+      "userId": "1",
+      "firstName": "Lorenz",
+      "lastName": "Fuentes",
+      "position": "Frontend Developer",
+      "department": "CEU",
+      "date": "2026-02-18",
+      "timeIn": "21:00:00",
+      "timeOut": null,
+      "status": "Present"
     }
   ]
 }

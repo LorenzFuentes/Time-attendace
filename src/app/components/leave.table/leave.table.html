@@ -43,7 +43,7 @@
         <th>Reason</th>
         <th>Status</th>
         <th>Date Approved</th>
-        <!-- <th>Actions</th> -->
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -63,19 +63,19 @@
             </nz-tag>
           </td>
           <td>{{ record['date-of-approval'] || 'N/A' }}</td>
-          <!-- <td>
+          <td>
             <button class="edit-btn-lv" (click)="startEdit(record.id)">
               <i nz-icon nzType="edit" nzTheme="outline"></i>
             </button>
-            <button class="delete-btn-lv" nz-popconfirm 
+            <!-- <button class="delete-btn-lv" nz-popconfirm 
                     nzPopconfirmTitle="Delete this leave record?" 
                     (nzOnConfirm)="deleteRecord(record.id)">
               <i nz-icon nzType="delete" nzTheme="outline"></i>
-            </button>
-          </td> -->
+            </button> -->
+          </td>
         </ng-container>
         
-        <!-- <ng-template #editTemplate>
+        <ng-template #editTemplate>
           <td>{{ record.id }}</td>
           <td>
             <input nz-input [(ngModel)]="editCache[record.id].data.firstName" 
@@ -133,7 +133,7 @@
               Cancel
             </button>
           </td>
-        </ng-template> -->
+        </ng-template>
       </tr>
     </tbody>
   </nz-table>

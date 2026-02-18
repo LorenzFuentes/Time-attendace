@@ -62,7 +62,8 @@ export class LeaveTable implements OnInit {
 
   ngOnInit(): void {
     this.loadLeaveData();
-
+    this.loadPendingLeaves();
+    
     this.searchSubscription = this.searchSubject
       .pipe(debounceTime(300))
       .subscribe(searchTerm => {
@@ -165,39 +166,39 @@ export class LeaveTable implements OnInit {
     this.filterAttendance(this.searchValue);
   }
   
-  // startEdit(id: string): void {
-  //   this.editCache[id].edit = true;
-  // }
+  startEdit(id: string): void {
+    this.editCache[id].edit = true;
+  }
 
-  // cancelEdit(id: string): void {
-  //   const index = this.leaveData.findIndex(item => item.id === id);
-  //   this.editCache[id] = {
-  //     data: { ...this.leaveData[index] },
-  //     edit: false
-  //   };
-  // }
+  cancelEdit(id: string): void {
+    const index = this.leaveData.findIndex(item => item.id === id);
+    this.editCache[id] = {
+      data: { ...this.leaveData[index] },
+      edit: false
+    };
+  }
 
-  // saveEdit(id: string): void {
-  //   const index = this.leaveData.findIndex(item => item.id === id);
-  //   Object.assign(this.leaveData[index], this.editCache[id].data);
-  //   this.editCache[id].edit = false;
+  saveEdit(id: string): void {
+    const index = this.leaveData.findIndex(item => item.id === id);
+    Object.assign(this.leaveData[index], this.editCache[id].data);
+    this.editCache[id].edit = false;
     
-  //   // Update to server using LeaveService
-  //   this.leaveService.updateLeaveRecord(id, this.leaveData[index]).subscribe({
-  //     next: () => {
-  //       console.log('Leave record updated');
-  //       this.message.success('Leave record updated successfully');
-  //       // Refresh pending list if modal is open
-  //       if (this.isPendingModalVisible) {
-  //         this.loadPendingLeaves();
-  //       }
-  //     },
-  //     error: (error: any) => {
-  //       console.error('Error updating leave:', error);
-  //       this.message.error('Failed to update leave record');
-  //     }
-  //   });
-  // }
+    // Update to server using LeaveService
+    this.leaveService.updateLeaveRecord(id, this.leaveData[index]).subscribe({
+      next: () => {
+        console.log('Leave record updated');
+        this.message.success('Leave record updated successfully');
+        // Refresh pending list if modal is open
+        if (this.isPendingModalVisible) {
+          this.loadPendingLeaves();
+        }
+      },
+      error: (error: any) => {
+        console.error('Error updating leave:', error);
+        this.message.error('Failed to update leave record');
+      }
+    });
+  }
 
   // deleteRecord(id: string): void {
   //   this.leaveService.deleteLeaveRecord(id).subscribe({
