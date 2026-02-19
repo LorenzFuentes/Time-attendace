@@ -10,7 +10,8 @@ import { Charts } from './components/charts/charts';
 import { Calendar } from './components/calendar/calendar';
 import { AttendanceTable } from './components/attendance.table/attendance.table';
 import { LeaveTable } from './components/leave.table/leave.table';
-import { UserHomeComponent } from './components/user-home/user-home';
+import { UserHome } from './components/user-home/user-home';
+import { UserLayout } from './layout/user-layout/user-layout';
 export const routes: Routes = [
   { path: '', component: LandingPage, },
   { path: 'login', component: LoginComponent },
@@ -22,7 +23,9 @@ export const routes: Routes = [
       { path: 'admin-home', component: AdminHomeComponent},
       { path: 'calendar', component: Calendar},
       { path: 'attendance', component: AttendanceTable},
-      { path: 'leave', component: LeaveTable}
+      { path: 'leave', component: LeaveTable},
   ]},
-  { path: 'user', component: UserHomeComponent }
+  { path: 'user', component: UserLayout, children: [
+      { path: 'home', component: UserHome },
+  ]},
 ];
