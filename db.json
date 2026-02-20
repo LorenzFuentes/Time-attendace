@@ -599,8 +599,36 @@
       "date-from": "2026-02-19",
       "date-to": "2026-02-19",
       "reason": "ewqr",
-      "approval": "Pending",
-      "date-of-approval": ""
+      "approval": "Approved",
+      "date-of-approval": "2026-02-19"
+    },
+    {
+      "id": "6",
+      "userId": "3",
+      "firstName": "john",
+      "lastName": "dela cruz",
+      "position": "Project Manager",
+      "department": "Xentra",
+      "apply": "sick",
+      "date-from": "2026-02-20",
+      "date-to": "2026-02-22",
+      "reason": "in the hospital",
+      "approval": "Approved",
+      "date-of-approval": "2026-02-19"
+    },
+    {
+      "id": "7",
+      "userId": "4",
+      "firstName": "maria",
+      "lastName": "reyes",
+      "position": "Manager",
+      "department": "Project Manager",
+      "apply": "vacation",
+      "date-from": "2026-02-22",
+      "date-to": "2026-02-26",
+      "reason": "Going to South Korea",
+      "approval": "Approved",
+      "date-of-approval": "2026-02-19"
     }
   ],
   "attendance": [
@@ -663,6 +691,102 @@
       "timeIn": "21:00:00",
       "timeOut": null,
       "status": "Present"
+    },
+    {
+      "id": "6",
+      "userId": "1",
+      "firstName": "Lorenz",
+      "lastName": "Fuentes",
+      "position": "Frontend Developer",
+      "department": "CEU",
+      "date": "2026-02-20",
+      "timeIn": "21:55:39",
+      "timeOut": null,
+      "status": "Late"
+    },
+    {
+      "id": "7",
+      "userId": "3",
+      "firstName": "john",
+      "lastName": "dela cruz",
+      "position": "Project Manager",
+      "department": "Xentra",
+      "date": "2026-02-24",
+      "timeIn": "21:00:39",
+      "timeOut": "6:00:39",
+      "status": "Present"
+    }
+  ],
+  "events": [
+    {
+      "id": "1",
+      "eventType": "meeting",
+      "date": "2026-02-19",
+      "time": "10:30",
+      "description": "Team meeting"
+    },
+    {
+      "id": "2",
+      "eventType": "activity",
+      "date": "2026-02-20",
+      "time": "14:00",
+      "description": "Project kickoff"
+    },
+    {
+      "id": "3",
+      "eventType": "meeting",
+      "date": "2026-02-20",
+      "time": "02:51",
+      "description": "test"
+    },
+    {
+      "id": "4",
+      "eventType": "meeting",
+      "date": "2026-02-27",
+      "time": "02:52",
+      "description": "InTime final meeting"
+    },
+    {
+      "id": "5",
+      "eventType": "meeting",
+      "date": "2026-02-02",
+      "time": "02:00",
+      "description": "MonkSearch Meeting"
+    },
+    {
+      "id": "6",
+      "eventType": "activity",
+      "date": "2026-02-06",
+      "time": "07:00",
+      "description": "Team Building"
+    },
+    {
+      "id": "7",
+      "eventType": "meeting",
+      "date": "2026-02-10",
+      "time": "03:06",
+      "description": "MonkSearch Meeting"
+    },
+    {
+      "id": "8",
+      "eventType": "activity",
+      "date": "2026-02-18",
+      "time": "03:07",
+      "description": "Xbank UI/UX Kickoff"
+    },
+    {
+      "id": "9",
+      "eventType": "meeting",
+      "date": "2026-02-04",
+      "time": "07:11",
+      "description": "HRS "
+    },
+    {
+      "id": "10",
+      "eventType": "meeting",
+      "date": "2026-03-02",
+      "time": "07:00",
+      "description": "ROPA signing"
     }
   ]
 }
