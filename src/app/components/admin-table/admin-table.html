@@ -1,4 +1,3 @@
-
 <div class="inner-content">
     <!-- Dashboard Stats -->
     <h1 class="dashboard-txt">Admin Dashboard</h1>
@@ -35,13 +34,14 @@
         </div>
     </div>
 </div>
+
 <div class="table-container">
     <div class="header-container">
         <div class="header-left">
             <h2>Admin Table</h2>
             <!--Search Input -->
             <nz-input-group nzSearch [nzAddOnAfter]="searchIcon">
-                <input nz-input [(ngModel)]="searchValue" (input)="onSearch()"placeholder="Search"/>
+                <input nz-input [(ngModel)]="searchValue" (input)="onSearch()" placeholder="Search"/>
                 <ng-template #searchIcon>
                     <button nz-button nzType="primary" nzSearch (click)="onSearchClick()">
                         <i nz-icon nzType="search"></i>
@@ -49,20 +49,20 @@
                 </ng-template>
             </nz-input-group>
         </div>
-         <div class="header-right">
+        <div class="header-right">
             <button class="refresh-btn" (click)="refreshData()">
                 <nz-icon nzType="reload" nzTheme="outline" class="reload" />
             </button>
             <button class="addUser-btn" (click)="addNewUser()"> 
                 <nz-icon nzType="user-add" nzTheme="outline" class="add-icon" />
-                Add Employee
+                Add Admin
             </button>
             <button class="pdf-btn" (click)="exportTableToPDF()">
                 <nz-icon nzType="file-pdf" nzTheme="outline" class="pdf-icon" />
                 Export PDF
             </button>
-             <button class="csv-btn" (click)="exportTableToExcel()">
-                <nz-icon nzType="file-pdf" nzTheme="outline" class="pdf-icon" />
+            <button class="csv-btn" (click)="exportTableToExcel()">
+                <nz-icon nzType="file-excel" nzTheme="outline" class="excel-icon" />
                 Export CSV
             </button>
         </div>
@@ -70,16 +70,17 @@
 
     <!-- Display message when no results found -->
     <div *ngIf="filteredData.length === 0 && !isLoading" class="no-results">
-        <!-- <nz-icon nzType="search" nzTheme="outline"></nz-icon> -->
         <h3 style="color: red;">No admins found</h3>
         <p *ngIf="searchValue" style="color: red;">No results for "{{ searchValue }}"</p>
         <p *ngIf="!searchValue">No admins in the system</p>
     </div>
+
     <!-- Table -->
     <nz-table #userTable nzBordered [nzData]="filteredData" nzTableLayout="fixed" [nzLoading]="isLoading" [nzPageSize]="10" [nzShowPagination]="true">
         <thead>
             <tr>
                 <th>ID</th>
+                <th>Photo</th>
                 <th>Username</th>
                 <th>Full Name</th>
                 <th>Email</th>
@@ -92,7 +93,16 @@
             <!-- Table data -->
             <tr *ngFor="let data of userTable.data">
                 <ng-container *ngIf="!editCache[data.id]?.edit; else editTemplate">
-                    <td>{{ data.id }}</td>
+                    <td>{{ data.id.startsWith('temp_') ? 'New' : data.id }}</td>
+                    <td class="photo-cell">
+                        <nz-avatar 
+                            [nzSize]="40" 
+                            [nzSrc]="data.photo || undefined" 
+                            nzIcon="user"
+                            [nzText]="!data.photo ? getInitials(data) : ''"
+                            [ngStyle]="{'background-color': !data.photo ? '#f0f0f0' : 'transparent'}"
+                        ></nz-avatar>
+                    </td>
                     <td>{{ data.username }}</td>
                     <td>{{ data.fullname }}</td>
                     <td>
@@ -100,23 +110,43 @@
                     </td>
                     <td>••••••••</td>
                     <td>
-                        <nz-tag>
+                        <nz-tag [nzColor]="data.access === 'admin' ? 'blue' : 'default'">
                             {{ getAccessLabel(data.access) }}
                         </nz-tag>
                     </td>
                     <td>
-                        <button class="edit-btn" (click)="startEdit(data.id)">
-                            <nz-icon nzType="edit" nzTheme="outline" />
-                        </button>
-                        <button class="delete-btn" nz-popconfirm nzPopconfirmTitle="Delete this user?" (nzOnConfirm)="deleteUser(data.id)">
-                            <nz-icon nzType="delete" nzTheme="outline" />
-                        </button>
+                        <div class="btn-container">
+                            <button class="edit-btn" (click)="startEdit(data.id)">
+                                <nz-icon nzType="edit" nzTheme="outline" />
+                            </button>
+                            <button class="delete-btn" nz-popconfirm nzPopconfirmTitle="Delete this user?" (nzOnConfirm)="deleteUser(data.id)">
+                                <nz-icon nzType="delete" nzTheme="outline" />
+                            </button>
+                        </div>
                     </td>
                 </ng-container>
-                <!-- Add new admin design -->
+                
+                <!-- Edit Template -->
                 <ng-template #editTemplate>
-                    <td>
-                        {{ data.id.startsWith('temp_') ? 'New' : data.id }}
+                    <td>{{ data.id.startsWith('temp_') ? 'New' : data.id }}</td>
+                    <td class="photo-cell">
+                        <div class="edit-photo-container">
+                            <nz-avatar 
+                                [nzSize]="35" 
+                                [nzSrc]="editCache[data.id].data.photo || undefined" 
+                                nzIcon="user"
+                                [nzText]="!editCache[data.id].data.photo ? getInitials(editCache[data.id].data) : ''"
+                                [ngStyle]="{'background-color': !editCache[data.id].data.photo ? '#f0f0f0' : 'transparent'}"
+                            ></nz-avatar>
+                            <button nz-button nzSize="small" type="button" class="upload-btn" (click)="uploadPhoto(data.id)">
+                                <i nz-icon nzType="upload"></i> Upload
+                            </button>
+                            <button *ngIf="editCache[data.id].data.photo" 
+                                    nz-button nzSize="small" nzDanger type="button" 
+                                    class="remove-photo-btn" (click)="removePhoto(data.id)">
+                                <i nz-icon nzType="delete"></i>
+                            </button>
+                        </div>
                     </td>
                     <td>
                         <input nz-input [(ngModel)]="editCache[data.id].data.username" placeholder="Username" [class.invalid]="!editCache[data.id].data.username.trim()"/>
@@ -136,12 +166,14 @@
                         </nz-select>
                     </td>
                     <td>
-                        <button nz-button nzType="primary" size="small" (click)="saveEdit(data.id)" [disabled]="!isFormValid(data.id)">
-                            Save
-                        </button>
-                        <button nz-button nzType="default" size="small" (click)="cancelEdit(data.id)">
-                            {{ data.id.startsWith('temp_') ? 'Cancel Add' : 'Cancel' }}
-                        </button>
+                        <div class="action-buttons">
+                            <button nz-button nzType="primary" size="small" (click)="saveEdit(data.id)" [disabled]="!isFormValid(data.id)">
+                                Save
+                            </button>
+                            <button nz-button nzType="default" size="small" (click)="cancelEdit(data.id)">
+                                {{ data.id.startsWith('temp_') ? 'Cancel Add' : 'Cancel' }}
+                            </button>
+                        </div>
                     </td>
                 </ng-template>
             </tr>

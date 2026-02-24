@@ -1,5 +1,6 @@
 export interface User {
   id: number;
+  photo: string;
   firstName: string;
   middleName: string;
   lastName: string;
@@ -31,4 +32,5 @@ export interface RegisterRequest {
   username: string;
   email: string;
   password: string;
+  photo: string;
 }

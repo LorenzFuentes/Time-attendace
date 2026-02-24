@@ -27,8 +27,9 @@
             <span class="welcome-text">Welcome, {{ getDisplayName(currentUser) }}</span>
             <nz-avatar 
               [nzSize]="50" 
-              [nzText]="getInitials(currentUser)" 
-              [ngStyle]="{'background': '#a588be'}"
+              [nzSrc]="getUserPhoto(currentUser) || undefined" 
+              [nzText]="!getUserPhoto(currentUser) ? getInitials(currentUser) : ''" 
+              [ngStyle]="{'background': !getUserPhoto(currentUser) ? '#a588be' : 'transparent'}"
             ></nz-avatar>
           </div>
         </div>
