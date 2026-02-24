@@ -11,16 +11,16 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { AuthService } from '../../service/auth';
 import { Router } from '@angular/router';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import * as XLSX from 'xlsx';
 import * as Papa from 'papaparse';
-
 import { AdminService } from '../../service/admin-service/admin';
 
 export interface UserData {
   id: string;
+  photo?: string;
   username: string;
   password: string;
   email: string;
@@ -31,7 +31,19 @@ export interface UserData {
 @Component({
   selector: 'app-admin-table',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NzInputModule, NzPopconfirmModule, NzTableModule, NzButtonModule, NzSelectModule, NzTagModule, NzIconModule,],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    ReactiveFormsModule, 
+    NzInputModule, 
+    NzPopconfirmModule, 
+    NzTableModule, 
+    NzButtonModule, 
+    NzSelectModule, 
+    NzTagModule, 
+    NzIconModule,
+    NzAvatarModule
+  ],
   templateUrl: './admin-table.html',
   styleUrls: ['../../app.scss']
 })
@@ -93,6 +105,7 @@ export class AdminTable implements OnInit, OnDestroy {
       next: (data: any[]) => {
         this.listOfData = data.map(user => ({
           id: user.id.toString(),
+          photo: user.photo || undefined,
           username: user.username || '',
           password: user.password || '',
           email: user.email || '',
@@ -235,6 +248,7 @@ export class AdminTable implements OnInit, OnDestroy {
     
     const newAdmin: UserData = {
       id: tempId,
+      photo: undefined,
       username: '',
       password: '',
       email: '',
@@ -249,7 +263,7 @@ export class AdminTable implements OnInit, OnDestroy {
     this.message.info('Please fill in the new admin details');
   }
 
-  private registerAdminWithManualId(newAdmin: any, tempId: string, index: number, originalIndex: number): void {
+  private registerAdminWithManualId(newAdmin: UserData, tempId: string, index: number, originalIndex: number): void {
     this.adminService.getAllAdmins().subscribe({ 
       next: (existingAdmins: any[]) => {
         let maxId = 0;
@@ -270,6 +284,7 @@ export class AdminTable implements OnInit, OnDestroy {
         
         const adminWithId = {
           id: nextId.toString(),
+          photo: newAdmin.photo || '',
           username: newAdmin.username,
           password: newAdmin.password,
           email: newAdmin.email,
@@ -281,7 +296,8 @@ export class AdminTable implements OnInit, OnDestroy {
           next: (createdAdmin: any) => {
             const adminWithStringId = {
               ...createdAdmin,
-              id: createdAdmin.id ? createdAdmin.id.toString() : nextId.toString()
+              id: createdAdmin.id ? createdAdmin.id.toString() : nextId.toString(),
+              photo: createdAdmin.photo || undefined
             };
             
             // Update in filtered array
@@ -414,15 +430,6 @@ export class AdminTable implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    if (this.timer) {
-      clearInterval(this.timer);
-    }
-    if (this.searchSubscription) {
-      this.searchSubscription.unsubscribe();
-    }
-  }
-
   private loadDashboardStats(): void {
     this.adminService.getAdminCount().subscribe({
       next: (count: number) => {
@@ -443,168 +450,251 @@ export class AdminTable implements OnInit, OnDestroy {
     });
   }
 
-exportTableToPDF(): void {
-  if (!this.filteredData || this.filteredData.length === 0) {
-    this.message.warning('No admin data to export');
-    return;
+  /**
+   * Get initials from fullname for avatar fallback
+   */
+  getInitials(user: UserData): string {
+    if (!user || !user.fullname) return '';
+    
+    const names = user.fullname.trim().split(' ');
+    if (names.length === 0) return '';
+    
+    if (names.length === 1) {
+      return names[0].charAt(0).toUpperCase();
+    }
+    
+    return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
   }
 
-  this.isLoading = true;
-  
-  try {
-    const doc = new jsPDF('landscape');
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString();
-    
-    // Title
-    doc.setFontSize(18);
-    doc.setTextColor(81, 98, 250);
-    doc.text('Admin Users Report', 14, 20);
-    
-    // Subtitle
-    doc.setFontSize(11);
-    doc.setTextColor(100, 100, 100);
-    doc.text(`Generated on: ${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`, 14, 28);
-    doc.text(`Total Admins: ${this.filteredData.length}`, 14, 35);
-    
-    // Add search filter 
-    if (this.searchValue.trim()) {
-      doc.text(`Search Filter: "${this.searchValue}"`, 14, 42);
-    }
-    
-    // Prepare table data
-    const headers = [
-      ['ID', 'Username', 'Full Name', 'Email', 'Access Level', 'Status']
-    ];
-    
-    const data = this.filteredData.map(admin => [
-      admin.id || 'N/A',
-      admin.username || 'N/A',
-      admin.fullname || 'N/A',
-      admin.email || 'N/A',
-      this.getAccessLabel(admin.access) || 'N/A',
-      admin.email && admin.username ? 'Active' : 'Inactive'
-    ]);
-    
-    // Add table to PDF
-    autoTable(doc, {
-      head: headers,
-      body: data,
-      startY: this.searchValue.trim() ? 50 : 45,
-      theme: 'grid',
-      styles: {
-        fontSize: 9,
-        cellPadding: 4,
-        overflow: 'linebreak',
-        lineWidth: 0.1,
-        halign: 'left'
-      },
-      headStyles: {
-        fillColor: [81, 98, 250], // Match your button color
-        textColor: [255, 255, 255],
-        fontStyle: 'bold',
-        lineWidth: 0.1
-      },
-      alternateRowStyles: {
-        fillColor: [245, 245, 245]
-      },
-      columnStyles: {
-        0: { cellWidth: 25 },  // ID
-        1: { cellWidth: 35 },  // Username
-        2: { cellWidth: 45 },  // Full Name
-        3: { cellWidth: 60 },  // Email
-        4: { cellWidth: 30 },  // Access Level
-        5: { cellWidth: 25 }   // Status
-      },
-      margin: { top: this.searchValue.trim() ? 50 : 45 }
-    });
-    
-    // Add page numbers
-    const pageCount = (doc as any).internal.getNumberOfPages();
-    for (let i = 1; i <= pageCount; i++) {
-      doc.setPage(i);
-      doc.setFontSize(10);
-      doc.setTextColor(150, 150, 150);
-      doc.text(
-        `Page ${i} of ${pageCount}`,
-        doc.internal.pageSize.width - 40,
-        doc.internal.pageSize.height - 10
-      );
-    }
-    
-    // Save the PDF
-    const fileName = `admin-report-${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}.pdf`;
-    doc.save(fileName);
-    
-    this.message.success('PDF exported with ${this.filteredData.length} admin records!');
-    
-  } catch (error) {
-    console.error('PDF export error:', error);
-    this.message.error('Failed to export PDF');
-  } finally {
-    this.isLoading = false;
+  /**
+   * Handle image loading errors
+   */
+  handleImageError(event: Event): void {
+    const imgElement = event.target as HTMLImageElement;
+    imgElement.src = ''; // This will trigger the nz-avatar fallback to icon/initials
   }
+
+  /**
+   * Upload photo during edit
+   */
+  uploadPhoto(userId: string): void {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.onchange = (event: any) => {
+      const file = event.target.files[0];
+      if (file) {
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          this.message.warning('File size must be less than 5MB');
+          return;
+        }
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+          this.message.warning('Please select an image file');
+          return;
+        }
+
+        // Convert to base64
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (this.editCache[userId]) {
+            this.editCache[userId].data.photo = e.target?.result as string;
+            this.message.success('Photo uploaded successfully');
+          }
+        };
+        reader.onerror = () => {
+          this.message.error('Failed to read file');
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    fileInput.click();
+  }
+
+  /**
+   * Remove photo during edit
+   */
+  removePhoto(userId: string): void {
+    if (this.editCache[userId]) {
+      this.editCache[userId].data.photo = undefined;
+      this.message.info('Photo removed');
+    }
+  }
+
+  exportTableToPDF(): void {
+    if (!this.filteredData || this.filteredData.length === 0) {
+      this.message.warning('No admin data to export');
+      return;
+    }
+
+    this.isLoading = true;
+    
+    try {
+      const doc = new jsPDF('landscape');
+      const currentDate = new Date();
+      const formattedDate = currentDate.toLocaleDateString();
+      
+      // Title
+      doc.setFontSize(18);
+      doc.setTextColor(81, 98, 250);
+      doc.text('Admin Users Report', 14, 20);
+      
+      // Subtitle
+      doc.setFontSize(11);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Generated on: ${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`, 14, 28);
+      doc.text(`Total Admins: ${this.filteredData.length}`, 14, 35);
+      
+      // Add search filter 
+      if (this.searchValue.trim()) {
+        doc.text(`Search Filter: "${this.searchValue}"`, 14, 42);
+      }
+      
+      // Prepare table data
+      const headers = [
+        ['ID', 'Photo', 'Username', 'Full Name', 'Email', 'Access Level', 'Status']
+      ];
+      
+      const data = this.filteredData.map(admin => [
+        admin.id.startsWith('temp_') ? 'New' : admin.id || 'N/A',
+        admin.photo ? 'Yes' : 'No',
+        admin.username || 'N/A',
+        admin.fullname || 'N/A',
+        admin.email || 'N/A',
+        this.getAccessLabel(admin.access) || 'N/A',
+        admin.email && admin.username ? 'Active' : 'Inactive'
+      ]);
+      
+      // Add table to PDF
+      autoTable(doc, {
+        head: headers,
+        body: data,
+        startY: this.searchValue.trim() ? 50 : 45,
+        theme: 'grid',
+        styles: {
+          fontSize: 9,
+          cellPadding: 4,
+          overflow: 'linebreak',
+          lineWidth: 0.1,
+          halign: 'left'
+        },
+        headStyles: {
+          fillColor: [81, 98, 250],
+          textColor: [255, 255, 255],
+          fontStyle: 'bold',
+          lineWidth: 0.1
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245]
+        },
+        columnStyles: {
+          0: { cellWidth: 25 },  // ID
+          1: { cellWidth: 20 },  // Photo
+          2: { cellWidth: 35 },  // Username
+          3: { cellWidth: 45 },  // Full Name
+          4: { cellWidth: 60 },  // Email
+          5: { cellWidth: 30 },  // Access Level
+          6: { cellWidth: 25 }   // Status
+        },
+        margin: { top: this.searchValue.trim() ? 50 : 45 }
+      });
+      
+      // Add page numbers
+      const pageCount = (doc as any).internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(10);
+        doc.setTextColor(150, 150, 150);
+        doc.text(
+          `Page ${i} of ${pageCount}`,
+          doc.internal.pageSize.width - 40,
+          doc.internal.pageSize.height - 10
+        );
+      }
+      
+      // Save the PDF
+      const fileName = `admin-report-${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}.pdf`;
+      doc.save(fileName);
+      
+      this.message.success(`PDF exported with ${this.filteredData.length} admin records!`);
+      
+    } catch (error) {
+      console.error('PDF export error:', error);
+      this.message.error('Failed to export PDF');
+    } finally {
+      this.isLoading = false;
+    }
   }   
   
-  exportTableToExcel() {
+  exportTableToExcel(): void {
     if (!this.filteredData || this.filteredData.length === 0) {
-    this.message.warning('No admin data to export');
-    return;
+      this.message.warning('No admin data to export');
+      return;
+    }
+
+    this.isLoading = true;
+    
+    const currentDate = new Date();
+    
+    const exportData = this.filteredData.map(item => ({
+      'ID': item.id.startsWith('temp_') ? 'New' : item.id,
+      'Has Photo': item.photo ? 'Yes' : 'No',
+      'Username': item.username,
+      'Full Name': item.fullname,
+      'Email': item.email,
+      'Access Level': this.getAccessLabel(item.access),
+      'Export Date': currentDate.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      })
+    }));
+    
+    const fileName = `Admin-Report_${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+    
+    try {
+      // Create CSV with proper formatting using Papa Parse
+      const csv = Papa.unparse(exportData, {
+        delimiter: ",",
+        header: true,
+        quotes: true,
+        quoteChar: '"',
+        escapeChar: '"',
+        escapeFormulae: true,
+        skipEmptyLines: true,
+        newline: "\r\n" 
+      });
+      
+      // Create and download the file
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      
+      link.href = url;
+      link.download = `${fileName}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      this.message.success(`Exported ${this.filteredData.length} admin records successfully`);
+      
+    } catch (error) {
+      console.error('Export error:', error);
+      this.message.error('Failed to export data');
+    } finally {
+      this.isLoading = false;
+    }
   }
 
-  this.isLoading = true;
-  
-  const currentDate = new Date();
-  
-
-  const exportData = this.filteredData.map(item => ({
-    'ID': item.id.startsWith('temp_') ? 'New' : item.id,
-    'Username': item.username,
-    'Full Name': item.fullname,
-    'Email': item.email,
-    'Access Level': this.getAccessLabel(item.access),
-    'Export Date': currentDate.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    })
-  }));
-  
-  const fileName = `Admin-Report_${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
-  
-  try {
-    // Create CSV with proper formatting using Papa Parse
-    const csv = Papa.unparse(exportData, {
-      delimiter: ",",
-      header: true,
-      quotes: true,
-      quoteChar: '"',
-      escapeChar: '"',
-      escapeFormulae: true, // Security: prevents CSV injection
-      skipEmptyLines: true,
-      newline: "\r\n" 
-    });
-    
-    // Create and download the file
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' }); // BOM for Excel UTF-8
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    
-    link.href = url;
-    link.download = `${fileName}.csv`; // Excel can open CSV
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    
-    this.message.success('Export completed successfully');
-    
-  } catch (error) {
-    console.error('Export error:', error);
-    this.message.error('Failed to export data');
-  } finally {
-    this.isLoading = false;
+  ngOnDestroy(): void {
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
-    
-   }
 }

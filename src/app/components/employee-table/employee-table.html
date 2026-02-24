@@ -1,5 +1,3 @@
-<link href="https://api.fontshare.com/v2/css?f[]=synonym@400&f[]=chillax@600&display=swap" rel="stylesheet">
-
 <div class="inner-content">
     <!-- Dashboard Stats -->
     <h1 class="dashboard-txt">Admin Dashboard</h1>
@@ -43,7 +41,7 @@
             <h2>Employee Table</h2>
              <!--Search Input -->
             <nz-input-group nzSearch [nzAddOnAfter]="searchIcon">
-                <input nz-input [(ngModel)]="searchValue" (input)="onSearch()"placeholder="Search"/>
+                <input nz-input [(ngModel)]="searchValue" (input)="onSearch()" placeholder="Search"/>
                 <ng-template #searchIcon>
                     <button nz-button nzType="primary" nzSearch (click)="onSearchClick()">
                         <i nz-icon nzType="search"></i>
@@ -65,7 +63,7 @@
                 Export PDF
             </button>
             <button class="csv-btn" (click)="exportTableToExcel()">
-                <nz-icon nzType="file-pdf" nzTheme="outline" class="pdf-icon" />
+                <nz-icon nzType="file-excel" nzTheme="outline" class="excel-icon" />
                 Export CSV
             </button>
         </div>
@@ -73,16 +71,17 @@
     
     <!-- Display message when no results found -->
     <div *ngIf="filteredEmployees.length === 0 && !isLoading" class="no-results">
-        <!-- <nz-icon nzType="search" nzTheme="outline"></nz-icon> -->
         <h3 style="color: red;">No employees found</h3>
         <p *ngIf="searchValue" style="color: red;">No results for "{{ searchValue }}"</p>
         <p *ngIf="!searchValue">No employees in the system</p>
     </div>
+    
     <!-- Table -->
     <nz-table #employeeTable nzBordered [nzData]="filteredEmployees" nzTableLayout="fixed" [nzLoading]="isLoading" id="table-data">
         <thead>
             <tr>
                 <th>ID</th>
+                <th>Photo</th> 
                 <th>First Name</th>
                 <th>Middle Name</th>
                 <th>Last Name</th>
@@ -95,10 +94,18 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Table data -->
             <tr *ngFor="let employee of employeeTable.data">
                 <ng-container *ngIf="!editCache[employee.id]?.edit; else editTemplate">
                     <td>{{ employee.id }}</td>
+                    <td class="photo-cell">
+                        <nz-avatar 
+                            [nzSize]="40" 
+                            [nzSrc]="employee.photo || undefined" 
+                            nzIcon="user"
+                            [nzText]="!employee.photo ? getInitials(employee) : ''"
+                            [ngStyle]="{'background-color': !employee.photo ? '#f0f0f0' : 'transparent'}"
+                        ></nz-avatar>
+                    </td>
                     <td>{{ employee.firstName }}</td>
                     <td>{{ employee.middleName || '-' }}</td>
                     <td>{{ employee.lastName }}</td>
@@ -122,9 +129,29 @@
                         </div>
                     </td>
                 </ng-container>
-                 <!-- Add new admin design -->
+                
+                <!-- Edit Template with Photo Upload -->
                 <ng-template #editTemplate>
                     <td>{{ employee.id.startsWith('temp_') ? 'New' : employee.id }}</td>
+                    <td class="photo-cell">
+                        <div class="edit-photo-container">
+                            <nz-avatar 
+                                [nzSize]="35" 
+                                [nzSrc]="editCache[employee.id].data.photo || undefined" 
+                                nzIcon="user"
+                                [nzText]="!editCache[employee.id].data.photo ? getInitials(editCache[employee.id].data) : ''"
+                                [ngStyle]="{'background-color': !editCache[employee.id].data.photo ? '#f0f0f0' : 'transparent'}"
+                            ></nz-avatar>
+                            <button nz-button nzSize="small" type="button" class="upload-btn" (click)="uploadPhoto(employee.id)">
+                                <i nz-icon nzType="upload"></i> Upload
+                            </button>
+                            <button *ngIf="editCache[employee.id].data.photo" 
+                                    nz-button nzSize="small" nzDanger type="button" 
+                                    class="remove-photo-btn" (click)="removePhoto(employee.id)">
+                                <i nz-icon nzType="delete"></i>
+                            </button>
+                        </div>
+                    </td>
                     <td>
                         <input nz-input [(ngModel)]="editCache[employee.id].data.firstName" placeholder="First Name" [class.invalid]="!editCache[employee.id].data.firstName.trim()" />
                     </td>

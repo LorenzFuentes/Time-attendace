@@ -58,7 +58,7 @@ export class MainLayout implements OnInit, OnDestroy {
 
   private loadCurrentUser(): void {
     this.currentUser = this.authService.getCurrentUser();
-    
+        
     console.log('AuthService user:', this.currentUser);
 
     if (!this.currentUser) {
@@ -72,6 +72,18 @@ export class MainLayout implements OnInit, OnDestroy {
         } catch (e) {
           console.error('Error parsing user data:', e);
         }
+      }
+    }
+    
+    // Ensure photo is accessible (convert base64 if needed)
+    if (this.currentUser && this.currentUser.photo) {
+      // If photo is base64 and needs proper formatting
+      if (this.currentUser.photo.startsWith('data:image')) {
+        // Already properly formatted
+        console.log('User has profile photo');
+      } else if (this.currentUser.photo.startsWith('/') || this.currentUser.photo.startsWith('http')) {
+        // Already a URL path
+        console.log('User has profile photo URL');
       }
     }
     
@@ -127,7 +139,42 @@ export class MainLayout implements OnInit, OnDestroy {
     return 'Administrator';
   }
 
+  // FIXED: Return undefined instead of null to match nzSrc expected type
+  getUserPhoto(user: any): string | undefined {
+    if (!user) return undefined;
+    
+    // Check for photo in various possible locations
+    if (user.photo) {
+      // Handle different photo formats
+      if (typeof user.photo === 'string') {
+        // If it's a relative path, you might need to prepend the base URL
+        // Uncomment and modify the line below if your photos are stored as file paths
+        // if (!user.photo.startsWith('data:') && !user.photo.startsWith('http')) {
+        //   return `http://localhost:3000/${user.photo}`;
+        // }
+        return user.photo;
+      }
+    }
+    if (user.avatar) {
+      return user.avatar;
+    }
+    if (user.profilePicture) {
+      return user.profilePicture;
+    }
+    if (user.profilePhoto) {
+      return user.profilePhoto;
+    }
+    
+    return undefined; // Return undefined instead of null
+  }
+
+  // FIXED: Check if user has photo before showing initials
   getInitials(user: any): string {
+    // Don't show initials if user has a photo
+    if (this.getUserPhoto(user)) {
+      return ''; // Return empty string so photo shows instead
+    }
+    
     const name = this.getDisplayName(user);
     if (!name || name === 'Administrator') return 'AD';
     

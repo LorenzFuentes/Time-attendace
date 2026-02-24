@@ -12,9 +12,21 @@ import { AuthService } from '../../service/auth';
 import { AdminService } from '../../service/admin-service/admin'; 
 import { UserService } from '../../service/user-service/user';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
+
 @Component({
   selector: 'app-user-layout',
-  imports: [CommonModule,RouterOutlet,NzAvatarModule,NzBadgeModule,NzBreadCrumbModule,NzIconModule,NzLayoutModule,NzMenuModule,NzTagModule,NzResultModule,],
+  imports: [
+    CommonModule, 
+    RouterOutlet, 
+    NzAvatarModule, 
+    NzBadgeModule, 
+    NzBreadCrumbModule, 
+    NzIconModule, 
+    NzLayoutModule, 
+    NzMenuModule, 
+    NzTagModule, 
+    NzResultModule
+  ],
   templateUrl: './user-layout.html',
   styleUrl: './user-layout.scss',
 })
@@ -75,6 +87,18 @@ export class UserLayout implements OnInit, OnDestroy {
       }
     }
     
+    // Ensure photo is accessible (convert base64 if needed)
+    if (this.currentUser && this.currentUser.photo) {
+      // If photo is base64 and needs proper formatting
+      if (this.currentUser.photo.startsWith('data:image')) {
+        // Already properly formatted
+        console.log('User has profile photo');
+      } else if (this.currentUser.photo.startsWith('/') || this.currentUser.photo.startsWith('http')) {
+        // Already a URL path
+        console.log('User has profile photo URL');
+      }
+    }
+    
     if (!this.currentUser) {
       console.log('No user found, redirecting to login...');
       this.router.navigate(['/login']);
@@ -127,7 +151,40 @@ export class UserLayout implements OnInit, OnDestroy {
     return 'Administrator';
   }
 
+  getUserPhoto(user: any): string | null {
+    if (!user) return null;
+    
+    // Check for photo in various possible locations
+    if (user.photo) {
+      // Handle different photo formats
+      if (typeof user.photo === 'string') {
+        // If it's a relative path, you might need to prepend the base URL
+        // Uncomment and modify the line below if your photos are stored as file paths
+        // if (!user.photo.startsWith('data:') && !user.photo.startsWith('http')) {
+        //   return `http://localhost:3000/${user.photo}`;
+        // }
+        return user.photo;
+      }
+    }
+    if (user.avatar) {
+      return user.avatar;
+    }
+    if (user.profilePicture) {
+      return user.profilePicture;
+    }
+    if (user.profilePhoto) {
+      return user.profilePhoto;
+    }
+    
+    return null;
+  }
+
   getInitials(user: any): string {
+    // Don't show initials if user has a photo
+    if (this.getUserPhoto(user)) {
+      return '';
+    }
+    
     const name = this.getDisplayName(user);
     if (!name || name === 'Administrator') return 'AD';
     
@@ -153,12 +210,13 @@ export class UserLayout implements OnInit, OnDestroy {
       day: 'numeric'
     });
   }
+  
   logout(): void {
     this.authService.logout();
     this.router.navigate(['']);
   }
+  
   openNotifications() {
-
     console.log('Notifications opened');
   }
 }

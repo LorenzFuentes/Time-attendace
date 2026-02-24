@@ -95,13 +95,42 @@
           </div>
 
           <div class="form-group">
+            <label class="form-label" for="photo">Profile Photo (Optional)</label>
+            <nz-form-control>
+              <div class="photo-upload-container">
+                <div class="photo-preview" *ngIf="photoPreview">
+                  <img [src]="photoPreview" alt="Profile preview">
+                  <button type="button" class="remove-photo" (click)="removePhoto()" nz-button nzType="text" nzDanger>
+                    <span>×</span>
+                  </button>
+                </div>
+                <div class="upload-controls" [class.hidden]="photoPreview">
+                  <input 
+                    type="file" 
+                    id="photo" 
+                    accept="image/*" 
+                    (change)="onPhotoSelected($event)"
+                    style="display: none;"
+                    #fileInput>
+                  <button 
+                    type="button" 
+                    class="upload-button" 
+                    (click)="fileInput.click()"
+                    nz-button>
+                    <span>📷</span> Choose Photo
+                  </button>
+                  <span class="upload-hint">JPG or PNG (max. 5MB)</span>
+                </div>
+              </div>
+            </nz-form-control>
+          </div>
+          <div class="form-group">
             <nz-form-control>
               <button nz-button class="register-button" [disabled]="!registerForm.valid">
                 Register
               </button>
             </nz-form-control>
           </div>
-
         </form>
       </div>
     </div>

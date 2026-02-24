@@ -19,9 +19,11 @@ import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import * as Papa from 'papaparse';
 import { User, RegisterRequest } from '../../model/post';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar'; 
 
 export interface Employee {
   id: string;
+  photo?: string; 
   firstName: string;
   middleName: string;
   lastName: string;
@@ -36,7 +38,7 @@ export interface Employee {
 @Component({
   selector: 'app-employee-table',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NzInputModule, NzPopconfirmModule, NzTableModule, NzButtonModule, NzSelectModule, NzTagModule, NzIconModule,],
+  imports: [NzAvatarModule,CommonModule, FormsModule, ReactiveFormsModule, NzInputModule, NzPopconfirmModule, NzTableModule, NzButtonModule, NzSelectModule, NzTagModule, NzIconModule],
   templateUrl: './employee-table.html',
   styleUrl: '../../app.scss'
 })
@@ -70,7 +72,6 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
     private router: Router
   ) {}
 
-
   ngOnInit(): void {
     this.loadEmployees();
     this.loadCurrentUser();
@@ -85,7 +86,7 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
     
     // Subscribe to search input with debounce for real-time search
     this.searchSubscription = this.searchSubject
-      .pipe(debounceTime(300)) // 300ms delay to prevent excessive filtering
+      .pipe(debounceTime(300))
       .subscribe(searchTerm => {
         this.filterEmployees(searchTerm);
       });
@@ -113,6 +114,7 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
   private convertUserToEmployee(user: User): Employee {
     return {
       id: user.id.toString(),
+      photo: user.photo || undefined, // Convert string to string | undefined
       firstName: user.firstName || '',
       middleName: user.middleName || '',
       lastName: user.lastName || '',
@@ -129,6 +131,7 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
   private convertEmployeeToUser(employee: Employee): User {
     return {
       id: parseInt(employee.id) || 0,
+      photo: employee.photo || '',
       firstName: employee.firstName,
       middleName: employee.middleName,
       lastName: employee.lastName,
@@ -152,7 +155,8 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
       position: employee.position,
       username: employee.username,
       email: employee.email,
-      password: employee.password
+      password: employee.password,
+      photo: employee.photo || ''
     };
   }
 
@@ -286,7 +290,8 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
           position: newEmployee.position,
           username: newEmployee.username,
           email: newEmployee.email,
-          password: newEmployee.password
+          password: newEmployee.password,
+           photo: newEmployee.photo || '' 
         };
         
         this.userService.register(employeeToCreate).subscribe({
@@ -330,6 +335,7 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
     // Create User object with proper number id
     const userToUpdate: User = {
       id: parseInt(id),
+      photo: updatedEmployee.photo || '',
       firstName: updatedEmployee.firstName,
       middleName: updatedEmployee.middleName,
       lastName: updatedEmployee.lastName,
@@ -388,6 +394,7 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
     const tempId = `temp_${Date.now()}`;
     const newEmployee: Employee = {
       id: tempId,
+      photo: undefined, // No photo for new employee
       firstName: '',
       middleName: '',
       lastName: '',
@@ -426,6 +433,23 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
       error: () => this.message.error('Delete failed!')
     });
   }
+  getInitials(employee: Employee): string {
+  if (!employee) return '';
+  
+  // Get first letter of first name and last name
+  const firstInitial = employee.firstName ? employee.firstName.charAt(0).toUpperCase() : '';
+  const lastInitial = employee.lastName ? employee.lastName.charAt(0).toUpperCase() : '';
+  
+  if (firstInitial && lastInitial) {
+    return firstInitial + lastInitial;
+  } else if (firstInitial) {
+    return firstInitial;
+  } else if (lastInitial) {
+    return lastInitial;
+  } else {
+    return '?';
+  }
+}
 
   refreshData(): void {
     this.isLoading = true;
@@ -460,6 +484,57 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
     }
     
     return allRequiredValid;
+  }
+
+  // New method to handle image loading errors
+  handleImageError(event: Event): void {
+    const imgElement = event.target as HTMLImageElement;
+    imgElement.src = '/assets/images/placeholder-avatar.png';
+  }
+
+  // New method to upload photo during edit
+  uploadPhoto(employeeId: string): void {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.onchange = (event: any) => {
+      const file = event.target.files[0];
+      if (file) {
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          this.message.warning('File size must be less than 5MB');
+          return;
+        }
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+          this.message.warning('Please select an image file');
+          return;
+        }
+
+        // Convert to base64
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (this.editCache[employeeId]) {
+            this.editCache[employeeId].data.photo = e.target?.result as string;
+            this.message.success('Photo uploaded successfully');
+          }
+        };
+        reader.onerror = () => {
+          this.message.error('Failed to read file');
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    fileInput.click();
+  }
+
+  // New method to remove photo
+  removePhoto(employeeId: string): void {
+    if (this.editCache[employeeId]) {
+      this.editCache[employeeId].data.photo = undefined;
+      this.message.info('Photo removed');
+    }
   }
 
   private loadCurrentUser(): void {
@@ -547,12 +622,13 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
       doc.text(`Total Employees: ${this.filteredEmployees.length}`, 14, 35);
       
       const headers = [
-        ['ID', 'First Name', 'Middle Name', 'Last Name', 'Contact', 
+        ['ID', 'Photo', 'First Name', 'Middle Name', 'Last Name', 'Contact', 
          'Department', 'Position', 'Username', 'Email']
       ];
       
       const data = this.filteredEmployees.map(employee => [
         employee.id || 'N/A',
+        employee.photo ? 'Yes' : 'No', // Just indicate if photo exists since PDF can't show images easily
         employee.firstName || 'N/A',
         employee.middleName || 'N/A',
         employee.lastName || 'N/A',
@@ -584,14 +660,15 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
         },
         columnStyles: {
           0: { cellWidth: 20 },
-          1: { cellWidth: 25 },
+          1: { cellWidth: 20 },
           2: { cellWidth: 25 },
           3: { cellWidth: 25 },
-          4: { cellWidth: 30 },
+          4: { cellWidth: 25 },
           5: { cellWidth: 30 },
           6: { cellWidth: 30 },
-          7: { cellWidth: 25 },
-          8: { cellWidth: 45 }
+          7: { cellWidth: 30 },
+          8: { cellWidth: 25 },
+          9: { cellWidth: 45 }
         },
         margin: { top: 45 }
       });
@@ -631,6 +708,7 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
     
     const exportData = this.filteredEmployees.map(employee => ({
       'Employee ID': employee.id.startsWith('temp_') ? 'New' : employee.id,
+      'Has Photo': employee.photo ? 'Yes' : 'No', // Indicate if photo exists
       'First Name': employee.firstName,
       'Middle Name': employee.middleName || '-',
       'Last Name': employee.lastName,
