@@ -827,57 +827,57 @@ nz-avatar {
     color: #f7b05b;
 }
 
-// Calendar - WHITE MODE
+// Calendar
 
 :host ::ng-deep {
-    .cln-txt {
-        color: #2f2f2f;
-        font-family: 'Chillax', sans-serif;
-    }
+  .cln-txt {
+    color: #2f2f2f;
+    font-family: 'Chillax', sans-serif;
+    margin: 0;
+  }
+
   /* Calendar header */
   .ant-picker-calendar-header {
     background: #a588be;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    padding: 12px;
   }
   
-  .ant-select-selector,.ant-radio-button-wrapper {
-      background: #F5F5F5 !important;
-      border-color: #E0E0E0 !important;
-      color: #2f2f2f !important;
-      margin-right: 10px;
-      border-radius: 5px;
+  .ant-select-selector,
+  .ant-radio-button-wrapper {
+    background: #F5F5F5 !important;
+    border-color: #E0E0E0 !important;
+    color: #2f2f2f !important;
+    margin-right: 10px;
+    border-radius: 5px;
   }
   
   .ant-picker-calendar .ant-picker-content th {
     color: #a588be;
     font-weight: bolder;
+    padding: 8px 0;
   }
   
-  /* Calendar cell numbers - normal days */
+  /* Calendar cell numbers */
   .ant-picker-calendar .ant-picker-cell .ant-picker-cell-inner {
     color: #2f2f2f !important;
+    font-weight: 500;
   }
   
-  /* Calendar cell numbers - today */
+  /* Today */
   .ant-picker-calendar .ant-picker-cell-today .ant-picker-cell-inner {
     color: #2f2f2f;
     border: 2px solid #1780C7;
-  }
+  } 
   
-  /* Calendar cell numbers - selected day */
+  /* Selected day */
   .ant-picker-calendar .ant-picker-cell-selected .ant-picker-cell-inner {
-    background: #a588be !important;
+    background: rgba(189, 149, 225, 0.459) !important;
     color: #FFFFFF !important;
   }
   
-  /* Calendar cell numbers - hover state */
-  .ant-picker-calendar .ant-picker-cell:hover .ant-picker-cell-inner {
-    color: #2f2f2f !important;
-    background: rgba(165, 136, 190, 0.1) !important;
-  }
-  
-  // Calendar panel
+  /* Calendar panel */
   .ant-picker-calendar .ant-picker-panel {
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
@@ -885,160 +885,411 @@ nz-avatar {
     background: #FFFFFF;
   }
   
-  /* Calendar body background */
-  .ant-picker-calendar .ant-picker-panel .ant-picker-body {
-    background: #FFFFFF;
-  }
-  
-  /* Calendar cell background */
+  /* Calendar cell */
   .ant-picker-calendar .ant-picker-cell {
     background: #FFFFFF;
+    position: relative;
+    height: 100px !important;
+    vertical-align: top;
+    padding: 4px !important;
   }
   
-  /* Calendar cell hover background */
-  .ant-picker-calendar .ant-picker-cell:hover {
-    background: rgba(165, 136, 190, 0.05);
+  /* Header wrapper */
+  .calendar-header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 0 8px;
   }
   
+  .left-section {
+    display: flex;
+    align-items: center;
+  }
+
+  .right-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+
+      &.addUser-btn {
+        background-color: #126aa3;
+        color: white;
+
+        &:hover {
+          background-color: #0f5a8a;
+        }
+      }
+      &.pdf-btn {
+        background-color: #ff4d4f;
+        color: white;
+
+        &:hover {
+          background-color: #811d1e;
+        }
+      }
+    }
+  }
+  
+  /* Calendar items list */
+  .calendar-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    right: 4px;
+    z-index: 10;
+    max-height: 80px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .calendar-items li {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  // UNIFIED BADGE STYLES
+ 
+  .meeting-item .ant-badge-status-text,
+  .activity-item .ant-badge-status-text,
+  .leave-vacation .ant-badge-status-text,
+  .leave-sick .ant-badge-status-text,
+  .leave-emergency .ant-badge-status-text,
+  .leave-personal .ant-badge-status-text,
+  .leave-other .ant-badge-status-text,
+  .attendance-item .ant-badge-status-text {
+    padding: 2px 8px !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    font-size: 11px !important;
+    border: 2px solid !important;
+    transition: all 0.2s ease;
+  }
+  // MEETING & ACTIVITY
+  .meeting-item .ant-badge-status-text {
+    background-color: #00bcd4 !important; 
+    color: white !important;
+    border-color: #00838f !important;
+  }
+
+  .activity-item .ant-badge-status-text {
+    background-color: #cddc39 !important; 
+    color: #2f2f2f !important; 
+    border-color: #9e9d24 !important;
+  }
+
+  // LEAVE TYPES 
+  .leave-vacation .ant-badge-status-text {
+    background-color: #9c27b0 !important;   
+    color: white !important;
+    border-color: #6a1b9a !important;
+  }
+
+  .leave-sick .ant-badge-status-text {
+    background-color: #2196f3 !important;  
+    color: white !important;
+    border-color: #1565c0 !important;
+  }
+
+  .leave-emergency .ant-badge-status-text {
+    background-color: #f44336 !important; 
+    color: white !important;
+    border-color: #c62828 !important;
+  }
+
+  .leave-personal .ant-badge-status-text {
+    background-color: #009688 !important;  
+    color: white !important;
+    border-color: #00695c !important;
+  }
+
+  .leave-other .ant-badge-status-text {
+    background-color: #ff9800 !important;
+    color: white !important;
+    border-color: #ef6c00 !important;
+  }
+
+  // ATTENDANCE STATUSES 
+  .attendance-item.status-present .ant-badge-status-text {
+    background-color: rgba(76, 175, 80, 0.15) !important;  
+    color: #2e7d32 !important;                              
+    border-color: #4caf50 !important;                   
+  }
+
+  .attendance-item.status-absent .ant-badge-status-text {
+    background-color: rgba(244, 67, 54, 0.15) !important; 
+    color: #c62828 !important;                               
+    border-color: #f44336 !important;                    
+  }
+
+  .attendance-item.status-late .ant-badge-status-text {
+    background-color: rgba(255, 152, 0, 0.15) !important;   
+    color: #ef6c00 !important;                               
+    border-color: #ff9800 !important;                    
+  }
+  
+  .attendance-item.status-on-leave .ant-badge-status-text {
+    background-color: rgba(33, 150, 243, 0.15) !important; 
+    color: #1565c0 !important;                              
+    border-color: #2196f3 !important;                  
+  }
+
+  .attendance-item.status-default .ant-badge-status-text {
+    background-color: #9e9e9e !important;
+    color: white !important;
+    border-color: #616161 !important;
+  }
+
+  // LEGEND 
+  .legend {
+    display: flex;
+    gap: 40px;
+    margin-top: 16px;
+    padding: 16px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    .legend-section {
+      h4 {
+        margin: 0 0 8px 0;
+        color: #a588be;
+        font-size: 14px;
+      }
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+
+      .legend-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        
+        /* Meeting & Activity */
+        &.meeting { background: #00bcd4; }
+        &.activity { background: #cddc39; }
+        
+        /* Leave Types */
+        &.vacation { background: #9c27b0; }
+        &.sick { background: #2196f3; }
+        &.emergency { background: #f44336; }
+        &.personal { background: #009688; }
+        
+        /* Attendance */
+        &.present { background: #4caf50; }
+        &.absent { background: #f44336; }
+        &.late { background: #ff9800; }
+        &.on-leave { background: #2196f3; }
+        &.default { background: #9e9e9e; }
+      }
+    }
+  }
+  
+  /* Radio group */
+  .ant-radio-group {
+    display: flex;
+    gap: 16px;
+  }
+
+  .ms-3 {
+    margin-left: 16px;
+  }
+  
+  /* Alert */
   .ant-alert {
     background: #FFFFFF;
     border: 2px solid #a588be;
     border-radius: 6px;
     margin-bottom: 16px;
-    color: #2f2f2f;
   }
   
   .ant-alert-message {
     color: #a588be;
     font-weight: 500;
   }
-  
-  .ant-alert-info {
-    background: #FFFFFF;
-    border-color: #a588be;
-    color: #2f2f2f;
+
+  /* Month notes */
+  .notes-month {
+    text-align: center;
+    font-size: 28px;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+
+    section {
+      font-size: 28px;
+      font-weight: bold;
+      color: #a588be;
+    }
+
+    span {
+      font-size: 12px;
+      color: #999;
+    }
   }
-  
-  .ant-alert-info .ant-alert-icon {
-    color: #a588be;
+
+  /* Scrollbar for calendar items */
+  .calendar-items::-webkit-scrollbar {
+    width: 3px;
   }
-  
-  /* Calendar weekend cells */
-  .ant-picker-calendar .ant-picker-cell.ant-picker-cell-weekend .ant-picker-cell-inner {
-    color: #666666 !important;
+
+  .calendar-items::-webkit-scrollbar-track {
+    background: #f1f1f1;
   }
-  
-  /* Calendar disabled cells */
-  .ant-picker-calendar .ant-picker-cell.ant-picker-cell-disabled .ant-picker-cell-inner {
-    color: #CCCCCC !important;
-  }
-  
-  /* Calendar year/month selectors */
-  .ant-picker-calendar .ant-picker-header {
-    background: #FFFFFF;
-    color: #2f2f2f;
-  }
-  
-  .ant-picker-calendar .ant-picker-header button {
-    color: #2f2f2f;
-  }
-  
-  .ant-picker-calendar .ant-picker-header button:hover {
-    color: #a588be;
-  }
-  
-  /* Calendar month/year panel */
-  .ant-picker-calendar .ant-picker-month-panel,
-  .ant-picker-calendar .ant-picker-year-panel {
-    background: #FFFFFF;
-  }
-  
-  .ant-picker-calendar .ant-picker-month-panel-cell .ant-picker-month-panel-cell-inner,
-  .ant-picker-calendar .ant-picker-year-panel-cell .ant-picker-year-panel-cell-inner {
-    color: #2f2f2f;
-  }
-  
-  .ant-picker-calendar .ant-picker-month-panel-cell:hover .ant-picker-month-panel-cell-inner,
-  .ant-picker-calendar .ant-picker-year-panel-cell:hover .ant-picker-year-panel-cell-inner {
-    background: rgba(165, 136, 190, 0.1);
-    color: #2f2f2f;
+
+  .calendar-items::-webkit-scrollbar-thumb {
+    background: #a588be;
+    border-radius: 3px;
   }
 }
 
-/* Custom modal styles */
+/* Modal styles */
 ::ng-deep .ant-modal {
-  /* Modal container */
   border-radius: 12px !important;
   overflow: hidden;
 }
 
 ::ng-deep .ant-modal-header {
-  /* Modal header */
   background: linear-gradient(135deg, #80c65E 0%, #a588be 100%);
   border-bottom: none;
-  padding: 20px 24px;
+  padding: 16px 24px;
 }
 
 ::ng-deep .ant-modal-title {
-  /* Modal title */
   color: white !important;
   font-size: 18px !important;
   font-weight: 600;
 }
 
 ::ng-deep .ant-modal-body {
-  /* Modal body */
   padding: 24px;
-  max-height: 70vh;
-  overflow-y: auto;
   background: #FFFFFF;
-  color: #2f2f2f;
 }
 
 ::ng-deep .ant-modal-footer {
-  /* Modal footer */
-  border-top: 1px solid #E0E0E0;
+  border-top: 1px solid #f0f0f0;
   padding: 16px 24px;
   background: #FFFFFF;
 }
 
 ::ng-deep .ant-modal-close {
-  /* Close button */
   color: white !important;
 }
 
-::ng-deep .ant-modal-close:hover {
-  color: rgba(255, 255, 255, 0.8) !important;
+::ng-deep .event-modal {
+  .ant-form-item {
+    margin-bottom: 20px;
+  }
+
+  .ant-form-item-label > label {
+    font-weight: 500;
+    color: #2f2f2f;
+  }
+
+  .date-time-container {
+    display: flex;
+    gap: 12px;
+    
+    .date-picker {
+      flex: 1;
+    }
+    
+    .time-picker {
+      width: 120px;
+    }
+  }
+
+  .modal-footer-custom {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    
+    button {
+      min-width: 80px;
+    }
+  }
 }
 
-/* Custom form styles inside modal */
-::ng-deep .attendance-modal .ant-form-item {
-  margin-bottom: 16px;
+::ng-deep .view-modal {
+  .ant-modal-body {
+    padding: 0;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+  
+  .table-container {
+    padding: 16px;
+  }
+  
+  .events-table {
+    width: 100%;
+    border-collapse: collapse;
+    
+    th {
+      background: #a588be;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-weight: 500;
+      top: 0;
+    }
+    
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    tr:hover {
+      background: #f9f9f9;
+    }
+  }
+  
+  .event-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: white;
+    
+    &.meeting {
+      background: #2196f3;
+    }
+    
+    &.activity {
+      background: #4caf50;
+    }
+  }
+  
+  .no-data {
+    padding: 40px;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+  }
 }
-
-::ng-deep .attendance-modal .ant-form-item-label > label {
-  font-weight: 500;
-  color: #2f2f2f;
-}
-
-/* Custom input styles */
-::ng-deep .attendance-modal .ant-input,
-::ng-deep .attendance-modal .ant-select-selector,
-::ng-deep .attendance-modal .ant-picker {
-  border-radius: 6px !important;
-  border: 1px solid #E0E0E0 !important;
-  background: #FFFFFF !important;
-  color: #2f2f2f !important;
-}
-
-::ng-deep .attendance-modal .ant-input:focus,
-::ng-deep .attendance-modal .ant-select-focused .ant-select-selector,
-::ng-deep .attendance-modal .ant-picker-focused {
-  border-color: #a588be !important;
-  box-shadow: 0 0 0 2px rgba(165, 136, 190, 0.1) !important;
-}
-
-
 
 // Pending
 
@@ -1413,7 +1664,7 @@ nz-modal {
   }
 }
 
-// Nptification
+// Notification
 
 .notification-wrapper {
   position: relative;

@@ -19,7 +19,7 @@ import { UserService } from '../../service/user-service/user';
   styleUrl: './main-layout.scss',
 })
 export class MainLayout implements OnInit, OnDestroy {
-  isCollapsed = false;
+  isCollapsed = true;
   protected readonly date = new Date();
 
   currentUser: any = null;

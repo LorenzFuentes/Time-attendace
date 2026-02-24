@@ -1,3 +1,217 @@
-<h1 class="cln-txt">Calendar</h1>
-<nz-alert nzType="info"nzMessage="Selected Date: {{ selectedValue | date: 'yyyy-MM-dd' }}"></nz-alert>
-<nz-calendar [(ngModel)]="selectedValue" (nzSelectChange)="selectChange($event)"></nz-calendar> 
+<div class="calendar-header-wrapper">
+  <div class="left-section">
+    <h1 class="cln-txt">Calendar</h1>
+  </div>
+  <div class="right-section">
+    <button class="addUser-btn" (click)="showAddModal()">
+      <nz-icon nzType="plus" nzTheme="outline" class="add-icon" />
+      Add Event
+    </button>
+    <button class="pdf-btn" (click)="openViewModal()">
+      <nz-icon nzType="calendar" nzTheme="outline" class="add-icon" />
+      View Event
+    </button>
+  </div>
+</div>
+
+<!-- <nz-alert nzType="info" nzMessage="Selected Date: {{ selectedValue | date : 'yyyy-MM-dd' }}"></nz-alert> -->
+
+<nz-calendar 
+  [(ngModel)]="selectedValue" 
+  (nzSelectChange)="selectChange($event)"
+  [nzMode]="'month'">
+  
+  <ul *nzDateCell="let date" class="calendar-items">
+    <!-- Display Approved Leaves -->
+    @for (leave of getLeavesByDate(date); track leave.id) {
+      <li [class]="'leave-item ' + getLeaveTypeClass(leave.apply)">
+        <nz-badge 
+          [nzStatus]="'success'" 
+          [nzText]="getLeaveDisplayText(leave)" 00bcd4
+          [nzTitle]="getLeaveTooltip(leave)" />
+      </li>
+    }
+
+    <!-- Display Events (meetings/activities) -->
+    @for (event of getEventsByDate(date); track event.id) {
+      <li [class]="event.eventType === 'meeting' ? 'meeting-item' : 'activity-item'"> 
+        <nz-badge 
+          [nzStatus]="event.eventType === 'meeting' ? 'processing' : 'success'" 
+          [nzText]="getEventDisplayText(event)" 
+          [nzTitle]="event.description" />
+      </li>
+    }
+
+    @for (record of getAttendanceByDate(date); track record.id) {
+      <li [class]="'attendance-item status-' + record.status.toLowerCase()"> 
+        <nz-badge 
+          [nzStatus]="getStatusBadge(record.status)" 
+          [nzText]="getAttendanceDisplayText(record)" 
+          [nzTitle]="getAttendanceTooltip(record)" />
+      </li>
+    }
+  </ul>
+
+  <!-- Month summary showing total items -->
+  <ng-container *nzMonthCell="let month">
+    @if (getMonthData(month); as monthData) {
+      <div class="notes-month">
+        <section>{{ monthData }}</section>
+        <span>Total Items</span>
+      </div>
+    }
+  </ng-container>
+</nz-calendar>
+
+<div class="legend">
+  <div class="legend-section">
+    <h4>Leave Types</h4>
+    <div class="legend-item">
+      <span class="legend-dot vacation"></span>
+      <span>Vacation Leave</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot sick"></span>
+      <span>Sick Leave</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot emergency"></span>
+      <span>Emergency Leave</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot personal"></span>
+      <span>Personal Leave</span>
+    </div>
+  </div>
+  
+  <div class="legend-section">
+    <h4>Events</h4>
+    <div class="legend-item">
+      <span class="legend-dot meeting"></span>
+      <span>Meeting</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot activity"></span>
+      <span>Activity</span>
+    </div>
+  </div>
+</div>
+
+<!-- Add Event Modal -->
+<nz-modal
+  [(nzVisible)]="isAddModalVisible"
+  nzTitle="Add New Event"
+  (nzOnCancel)="handleCancel()"
+  [nzFooter]="modalFooter"
+  nzClassName="event-modal"
+  [nzWidth]="500"
+  [nzClosable]="true"
+  [nzMaskClosable]="false">
+  
+  <div *nzModalContent>
+    <form nz-form [formGroup]="addEventForm">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzRequired>Event Type</nz-form-label>
+        <nz-form-control [nzSpan]="18" nzErrorTip="Please select an event type">
+          <nz-radio-group formControlName="eventType">
+            <label nz-radio nzValue="meeting">Meeting</label>
+            <label nz-radio nzValue="activity" class="ms-3">Activity</label>
+          </nz-radio-group>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzRequired>Date and Time</nz-form-label>
+        <nz-form-control [nzSpan]="18" nzErrorTip="Please select date and time">
+          <div class="date-time-container">
+            <nz-date-picker 
+              formControlName="date" 
+              [nzFormat]="'yyyy-MM-dd'"
+              placeholder="Select date"
+              class="date-picker">
+            </nz-date-picker>
+            <nz-time-picker 
+              formControlName="time" 
+              [nzFormat]="'HH:mm'"
+              placeholder="Select time"
+              class="time-picker">
+            </nz-time-picker>
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzRequired>Description</nz-form-label>
+        <nz-form-control [nzSpan]="18" nzErrorTip="Please enter a description">
+          <textarea 
+            nz-input 
+            formControlName="description" 
+            placeholder="Type here your reason" 
+            rows="4">
+          </textarea>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+  
+  <ng-template #modalFooter>
+    <div class="modal-footer-custom">
+      <button nz-button nzType="default" (click)="resetForm()">Reset</button>
+      <button nz-button nzType="primary" (click)="handleOk()" [disabled]="!isFormValid()">Create</button>
+    </div>
+  </ng-template>
+</nz-modal>
+
+<!-- View Events Modal -->
+<nz-modal
+  [(nzVisible)]="isViewModalVisible"
+  nzTitle="All Events"
+  (nzOnCancel)="closeViewModal()"
+  [nzFooter]="viewModalFooter"
+  nzClassName="view-modal"
+  [nzWidth]="800"
+  [nzClosable]="true"
+  [nzMaskClosable]="false">
+  
+  <div *nzModalContent>
+    <div class="table-container" *ngIf="eventData.length > 0">
+      <table class="events-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (event of eventData; track event.id) {
+            <tr>
+              <td>{{ event.id }}</td>
+              <td>
+                <span class="event-badge" [ngClass]="event.eventType">
+                  {{ event.eventType === 'meeting' ? '📅 Meeting' : '📋 Activity' }}
+                </span>
+              </td>
+              <td>{{ event.date }}</td>
+              <td>{{ event.time }}</td>
+              <td>{{ event.description }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="no-data" *ngIf="eventData.length === 0">
+      No events found.
+    </div>
+  </div>
+  
+  <ng-template #viewModalFooter>
+    <div class="modal-footer-custom">
+      <button nz-button nzType="default" (click)="closeViewModal()">
+        Close
+      </button>
+    </div>
+  </ng-template>
+</nz-modal>
