@@ -18,6 +18,9 @@ import { AttendanceService } from '../../service/attendance-service/attendance';
 import { LeaveService } from '../../service/leave-service/leave';
 import { forkJoin } from 'rxjs';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+
 @Component({
   selector: 'app-user-dashboard',
   standalone: true,
@@ -35,41 +38,43 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
     NzTableModule,
     NzTagModule,
     NzTabsModule,
-    NzBadgeModule
+    NzBadgeModule,
+    NzAlertModule,
+    NzAvatarModule
   ],
   templateUrl: './user-home.html',
   styleUrls: ['../../app.scss']
 })
 export class UserHome implements OnInit, OnDestroy {
   // User Info
-  currentUser: any = null; // Stores the currently logged-in user data
-  userDisplayName: string = 'Administrator'; // Display name for the UI
-  currentDate = new Date(); // Current date for display
-  currentTime = new Date(); // Current time for real-time clock
-  private timeInterval: any; // Interval reference for clock updates
+  currentUser: any = null;
+  userDisplayName: string = 'User';
+  currentDate = new Date();
+  currentTime = new Date();
+  private timeInterval: any;
 
   // Time Tracking
-  isTimedIn = false; // Flag indicating if user is currently timed in
-  timeInTime: Date | null = null; // Timestamp of when user timed in
-  timeOutTime: Date | null = null; // Timestamp of when user timed out
-  totalHoursWorked = '0h 0m'; // Formatted string of total hours worked
-  todayAttendance: any = null; // Today's attendance record
-  attendanceData: any[] = []; // Array of all attendance records
+  isTimedIn = false;
+  timeInTime: Date | null = null;
+  timeOutTime: Date | null = null;
+  totalHoursWorked = '0h 0m';
+  todayAttendance: any = null;
+  attendanceData: any[] = [];
 
   // Leave Modal
-  isLeaveModalVisible = false; // Controls visibility of leave request modal
+  isLeaveModalVisible = false;
 
   // Leave Request Form
   leaveRequest = {
-    type: 'vacation', // Type of leave (vacation, sick, emergency, personal)
-    dateFrom: null,   // Start date of leave
-    dateTo: null,     // End date of leave
-    reason: '',       // Reason for leave request
-    halfDay: false    // Flag for half-day leave
+    type: 'vacation',
+    dateFrom: null,
+    dateTo: null,
+    reason: '',
+    halfDay: false
   };
 
   // Leave History
-  leaveHistory: any[] = []; // Array of user's leave requests
+  leaveHistory: any[] = [];
 
   // Leave Balances
   leaveBalances = [
@@ -79,75 +84,101 @@ export class UserHome implements OnInit, OnDestroy {
     { type: 'Personal Leave', total: 5, used: 0, remaining: 5, color: '#9379b0' }
   ];
 
-  recentActivity: any[] = []; // Array of recent user activities for display
+  recentActivity: any[] = [];
 
-  private readonly LATE_THRESHOLD_HOUR = 21; // 9 PM threshold for late attendance
-  private readonly LATE_THRESHOLD_MINUTE = 10; // 10 minutes past 9 PM
-  private totalHoursInterval: any; // Interval reference for updating total hours
+  private readonly LATE_THRESHOLD_HOUR = 21;
+  private readonly LATE_THRESHOLD_MINUTE = 10;
+  private totalHoursInterval: any;
 
+  // Edit Profile Properties
+  isEditProfileModalVisible = false;
+  editProfilePhotoFile: File | null = null;
+  editProfilePhotoPreview: string | null = null;
+  editProfileData: any = {
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    phone: '',
+    username: '',
+    email: '',
+    department: '',
+    position: ''
+  };
 
   constructor(
-    private userService: UserService, // Service for user-related operations
-    private attendanceService: AttendanceService, // Service for attendance-related operations
-    private leaveService: LeaveService, // Service for leave-related operations
-    private message: NzMessageService // Service for displaying toast messages
+    private userService: UserService,
+    private attendanceService: AttendanceService,
+    private leaveService: LeaveService,
+    private message: NzMessageService
   ) {}
 
-  // Lifecycle hook called when component initializes
   ngOnInit(): void {
-    this.loadUserData(); // Load current user data
-    this.startClock(); // Start the real-time clock
+    this.loadUserData();
+    this.startClock();
   }
 
-  // Lifecycle hook called when component destroys
   ngOnDestroy(): void {
-    // Clean up intervals to prevent memory leaks
     if (this.timeInterval) {
       clearInterval(this.timeInterval);
     }
-     if (this.totalHoursInterval) { 
+    if (this.totalHoursInterval) { 
       clearInterval(this.totalHoursInterval);
     }
   }
 
-  // Starts the real-time clock that updates every second
   startClock(): void {
     this.timeInterval = setInterval(() => {
       this.currentTime = new Date();
     }, 1000);
   }
 
-  // Loads user data from local storage and fetches related information
   loadUserData(): void {
     const userJson = localStorage.getItem('currentUser');
     if (userJson) {
       this.currentUser = JSON.parse(userJson);
       this.userDisplayName = this.getDisplayName(this.currentUser);
       
-      // Load additional user data
       this.loadTodayAttendance();
       this.loadUserLeaveHistory();
       this.loadRecentActivity();
     }
   }
 
-  // Formats user display name based on available user properties
   getDisplayName(user: any): string {
-    if (!user) return 'Administrator';
+    if (!user) return 'User';
     
     if (user.firstName) {
-      const names = [user.firstName]
+      const names = [user.firstName, user.middleName, user.lastName]
         .filter(name => name && name.trim());
       if (names.length > 0) return names.join(' ');
     }
     
+    if (user.fullname) return user.fullname;
     if (user.name) return user.name;
     if (user.username) return user.username;
     
-    return 'Administrator';
+    return 'User';
   }
 
-  // Loads today's attendance record for the current user
+  getInitials(user: any): string {
+    if (!user) return 'U';
+    
+    // Don't show initials if user has a photo
+    if (user.photo) {
+      return '';
+    }
+    
+    const name = this.getDisplayName(user);
+    if (!name) return 'U';
+    
+    const nameParts = name.split(' ');
+    if (nameParts.length === 1) {
+      return nameParts[0].charAt(0).toUpperCase();
+    }
+    
+    return (nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)).toUpperCase();
+  }
+
   loadTodayAttendance(): void {
     const today = new Date().toISOString().split('T')[0];
     
@@ -168,7 +199,6 @@ export class UserHome implements OnInit, OnDestroy {
             this.timeOutTime = new Date(`${today}T${this.todayAttendance.timeOut}`);
             this.isTimedIn = false;
           } else {
-            // Start auto-update if user is currently timed in (no time out yet)
             this.startTotalHoursUpdate();
           }
           
@@ -181,12 +211,9 @@ export class UserHome implements OnInit, OnDestroy {
     });
   }
 
-  // Loads leave history for the current user
   loadUserLeaveHistory(): void {
     this.leaveService.getLeaveRecords().subscribe({
       next: (records: any[]) => {
-        console.log('Leave records:', records);
-        
         this.leaveHistory = records
           .filter(r => r.userId === this.currentUser?.id)
           .map(r => ({
@@ -208,7 +235,6 @@ export class UserHome implements OnInit, OnDestroy {
     });
   }
 
-  // Loads recent activities (attendance and leave) for display
   loadRecentActivity(): void {
     forkJoin({
       attendance: this.attendanceService.getAttendance(),
@@ -217,7 +243,6 @@ export class UserHome implements OnInit, OnDestroy {
       next: (data) => {
         const activities = [];
 
-        // Process attendance records for recent activity
         const userAttendance = data.attendance
           .filter(r => r.userId === this.currentUser?.id)
           .slice(0, 5)
@@ -229,7 +254,6 @@ export class UserHome implements OnInit, OnDestroy {
             statusText: r.status || 'Present'
           }));
 
-        // Process leave records for recent activity
         const userLeaves = data.leaves
           .filter(r => r.userId === this.currentUser?.id)
           .slice(0, 5)
@@ -243,7 +267,6 @@ export class UserHome implements OnInit, OnDestroy {
 
         activities.push(...userAttendance, ...userLeaves);
         
-        // Sort and limit recent activities
         this.recentActivity = activities
           .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
           .slice(0, 5);
@@ -254,7 +277,6 @@ export class UserHome implements OnInit, OnDestroy {
     });
   }
 
-  // Updates leave balances based on approved leave requests
   updateLeaveBalances(): void {
     const approvedLeaves = this.leaveHistory.filter(l => l.status === 'Approved');
     
@@ -268,7 +290,6 @@ export class UserHome implements OnInit, OnDestroy {
     });
   }
 
-  // Calculates the number of days between two dates
   calculateLeaveDays(dateFrom: string, dateTo: string): number {
     if (!dateFrom || !dateTo) return 1;
     
@@ -279,28 +300,22 @@ export class UserHome implements OnInit, OnDestroy {
     return diffDays;
   }
 
-  // Check if a given time is late (after 9:10 PM)
   isLateTime(date: Date): boolean {
     const hours = date.getHours();
     const minutes = date.getMinutes();
     
-    // Late if after 9:00 PM
     return hours > this.LATE_THRESHOLD_HOUR || 
            (hours === this.LATE_THRESHOLD_HOUR && minutes > this.LATE_THRESHOLD_MINUTE);
   }
 
-  // Get status based on time in
   getTimeInStatus(timeInDate: Date): string {
     return this.isLateTime(timeInDate) ? 'Late' : 'Present';
   }
 
-  // Handles time in action
   timeIn(): void {
     const now = new Date();
     const timeString = now.toTimeString().split(' ')[0];
     const dateString = now.toISOString().split('T')[0];
-
-    // Determine status based on time
     const status = this.getTimeInStatus(now);
 
     this.attendanceService.getAttendance().subscribe({
@@ -324,11 +339,8 @@ export class UserHome implements OnInit, OnDestroy {
             this.isTimedIn = true;
             this.timeInTime = now;
             this.todayAttendance = attendanceRecord;
-            
-            // Start auto-update of total hours
             this.startTotalHoursUpdate();
             
-            // Add to recent activity
             this.recentActivity.unshift({
               action: 'Time In',
               time: this.formatTime(now),
@@ -354,7 +366,6 @@ export class UserHome implements OnInit, OnDestroy {
     });
   }
 
-  // Generates the next available ID for attendance records
   generateNextId(): number {
     if (!this.attendanceData || this.attendanceData.length === 0) {
       return 1;
@@ -375,7 +386,6 @@ export class UserHome implements OnInit, OnDestroy {
     return maxId + 1;
   }
 
-  // Handles time out action
   timeOut(): void {
     if (!this.todayAttendance) return;
 
@@ -383,7 +393,6 @@ export class UserHome implements OnInit, OnDestroy {
     const timeString = now.toTimeString().split(' ')[0];
     const dateString = now.toISOString().split('T')[0];
 
-    // Calculate total hours before updating
     if (this.timeInTime) {
       this.totalHoursWorked = this.calculateHoursDifference(this.timeInTime, now);
     }
@@ -399,13 +408,9 @@ export class UserHome implements OnInit, OnDestroy {
         this.isTimedIn = false;
         this.timeOutTime = now;
         this.todayAttendance = updatedRecord;
-        
-        // Stop auto-update of total hours
         this.stopTotalHoursUpdate();
+        this.calculateHoursWorked();
         
-        this.calculateHoursWorked(); // Final calculation
-        
-        // Add to recent activity
         this.recentActivity.unshift({
           action: 'Time Out',
           time: this.formatTime(now),
@@ -414,7 +419,6 @@ export class UserHome implements OnInit, OnDestroy {
           statusText: `Total: ${this.totalHoursWorked}`
         });
 
-        // Show success message with total hours
         this.message.success(
           `Timed out at ${this.formatTime(now)}. Total hours worked: ${this.totalHoursWorked}`
         );
@@ -426,14 +430,11 @@ export class UserHome implements OnInit, OnDestroy {
     });
   }
 
-  // Starts automatic updating of total hours worked (every second)
   startTotalHoursUpdate(): void {
-    // Clear any existing interval first
     if (this.totalHoursInterval) {
       clearInterval(this.totalHoursInterval);
     }
     
-    // Update every second
     this.totalHoursInterval = setInterval(() => {
       if (this.isTimedIn && this.timeInTime) {
         this.calculateHoursWorked();
@@ -441,7 +442,6 @@ export class UserHome implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  // Stops automatic updating of total hours worked
   stopTotalHoursUpdate(): void {
     if (this.totalHoursInterval) {
       clearInterval(this.totalHoursInterval);
@@ -449,7 +449,6 @@ export class UserHome implements OnInit, OnDestroy {
     }
   }
 
-  // Calculates total hours worked based on time in and time out
   calculateHoursWorked(): void {
     if (this.timeInTime) {
       const endTime = this.timeOutTime || new Date();
@@ -457,7 +456,6 @@ export class UserHome implements OnInit, OnDestroy {
     }
   }
 
-  // Calculates the difference between two dates and returns formatted string
   calculateHoursDifference(start: Date, end: Date): string {
     const diffMs = end.getTime() - start.getTime();
     const diffHrs = Math.floor(diffMs / 3600000);
@@ -465,20 +463,16 @@ export class UserHome implements OnInit, OnDestroy {
     return `${diffHrs}h ${diffMins}m`;
   }
 
-  // Shows the leave request modal
   showLeaveModal(): void {
     this.isLeaveModalVisible = true;
   }
 
-  // Handles cancel action for leave modal
   handleCancelLeave(): void {
     this.isLeaveModalVisible = false;
     this.resetLeaveForm();
   }
 
-  // Submits a new leave request
   submitLeaveRequest(): void {
-    // Validate required fields
     if (!this.leaveRequest.dateFrom || !this.leaveRequest.dateTo || !this.leaveRequest.reason) {
       this.message.warning('Please fill in all required fields');
       return;
@@ -486,7 +480,6 @@ export class UserHome implements OnInit, OnDestroy {
 
     const days = this.calculateDays();
 
-    // Check leave balance
     const balance = this.leaveBalances.find(b => 
       b.type === this.getLeaveTypeLabel(this.leaveRequest.type)
     );
@@ -496,7 +489,6 @@ export class UserHome implements OnInit, OnDestroy {
       return;
     }
 
-    // Fetch existing records to generate new ID
     this.leaveService.getLeaveRecords().subscribe({
       next: (records: any[]) => {
         const leaveId = this.generateLeaveId(records);
@@ -518,7 +510,6 @@ export class UserHome implements OnInit, OnDestroy {
 
         this.leaveService.addLeaveRecord(leaveRecord).subscribe({
           next: (response) => {
-            // Add to leave history
             this.leaveHistory.unshift({
               id: response.id,
               type: this.getLeaveTypeLabel(this.leaveRequest.type),
@@ -529,7 +520,6 @@ export class UserHome implements OnInit, OnDestroy {
               days: days
             });
 
-            // Add to recent activity
             this.recentActivity.unshift({
               action: 'Leave Filed',
               time: this.getLeaveTypeLabel(this.leaveRequest.type),
@@ -554,7 +544,6 @@ export class UserHome implements OnInit, OnDestroy {
     });
   }
 
-  // Generates the next available ID for leave records
   generateLeaveId(records: any[]): number {
     if (!records || records.length === 0) {
       return 1;
@@ -576,7 +565,6 @@ export class UserHome implements OnInit, OnDestroy {
     return maxId + 1;
   }
 
-  // Calculates number of days for leave request
   calculateDays(): number {
     if (this.leaveRequest.dateFrom && this.leaveRequest.dateTo) {
       const from = new Date(this.leaveRequest.dateFrom);
@@ -588,7 +576,6 @@ export class UserHome implements OnInit, OnDestroy {
     return 1;
   }
 
-  // Resets the leave request form to default values
   resetLeaveForm(): void {
     this.leaveRequest = {
       type: 'vacation',
@@ -599,19 +586,16 @@ export class UserHome implements OnInit, OnDestroy {
     };
   }
 
-  // Formats a date object to time string (HH:MM AM/PM)
   formatTime(date: Date): string {
     return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   }
 
-  // Formats a date object to date string (YYYY-MM-DD)
   formatDate(date: any): string {
     if (!date) return '';
     if (typeof date === 'string') return date;
     return date.toISOString().split('T')[0];
   }
 
-  // Converts apply type to display label
   getApplyTypeLabel(type: string): string {
     const typeMap: { [key: string]: string } = {
       'leave': 'Leave',
@@ -623,12 +607,10 @@ export class UserHome implements OnInit, OnDestroy {
     return typeMap[type] || type;
   }
 
-  // Alias for getApplyTypeLabel
   getLeaveTypeLabel(type: string): string {
     return this.getApplyTypeLabel(type);
   }
 
-  // Returns color code based on status for UI display
   getStatusColor(status: string): string {
     const colorMap: { [key: string]: string } = {
       'Approved': 'green',
@@ -639,8 +621,176 @@ export class UserHome implements OnInit, OnDestroy {
     };
     return colorMap[status] || 'default';
   }
-   openNotifications() {
 
+  openNotifications(): void {
     console.log('Notifications opened');
+  }
+
+  // ========== EDIT PROFILE METHODS - Like Employee Table ==========
+
+  showEditProfileModal(): void {
+    // Initialize form with current user data
+    this.editProfileData = {
+      firstName: this.currentUser?.firstName || '',
+      middleName: this.currentUser?.middleName || '',
+      lastName: this.currentUser?.lastName || '',
+      phone: this.currentUser?.phone || '',
+      username: this.currentUser?.username || '',
+      email: this.currentUser?.email || '',
+      department: this.currentUser?.department || '',
+      position: this.currentUser?.position || ''
+    };
+    this.editProfilePhotoPreview = null;
+    this.editProfilePhotoFile = null;
+    this.isEditProfileModalVisible = true;
+  }
+
+  handleCancelEditProfile(): void {
+    this.isEditProfileModalVisible = false;
+    this.editProfilePhotoPreview = null;
+    this.editProfilePhotoFile = null;
+  }
+
+  handleOkEditProfile(): void {
+    // Create a copy of the updated data
+    const updatedData: any = {};
+    
+    // Only include fields that were actually changed
+    if (this.editProfileData.firstName !== this.currentUser?.firstName) {
+      updatedData.firstName = this.editProfileData.firstName;
+    }
+    if (this.editProfileData.middleName !== this.currentUser?.middleName) {
+      updatedData.middleName = this.editProfileData.middleName;
+    }
+    if (this.editProfileData.lastName !== this.currentUser?.lastName) {
+      updatedData.lastName = this.editProfileData.lastName;
+    }
+    if (this.editProfileData.phone !== this.currentUser?.phone) {
+      updatedData.phone = this.editProfileData.phone;
+    }
+    if (this.editProfileData.username !== this.currentUser?.username) {
+      updatedData.username = this.editProfileData.username;
+    }
+    if (this.editProfileData.email !== this.currentUser?.email) {
+      updatedData.email = this.editProfileData.email;
+    }
+    if (this.editProfileData.department !== this.currentUser?.department) {
+      updatedData.department = this.editProfileData.department;
+    }
+    if (this.editProfileData.position !== this.currentUser?.position) {
+      updatedData.position = this.editProfileData.position;
+    }
+    
+    // Handle photo upload if there's a new photo
+    if (this.editProfilePhotoFile) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        updatedData.photo = e.target?.result as string;
+        this.saveProfileChanges(updatedData);
+      };
+      reader.readAsDataURL(this.editProfilePhotoFile);
+    } else {
+      // No new photo, just save text changes
+      this.saveProfileChanges(updatedData);
+    }
+  }
+
+  saveProfileChanges(updatedData: any): void {
+  // If no changes were made, just close the modal
+  if (Object.keys(updatedData).length === 0) {
+    this.message.info('No changes to save');
+    this.handleCancelEditProfile();
+    return;
+  }
+
+  this.message.loading('Updating profile...', { nzDuration: 0 });
+  
+  // Create a clean user object with ONLY the fields that exist in your database
+  // and should be updatable - EXCLUDING access, role, and phone
+  const userToUpdate: any = {
+    id: this.currentUser.id,
+    firstName: this.editProfileData.firstName || this.currentUser.firstName,
+    middleName: this.editProfileData.middleName || this.currentUser.middleName || '',
+    lastName: this.editProfileData.lastName || this.currentUser.lastName,
+    contact: this.editProfileData.phone || this.currentUser.contact, // Map phone to contact
+    department: this.editProfileData.department || this.currentUser.department,
+    position: this.editProfileData.position || this.currentUser.position,
+    username: this.editProfileData.username || this.currentUser.username,
+    email: this.editProfileData.email || this.currentUser.email,
+    password: this.currentUser.password // Keep existing password
+  };
+  
+  // Add photo if it exists
+  if (this.currentUser.photo) {
+    userToUpdate.photo = this.currentUser.photo;
+  }
+  
+  // Handle photo upload if there's a new one
+  if (this.editProfilePhotoFile) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      userToUpdate.photo = e.target?.result as string;
+      this.sendUpdateRequest(userToUpdate);
+    };
+    reader.readAsDataURL(this.editProfilePhotoFile);
+  } else {
+    this.sendUpdateRequest(userToUpdate);
+  }
+}
+
+private sendUpdateRequest(userToUpdate: any): void {
+  this.userService.updateUser(this.currentUser.id, userToUpdate).subscribe({
+    next: (response) => {
+      this.message.remove();
+      this.message.success('Profile updated successfully!');
+      window.location.reload();
+
+      
+      // Update current user with the response
+      this.currentUser = response;
+      this.userDisplayName = this.getDisplayName(this.currentUser);
+      this.handleCancelEditProfile();
+      
+      // Update localStorage
+      localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+    },
+    error: (error) => {
+      this.message.remove();
+      this.message.error('Failed to update profile. Please try again.');
+      console.error('Error updating profile:', error);
+    }
+  });
+}
+  onEditProfilePhotoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        this.message.warning('File size must be less than 5MB');
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        this.message.warning('Please select an image file');
+        return;
+      }
+
+      this.editProfilePhotoFile = file;
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.editProfilePhotoPreview = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  isEditProfileFormValid(): boolean {
+    // All fields are optional, so form is always valid
+    return true;
   }
 }
