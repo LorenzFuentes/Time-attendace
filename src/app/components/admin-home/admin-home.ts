@@ -14,6 +14,9 @@ import { NzResultModule } from 'ng-zorro-antd/result';
 import { AuthService } from '../../service/auth';
 import { AdminService } from '../../service/admin-service/admin';
 import { UserService } from '../../service/user-service/user';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-admin-home',
@@ -29,7 +32,9 @@ import { UserService } from '../../service/user-service/user';
     NzCardModule,
     NzButtonModule,
     NzSpinModule,
-    NzResultModule
+    NzResultModule,
+    NzModalModule,
+    NzAlertModule
   ],
   templateUrl: './admin-home.html',
   styleUrls: ['../../app.scss']
@@ -43,11 +48,18 @@ export class AdminHomeComponent implements OnInit {
   date = new Date()
   currentUser: any = null;
 
+
+  isEditProfileModalVisible = false;
+  selectedPhotoFile: File | null = null;
+  selectedPhotoPreview: string | null = null;
+
+
   constructor(
     private router: Router,
     private authService: AuthService,
     private adminService: AdminService, 
-    private userService: UserService 
+    private userService: UserService,
+    private message: NzMessageService
   ) {}
 
   ngOnInit(): void {
@@ -140,15 +152,150 @@ export class AdminHomeComponent implements OnInit {
   }
 
   getInitials(user: any): string {
+    if (user?.photo) {
+      return '';
+    }
+    
     const name = this.getDisplayName(user);
     if (!name) return 'A';
     
-    return name
-      .split(' ')
-      .map(part => part.charAt(0))
-      .join('')
-      .toUpperCase()
-      .substring(0, 2);
+    const nameParts = name.split(' ');
+    if (nameParts.length === 1) {
+      return nameParts[0].charAt(0).toUpperCase();
+    }
+    
+    return (nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)).toUpperCase();
+  }
+
+  showEditProfileModal(): void {
+  this.isEditProfileModalVisible = true;
+  this.selectedPhotoPreview = null;
+  this.selectedPhotoFile = null;
+}
+
+  handleCancel(): void {
+    this.isEditProfileModalVisible = false;
+    this.selectedPhotoPreview = null;
+    this.selectedPhotoFile = null;
+  }
+
+  handleOk(): void {
+    if (this.selectedPhotoFile) {
+      this.uploadProfilePhoto();
+    } else if (this.selectedPhotoPreview === null && this.currentUser.photo) {
+      // User wants to remove photo
+      this.removeProfilePhoto();
+    } else {
+      this.handleCancel();
+    }
+  }
+
+  onPhotoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        this.message.warning('File size must be less than 5MB');
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        this.message.warning('Please select an image file');
+        return;
+      }
+
+      this.selectedPhotoFile = file;
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.selectedPhotoPreview = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removePhoto(): void {
+    this.selectedPhotoPreview = null;
+    this.selectedPhotoFile = null;
+  }
+
+  uploadProfilePhoto(): void {
+    if (!this.selectedPhotoFile) return;
+    
+    // Show loading
+    this.message.loading('Uploading photo...', { nzDuration: 0 });
+    
+    // Convert to base64
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64Photo = e.target?.result as string;
+      
+      // Update user object
+      const updatedUser = {
+        ...this.currentUser,
+        photo: base64Photo
+      };
+      
+      // Call service to update user (implement based on your API)
+      this.updateUserPhoto(updatedUser);
+    };
+    reader.readAsDataURL(this.selectedPhotoFile);
+  }
+
+  updateUserPhoto(updatedUser: any): void {
+    // Determine which service to use based on user role
+    if (updatedUser.role === 'admin') {
+      this.adminService.updateAdmin(updatedUser.id, updatedUser).subscribe({
+        next: (response) => {
+          this.message.remove();
+          this.message.success('Profile photo updated successfully!');
+          this.currentUser = updatedUser;
+          this.handleCancel();
+          window.location.reload();
+
+          
+          // Update localStorage
+          localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+        },
+        error: (error) => {
+          this.message.remove();
+          this.message.error('Failed to update profile photo. Please try again.');
+          console.error('Error updating photo:', error);
+        }
+      });
+    } else {
+      this.userService.updateUser(updatedUser.id, updatedUser).subscribe({
+        next: (response) => {
+          this.message.remove();
+          this.message.success('Profile photo updated successfully!');
+          this.currentUser = updatedUser;
+          this.handleCancel();
+          
+          // Update localStorage
+          localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+        },
+        error: (error) => {
+          this.message.remove();
+          this.message.error('Failed to update profile photo. Please try again.');
+          console.error('Error updating photo:', error);
+        }
+      });
+    }
+  }
+
+  removeProfilePhoto(): void {
+    this.message.loading('Removing photo...', { nzDuration: 0 });
+    
+    const updatedUser = {
+      ...this.currentUser,
+      photo: null
+    };
+    
+    this.updateUserPhoto(updatedUser);
   }
 
   logout(): void {

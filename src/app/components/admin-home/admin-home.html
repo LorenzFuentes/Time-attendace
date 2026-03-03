@@ -10,18 +10,22 @@
           <h1>
             <nz-avatar 
               [nzSize]="55" 
-              [nzText]="getInitials(currentUser)" 
+              [nzSrc]="currentUser.photo || undefined"
+              [nzText]="!currentUser.photo ? getInitials(currentUser) : ''" 
               nzShape="circle"
-              [ngStyle]="{'background': '#f5222d'}"
+              [ngStyle]="{'background': !currentUser.photo ? '#f5222d' : 'transparent'}"
+              (click)="showEditProfileModal()"
+              style="cursor: pointer;"
             ></nz-avatar>
             <span style="margin-left: 16px;">
               {{ getDisplayName(currentUser) }}
-              <nz-tag style="background-color: rgba(252, 99, 99, 0.3);  border: 1px solid #fa5151;  border-radius: 10px; color: red;">Administrator</nz-tag>
+              <nz-tag style="background-color: rgba(252, 99, 99, 0.3); border: 1px solid #fa5151; border-radius: 10px; color: red;">Administrator</nz-tag>
             </span>
           </h1> 
           
           <p class="profile-title">
-            <span *ngIf="!currentUser.position && !currentUser.department">System Administrator</span>
+            <span *ngIf="!currentUser.position && !currentUser.department">System Administrator</span>&nbsp;&nbsp;
+            <nz-icon nzType="edit" nzTheme="outline" (click)="showEditProfileModal()" style="cursor: pointer;" />
           </p>
           
           <div class="profile-stats">
@@ -70,42 +74,42 @@
               </div>
               
               <div class="detail-item" *ngIf="currentUser.access">
-                  <span class="detail-label">Access Level</span>
-                  <span class="detail-value">
-                    <nz-tag nzColor="purple" 
-                            style="background-color: rgba(156, 39, 176, 0.3) !important; 
-                                  border: 1px solid #9c27b0 !important; 
-                                  border-radius: 10px !important; 
-                                  color: rgb(204, 46, 204) !important;">
-                      Admin
-                    </nz-tag>
-                  </span>
-                </div>
+                <span class="detail-label">Access Level</span>
+                <span class="detail-value">
+                  <nz-tag nzColor="purple" 
+                          style="background-color: rgba(156, 39, 176, 0.3) !important; 
+                                border: 1px solid #9c27b0 !important; 
+                                border-radius: 10px !important; 
+                                color: rgb(204, 46, 204) !important;">
+                    Admin
+                  </nz-tag>
+                </span>
+              </div>
 
-                <div class="detail-item">
-                  <span class="detail-label">Account Type</span>
-                  <span class="detail-value">
-                    <nz-tag nzColor="red" 
-                            style="background-color: rgba(252, 99, 99, 0.3) !important; 
-                                  border: 1px solid #fa5151 !important; 
-                                  border-radius: 10px !important; 
-                                  color: red !important;">
-                      Administrator
-                    </nz-tag>
-                  </span>
-                </div>
-                <div class="detail-item">
-                  <span class="detail-label">Status</span>
-                  <span class="detail-value">
-                    <nz-tag nzColor="success" 
-                            style="background-color: rgba(8, 244, 8, 0.311)  !important; 
-                                  border: 1px solid #4caf50 !important; 
-                                  border-radius: 10px !important; 
-                                  color: rgb(9, 168, 14)!important;">
-                      Active
-                    </nz-tag>
-                  </span>
-                </div>
+              <div class="detail-item">
+                <span class="detail-label">Account Type</span>
+                <span class="detail-value">
+                  <nz-tag nzColor="red" 
+                          style="background-color: rgba(252, 99, 99, 0.3) !important; 
+                                border: 1px solid #fa5151 !important; 
+                                border-radius: 10px !important; 
+                                color: red !important;">
+                    Administrator
+                  </nz-tag>
+                </span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Status</span>
+                <span class="detail-value">
+                  <nz-tag nzColor="success" 
+                          style="background-color: rgba(8, 244, 8, 0.311) !important; 
+                                border: 1px solid #4caf50 !important; 
+                                border-radius: 10px !important; 
+                                color: rgb(9, 168, 14)!important;">
+                    Active
+                  </nz-tag>
+                </span>
+              </div>
                               
               <div class="detail-item">
                 <span class="detail-label">Last Login</span>
@@ -117,7 +121,7 @@
         <div class="quick-actions-col">
           <nz-card nzTitle="Quick Actions" class="quick-actions-card" style="color: black;">
             <div class="actions-list">
-              <button nz-button  nzBlock (click)="getEmployeeTable()" class="action-btn">
+              <button nz-button nzBlock (click)="getEmployeeTable()" class="action-btn">
                 <nz-icon nzType="team"></nz-icon>
                 <span>Manage Employees</span>
               </button>
@@ -125,29 +129,29 @@
                 <nz-icon nzType="user"></nz-icon>
                 <span>Manage Admins</span>
               </button>                  
-              <button nz-button nzType="default" (click)="getChart()" nzBlock  class="action-btn">
+              <button nz-button nzType="default" (click)="getChart()" nzBlock class="action-btn">
                 <nz-icon nzType="file-text"></nz-icon>
                 <span>Generate Report</span>
               </button>
             </div>
             <nz-card nzTitle="System Overview" class="stats-card">
-            <div class="system-stats">
-              <div class="system-stat-item">
-                <nz-icon nzType="check-circle" nzTheme="fill" style="color: #52c41a;"></nz-icon>
-                <div class="system-stat-info">
-                  <div class="system-stat-value">System Online</div>
-                  <div class="system-stat-label">Status: Operational</div>
+              <div class="system-stats">
+                <div class="system-stat-item">
+                  <nz-icon nzType="check-circle" nzTheme="fill" style="color: #52c41a;"></nz-icon>
+                  <div class="system-stat-info">
+                    <div class="system-stat-value">System Online</div>
+                    <div class="system-stat-label">Status: Operational</div>
+                  </div>
+                </div>
+                <div class="system-stat-item">
+                  <nz-icon nzType="database" style="color: #1890ff;"></nz-icon>
+                  <div class="system-stat-info">
+                    <div class="system-stat-value">{{ totalUsers || 0 }} Users</div>
+                    <div class="system-stat-label">Total Registered</div>
+                  </div>
                 </div>
               </div>
-              <div class="system-stat-item">
-                <nz-icon nzType="database" style="color: #1890ff;"></nz-icon>
-                <div class="system-stat-info">
-                  <div class="system-stat-value">{{ totalUsers || 0 }} Users</div>
-                  <div class="system-stat-label">Total Registered</div>
-                </div>
-              </div>
-            </div>
-          </nz-card>
+            </nz-card>
           </nz-card>
         </div>
       </div>
@@ -165,4 +169,68 @@
       </nz-result>
     </div>
   </div>
-</nz-content> 
+</nz-content>
+
+<!-- Edit Profile Picture Modal -->
+<nz-modal 
+  [(nzVisible)]="isEditProfileModalVisible" 
+  nzTitle="Edit Profile Picture" 
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk()"
+  [nzOkText]="'Save'"
+  [nzCancelText]="'Cancel'"
+  [nzOkDisabled]="!selectedPhotoFile && !selectedPhotoPreview"
+  nzWidth="400px"
+>
+  <div class="edit-profile-modal-content" *nzModalContent>
+    <!-- Current Photo Preview -->
+    <div class="current-photo-section">
+      <h4>Current Photo</h4>
+      <div class="photo-preview-container">
+        <nz-avatar 
+          [nzSize]="100" 
+          [nzSrc]="selectedPhotoPreview || currentUser.photo || undefined" 
+          [nzText]="!currentUser.photo && !selectedPhotoPreview ? getInitials(currentUser) : ''" 
+          nzShape="circle"
+          [ngStyle]="{'background': !currentUser.photo && !selectedPhotoPreview ? '#f5222d' : 'transparent'}"
+        ></nz-avatar>
+      </div>
+    </div>
+
+    <!-- Upload Controls -->
+    <div class="upload-section">
+      <h4>Upload New Photo</h4>
+      <div class="upload-controls">
+        <input 
+          type="file" 
+          id="photoUpload" 
+          accept="image/*" 
+          (change)="onPhotoSelected($event)"
+          style="display: none;"
+          #fileInput
+        >
+        <button nz-button nzType="primary" (click)="fileInput.click()" class="upload-btn">
+          <i nz-icon nzType="upload"></i> Choose Image
+        </button>
+        <span class="upload-hint">JPG, PNG or GIF (max. 5MB)</span>
+      </div>
+    </div>
+
+    <!-- Remove Current Photo -->
+    <div class="remove-section" *ngIf="currentUser.photo || selectedPhotoPreview">
+      <button nz-button nzType="primary" nzDanger (click)="removePhoto()" class="remove-btn">
+        <i nz-icon nzType="delete"></i> Remove Photo
+      </button>
+    </div>
+
+    <!-- Photo Guidelines -->
+    <!-- <div class="guidelines-section">
+      <nz-alert
+        nzType="info"
+        nzMessage="Photo Guidelines"
+        nzDescription="For best results, use a square image. Minimum size: 200x200 pixels. Maximum file size: 5MB."
+        nzShowIcon
+      ></nz-alert>
+    </div> -->
+  </div>
+</nz-modal>
