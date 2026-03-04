@@ -1,0 +1,139 @@
+<div class="announcement-container">
+  <!-- Left Column: Announcements -->
+  <div class="left-column">
+    <div class="section-title with-button">
+      <span>Announcements</span>
+      <button class="add-btn" title="Add New Announcement" (click)="addAnnouncement()">
+        <i nz-icon nzType="plus" nzTheme="outline"></i>
+      </button>
+    </div>
+    
+    <!-- Month Filter Info -->
+    <div class="month-filter-info">
+      <i nz-icon nzType="calendar" nzTheme="outline"></i>
+      <span>{{ getAnnouncementMonthLabel() }}</span>
+    </div>
+    
+    <!-- Loading State -->
+    <div *ngIf="loading.announcements" class="loading-state">
+      <i nz-icon nzType="loading" nzTheme="outline"></i> Loading announcements...
+    </div>
+    
+    <!-- Announcements List -->
+    <div *ngIf="!loading.announcements && filteredAnnouncements.length === 0" class="empty-state">
+      <i nz-icon nzType="info-circle" nzTheme="outline"></i>
+      No announcements for {{ currentMonthName }}
+    </div>
+    
+    <div *ngFor="let announcement of filteredAnnouncements" class="announcement-card">
+      <div class="card-header">
+        <span class="badge">{{ announcement.title }}</span>
+      </div>
+      <div class="card-body">
+        <p>{{ announcement.content }}</p>
+      </div>
+      <div class="card-date" *ngIf="announcement.date">
+        {{ formatDate(announcement.date) }}
+      </div>
+    </div>
+  </div>
+  
+  <!-- Right Column: Events -->
+  <div class="right-column">
+    <div class="section-title with-button">
+      <span>Events</span>
+      <!-- <button class="add-btn" title="Add New Event" (click)="addEvent()">
+        <i nz-icon nzType="plus" nzTheme="outline"></i>
+      </button> -->
+    </div>
+    
+    <!-- Month Filter Info -->
+    <div class="month-filter-info">
+      <i nz-icon nzType="calendar" nzTheme="outline"></i>
+      <span>{{ getEventMonthLabel() }}</span>
+    </div>
+    
+    <!-- Loading State -->
+    <div *ngIf="loading.events" class="loading-state">
+      <i nz-icon nzType="loading" nzTheme="outline"></i> Loading events...
+    </div>
+    
+    <!-- Events List -->
+    <div *ngIf="!loading.events && filteredEvents.length === 0" class="empty-state">
+      <i nz-icon nzType="info-circle" nzTheme="outline"></i>
+      No events for {{ currentMonthName }}
+    </div>
+    
+    <div class="events-list" *ngIf="filteredEvents.length > 0">
+      <div *ngFor="let event of filteredEvents" class="event-item" [ngClass]="getEventTypeClass(event.eventType)">
+        <div class="event-date">{{ formatEventDate(event.date) }}</div>
+        <div class="event-details">
+          <div class="event-header">
+            <span class="event-type-badge" [ngClass]="getEventTypeClass(event.eventType)">
+              {{ getEventTypeLabel(event.eventType) }}
+            </span>
+          </div>
+          <div class="event-description">{{ event.description }}</div>
+          <div class="event-time" *ngIf="event.time">
+            <i nz-icon nzType="clock-circle" nzTheme="outline"></i> {{ event.time }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Announcement Modal -->
+<nz-modal
+  [(nzVisible)]="isModalVisible"
+  nzTitle="Add New Announcement"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="submitAnnouncement()"
+  [nzOkLoading]="isSubmitting"
+  [nzOkDisabled]="!newAnnouncement.title || !newAnnouncement.content || !newAnnouncement.date"
+  nzOkText="Add"
+  nzCancelText="Cancel"
+  nzWidth="600px"
+>
+  <div *nzModalContent>
+    <div class="announcement-modal-content">
+      <nz-form-item>
+        <nz-form-label nzRequired>Title</nz-form-label>
+        <nz-form-control>
+          <input 
+            nz-input 
+            placeholder="Enter announcement title" 
+            [(ngModel)]="newAnnouncement.title"
+            [disabled]="isSubmitting"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      
+      <nz-form-item>
+        <nz-form-label nzRequired>Content</nz-form-label>
+        <nz-form-control>
+          <textarea 
+            nz-input 
+            placeholder="Enter announcement content" 
+            [(ngModel)]="newAnnouncement.content"
+            [disabled]="isSubmitting"
+            rows="4"
+          ></textarea>
+        </nz-form-control>
+      </nz-form-item>
+      
+      <nz-form-item>
+        <nz-form-label nzRequired>Date</nz-form-label>
+        <nz-form-control>
+          <nz-date-picker
+            nzFormat="yyyy-MM-dd"
+            [(ngModel)]="newAnnouncement.date"
+            [nzDisabledDate]="disabledDate"
+            [nzDisabled]="isSubmitting"
+            style="width: 100%"
+          ></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+</nz-modal>

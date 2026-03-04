@@ -12,6 +12,8 @@ import { AttendanceTable } from './components/attendance.table/attendance.table'
 import { LeaveTable } from './components/leave.table/leave.table';
 import { UserHome } from './components/user-home/user-home';
 import { UserLayout } from './layout/user-layout/user-layout';
+import { AnnouncementPage } from './components/announcement-page/announcement-page';    
+import { AnnouncementUser } from './components/announcement-user/announcement-user';
 export const routes: Routes = [
   { path: '', component: LandingPage, },
   { path: 'login', component: LoginComponent },
@@ -24,8 +26,10 @@ export const routes: Routes = [
       { path: 'calendar', component: Calendar},
       { path: 'attendance', component: AttendanceTable},
       { path: 'leave', component: LeaveTable},
+      { path: 'announcement', component: AnnouncementPage}
   ]},
   { path: 'user', component: UserLayout, children: [
       { path: 'home', component: UserHome },
+      { path: 'announcement', component: AnnouncementUser}
   ]},
 ];

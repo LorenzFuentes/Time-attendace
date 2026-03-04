@@ -226,6 +226,10 @@ export class MainLayout implements OnInit, OnDestroy {
     this.router.navigate(['/main/leave']);
   }
 
+  getAnnouncement(): void {
+    this.router.navigate(['/main/announcement']);
+  }
+
   logout(): void {
     this.authService.logout();
     this.router.navigate(['']);
