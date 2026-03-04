@@ -258,35 +258,35 @@
     {
       "id": "1",
       "eventType": "meeting",
-      "date": "2026-02-19",
+      "date": "2026-03-19",
       "time": "10:30",
       "description": "Team meeting"
     },
     {
       "id": "2",
       "eventType": "activity",
-      "date": "2026-02-20",
+      "date": "2026-03-20",
       "time": "14:00",
       "description": "Project kickoff"
     },
     {
       "id": "3",
       "eventType": "meeting",
-      "date": "2026-02-20",
+      "date": "2026-03-20",
       "time": "02:51",
       "description": "test"
     },
     {
       "id": "4",
       "eventType": "meeting",
-      "date": "2026-02-27",
+      "date": "2026-03-27",
       "time": "02:52",
       "description": "InTime final meeting"
     },
     {
       "id": "5",
       "eventType": "meeting",
-      "date": "2026-02-02",
+      "date": "2026-03-02",
       "time": "02:00",
       "description": "MonkSearch Meeting"
     },
@@ -300,30 +300,50 @@
     {
       "id": "7",
       "eventType": "meeting",
-      "date": "2026-02-10",
+      "date": "2026-03-29",
       "time": "03:06",
       "description": "MonkSearch Meeting"
     },
     {
       "id": "8",
       "eventType": "activity",
-      "date": "2026-02-18",
+      "date": "2026-03-18",
       "time": "03:07",
       "description": "Xbank UI/UX Kickoff"
     },
     {
       "id": "9",
       "eventType": "meeting",
-      "date": "2026-02-04",
+      "date": "2026-03-02",
       "time": "07:11",
       "description": "HRS "
     },
     {
       "id": "10",
       "eventType": "meeting",
-      "date": "2026-03-02",
+      "date": "2026-03-18",
       "time": "07:00",
       "description": "ROPA signing"
+    }
+  ],
+  "announcement": [
+    {
+      "id": "1",
+      "title": "Company Picnic",
+      "content": "Join us for a fun-filled day at the park! Food, games, and activities for everyone.",
+      "date": "2026-03-04"
+    },
+    {
+      "id": "2",
+      "title": "New Office Opening",
+      "content": "We are excited to announce the opening of our new office location in downtown! Join us for the grand opening event.",
+      "date": "2026-03-20"
+    },
+    {
+      "id": "6",
+      "title": "test",
+      "content": "test",
+      "date": "2026-03-04"
     }
   ]
 }

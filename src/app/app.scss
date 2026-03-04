@@ -1905,3 +1905,438 @@ nz-avatar {
         flex-wrap: wrap;
     }
 }
+
+/* ==========================================================================
+   Announcement Styles
+   ========================================================================== */
+
+.announcement-container {
+  display: flex;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+//   font-family: 'Synonym', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.left-column {
+  flex: 1;
+}
+
+.right-column {
+  flex: 0.5;
+}
+
+.section-title {
+  font-size: 28px;
+  font-weight: 300;
+  color: #2f2f22;
+  margin-bottom: 20px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid #a588be;
+  letter-spacing: 0.5px;
+  font-family: 'Chillax', sans-serif;
+  
+  &.with-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .add-btn {
+      margin-bottom: 5px; // Align with border
+    }
+  }
+}
+
+.add-btn {
+  nz-icon {
+    font-size: 14px;
+    color: white;
+  }
+}
+/* Month Filter Info */
+.month-filter-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background: rgba(165, 136, 190, 0.05);
+  border-radius: 6px;
+  color: #666666;
+  font-size: 13px;
+  
+  i {
+    color: #a588be;
+    font-size: 16px;
+  }
+}
+
+/* More Info Link */
+.more-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  color: #a588be;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+  
+  &:hover {
+    background: rgba(165, 136, 190, 0.05);
+    gap: 10px;
+  }
+  
+  i {
+    font-size: 14px;
+    transition: transform 0.2s ease;
+  }
+  
+  &:hover i {
+    transform: translateX(4px);
+  }
+}
+
+/* Updated Empty State */
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #999999;
+  font-size: 14px;
+  background: #FFFFFF;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px dashed #e0e0e0;
+  
+  i {
+    display: block;
+    font-size: 24px;
+    color: #a588be;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+}
+
+/* Animation for announcements card */
+.announcement-card {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.announcement-card {
+  margin-bottom: 30px;
+  padding: 16px;
+  background: #FFFFFF;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(165, 136, 190, 0.15);
+  }
+  
+  .card-header {
+    margin-bottom: 8px;
+    
+    .badge {
+      background: linear-gradient(135deg, rgba(165, 136, 190, 0.08) 0%, rgba(165, 136, 190, 0.12) 100%);
+      color: #a588be;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(165, 136, 190, 0.15);
+    }
+  }
+  
+  .card-body {
+    p {
+      color: #4A4A4A;
+      line-height: 1.5;
+      margin: 0 0 10px 0;
+      font-size: 15px;
+    }
+  }
+  
+  .card-date {
+    color: #666666;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 0;
+  }
+}
+
+.add-btn {
+  background-color: #a588be;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+  padding: 0;
+  
+  i {
+    font-size: 14px;
+    transition: transform 0.2s ease;
+  }
+  
+  &:hover {
+    background-color: #9379b0;
+    // transform: rotate(90deg);
+    
+    // i {
+    //   transform: scale(1.1);
+    // }
+  }
+  
+  &:active {
+    transform: rotate(90deg) scale(0.95);
+  }
+}
+
+.events-list {
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 8px 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  
+  .event-item {
+    display: flex;
+    padding: 16px 0;
+    border-bottom: 1px solid #f0f0f0;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    .event-date {
+      min-width: 80px;
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+      font-family: 'Chillax', sans-serif;
+    }
+    
+    .event-details {
+      flex: 1;
+      
+      .event-header {
+        margin-bottom: 4px;
+      }
+      
+      .event-type-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 16px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+        color: white;
+        
+        &.event-type-meeting {
+          background: #1780C7;  // Solid blue
+          border: none;
+          box-shadow: 0 2px 4px rgba(23, 128, 199, 0.3);
+        }
+        
+        &.event-type-activity {
+          background: #80c65E;  // Solid green
+          border: none;
+          box-shadow: 0 2px 4px rgba(128, 198, 94, 0.3);
+        }
+      }
+      
+      .event-description {
+        font-weight: 500;
+        color: #2f2f22;
+        margin-bottom: 4px;
+        font-size: 15px;
+      }
+      
+      .event-time {
+        color: #666666;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        
+        nz-icon {
+          font-size: 12px;
+          color: #a588be;
+        }
+      }
+    }
+  }
+}
+
+/* Event Type Color Variants for Date */
+.event-item {
+  &.event-type-meeting {
+    .event-date {
+      color: #1780C7;
+    }
+  }
+  
+  &.event-type-activity {
+    .event-date {
+      color: #80c65E;
+    }
+  }
+}
+.event-type-badge{
+    font-weight: bold;
+}
+
+/* Dashboard style integration for announcement page */
+.dashboard-txt {
+  color: #a588be;
+  font-family: 'Chillax', sans-serif;
+  border-bottom: 2px solid #a588be;
+  width: fit-content;
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: 600;
+  padding-bottom: 4px;
+}
+/* Announcement Modal Styles */
+::ng-deep .ant-modal {
+  .ant-modal-content {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+//   .ant-modal-body {
+//     padding: 24px;
+//     background: #FFFFFF;
+//   }
+  
+  .ant-modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #f0f0f0;
+    background: #FFFFFF;
+    
+    .ant-btn-primary {
+      background-color: #a588be;
+      border-color: #a588be;
+      
+      &:hover {
+        background-color: #9379b0;
+        border-color: #9379b0;
+      }
+      
+      &:disabled {
+        background-color: #d9d9d9;
+        border-color: #d9d9d9;
+      }
+    }
+    
+    .ant-btn-default:hover {
+      border-color: #a588be;
+      color: #a588be;
+    }
+  }
+  
+  .ant-modal-close {
+    color: white;
+    
+    &:hover {
+      color: #f0f0f0;
+    }
+  }
+}
+
+.announcement-modal-content {
+  nz-form-item {
+    margin-bottom: 20px;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  nz-form-label {
+    font-weight: 500;
+    color: #2f2f22;
+    font-family: 'Chillax', sans-serif;
+    
+    &::before {
+      color: #ff4d4f !important;
+    }
+  }
+  
+  input, textarea {
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    padding: 8px 12px;
+    font-family: 'Synonym', sans-serif;
+    
+    &:hover {
+      border-color: #a588be;
+    }
+    
+    &:focus {
+      border-color: #a588be;
+      box-shadow: 0 0 0 2px rgba(165, 136, 190, 0.1);
+      outline: none;
+    }
+    
+    &:disabled {
+      background-color: #f5f5f5;
+      color: #999;
+    }
+  }
+  
+  nz-date-picker {
+    border-radius: 8px;
+    width: 100%;
+    
+    input {
+      border-radius: 8px;
+    }
+    
+    &:hover {
+      border-color: #a588be;
+    }
+    
+    &.ant-picker-focused {
+      border-color: #a588be;
+      box-shadow: 0 0 0 2px rgba(165, 136, 190, 0.1);
+    }
+  }
+}
+
+/* Fix for date picker inside modal */
+::ng-deep .ant-picker-dropdown {
+  .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+    border-color: #a588be;
+  }
+  
+  .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner {
+    background: #a588be;
+  }
+  
+  .ant-picker-today-btn {
+    color: #a588be;
+    
+    &:hover {
+      color: #9379b0;
+    }
+  }
+}
+

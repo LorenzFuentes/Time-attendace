@@ -215,7 +215,10 @@ export class UserLayout implements OnInit, OnDestroy {
     this.authService.logout();
     this.router.navigate(['']);
   }
-  
+
+  getAnnouncement(): void {
+    this.router.navigate(['/user/announcement']);
+  }
   openNotifications() {
     console.log('Notifications opened');
   }
