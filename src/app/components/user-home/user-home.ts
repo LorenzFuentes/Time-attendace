@@ -105,6 +105,12 @@ export class UserHome implements OnInit, OnDestroy {
     position: ''
   };
 
+  // Notification Properties
+  notifications: any[] = [];
+  hasNotifications = false;
+  isNotificationsModalVisible = false;
+  private notificationCheckInterval: any;
+
   constructor(
     private userService: UserService,
     private attendanceService: AttendanceService,
@@ -115,6 +121,7 @@ export class UserHome implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadUserData();
     this.startClock();
+    this.startNotificationCheck();
   }
 
   ngOnDestroy(): void {
@@ -124,12 +131,21 @@ export class UserHome implements OnInit, OnDestroy {
     if (this.totalHoursInterval) { 
       clearInterval(this.totalHoursInterval);
     }
+    if (this.notificationCheckInterval) {
+      clearInterval(this.notificationCheckInterval);
+    }
   }
 
   startClock(): void {
     this.timeInterval = setInterval(() => {
       this.currentTime = new Date();
     }, 1000);
+  }
+
+  startNotificationCheck(): void {
+    this.notificationCheckInterval = setInterval(() => {
+      this.loadNotifications();
+    }, 30000);
   }
 
   loadUserData(): void {
@@ -141,6 +157,7 @@ export class UserHome implements OnInit, OnDestroy {
       this.loadTodayAttendance();
       this.loadUserLeaveHistory();
       this.loadRecentActivity();
+      this.loadNotifications();
     }
   }
 
@@ -163,7 +180,6 @@ export class UserHome implements OnInit, OnDestroy {
   getInitials(user: any): string {
     if (!user) return 'U';
     
-    // Don't show initials if user has a photo
     if (user.photo) {
       return '';
     }
@@ -177,6 +193,21 @@ export class UserHome implements OnInit, OnDestroy {
     }
     
     return (nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)).toUpperCase();
+  }
+
+  // Helper method to parse time string to Date object
+  private parseTimeString(timeStr: string, baseDate: Date = new Date()): Date {
+    if (!timeStr) return baseDate;
+    
+    const parts = timeStr.split(':');
+    const date = new Date(baseDate);
+    date.setHours(
+      parseInt(parts[0]) || 0,
+      parseInt(parts[1]) || 0,
+      parseInt(parts[2]) || 0,
+      0
+    );
+    return date;
   }
 
   loadTodayAttendance(): void {
@@ -193,16 +224,33 @@ export class UserHome implements OnInit, OnDestroy {
         if (userRecords.length > 0) {
           this.todayAttendance = userRecords[0];
           this.isTimedIn = true;
-          this.timeInTime = new Date(`${today}T${this.todayAttendance.timeIn}`);
+          
+          // Create date objects with the correct date from the record
+          const recordDate = new Date(this.todayAttendance.date + 'T00:00:00');
+          
+          // Parse timeIn with the record date
+          this.timeInTime = this.parseTimeString(this.todayAttendance.timeIn, recordDate);
           
           if (this.todayAttendance.timeOut) {
-            this.timeOutTime = new Date(`${today}T${this.todayAttendance.timeOut}`);
+            // For timeOut, if it's after midnight, use the next day
+            let timeOutDate = new Date(recordDate);
+            const timeOutParts = this.todayAttendance.timeOut.split(':');
+            const timeOutHour = parseInt(timeOutParts[0]);
+            
+            // If timeOut hour is less than timeIn hour, it's the next day
+            if (timeOutHour < this.timeInTime.getHours()) {
+              timeOutDate.setDate(timeOutDate.getDate() + 1);
+            }
+            
+            this.timeOutTime = this.parseTimeString(this.todayAttendance.timeOut, timeOutDate);
             this.isTimedIn = false;
+            
+            // Calculate hours worked
+            this.totalHoursWorked = this.calculateHoursDifference(this.timeInTime, this.timeOutTime);
           } else {
             this.startTotalHoursUpdate();
+            this.calculateHoursWorked();
           }
-          
-          this.calculateHoursWorked();
         }
       },
       error: (error) => {
@@ -277,6 +325,82 @@ export class UserHome implements OnInit, OnDestroy {
     });
   }
 
+  // ========== NOTIFICATION METHODS ==========
+
+  loadNotifications(): void {
+  forkJoin({
+    leaves: this.leaveService.getLeaveRecords(),
+    attendance: this.attendanceService.getAttendance()
+  }).subscribe({
+    next: (data) => {
+      this.notifications = [];
+      
+      // Get leave notifications only (when admin approves/rejects)
+      const userLeaves = data.leaves
+        .filter(r => r.userId === this.currentUser?.id)
+        .filter(r => r.approval !== 'Pending')
+        .map(r => ({
+          id: r.id,
+          type: 'leave',
+          message: `Your ${this.getApplyTypeLabel(r.apply)} request has been ${r.approval.toLowerCase()}`,
+          date: r['date-of-approval'] || new Date().toISOString().split('T')[0],
+          status: r.approval.toLowerCase(),
+          read: this.isNotificationRead(r.id, 'leave', r.approval)
+        }));
+
+      this.notifications = userLeaves.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+      this.hasNotifications = this.notifications.some(n => !n.read);
+    },
+    error: (error) => {
+      console.error('Error loading notifications:', error);
+    }
+  });
+}
+
+  isNotificationRead(id: string, type: string, status: string): boolean {
+    const key = `notification_${id}_${type}_${status}`;
+    const read = localStorage.getItem(key);
+    return read === 'true';
+  }
+
+  markNotificationAsRead(notification: any): void {
+    const key = `notification_${notification.id}_${notification.type}_${notification.status}`;
+    localStorage.setItem(key, 'true');
+    notification.read = true;
+    this.hasNotifications = this.notifications.some(n => !n.read);
+  }
+
+  openNotifications(): void {
+    this.isNotificationsModalVisible = true;
+  }
+ 
+  closeNotificationsModal(): void {
+    this.isNotificationsModalVisible = false;
+  }
+
+  getUnreadCount(): number {
+    return this.notifications.filter(n => !n.read).length;
+  }
+
+  getNotificationIcon(notification: any): string {
+    if (notification.type === 'leave') {
+      return notification.status === 'approved' ? '✅' : '❌';
+    }
+    return notification.status === 'late' ? '⏰' : '📋';
+  }
+
+  getNotificationMessage(notification: any): string {
+    if (notification.type === 'leave') {
+      const leaveType = notification.message.split(' ')[1] || 'Leave';
+      const status = notification.status === 'approved' ? 
+        '<span class="approved">Approved</span>' : 
+        '<span class="rejected">Rejected</span>';
+      return `Your <strong>${leaveType}</strong> request has been ${status}`;
+    }
+    return notification.message;
+  }
+
   updateLeaveBalances(): void {
     const approvedLeaves = this.leaveHistory.filter(l => l.status === 'Approved');
     
@@ -314,7 +438,7 @@ export class UserHome implements OnInit, OnDestroy {
 
   timeIn(): void {
     const now = new Date();
-    const timeString = now.toTimeString().split(' ')[0];
+    const timeString = now.toTimeString().split(' ')[0]; // HH:MM:SS format
     const dateString = now.toISOString().split('T')[0];
     const status = this.getTimeInStatus(now);
 
@@ -337,7 +461,7 @@ export class UserHome implements OnInit, OnDestroy {
         this.attendanceService.addAttendance(attendanceRecord).subscribe({
           next: (response) => {
             this.isTimedIn = true;
-            this.timeInTime = now;
+            this.timeInTime = now; // Use actual Date object
             this.todayAttendance = attendanceRecord;
             this.startTotalHoursUpdate();
             
@@ -352,6 +476,7 @@ export class UserHome implements OnInit, OnDestroy {
             const statusMessage = status === 'Late' ? ' (Late)' : '';
             this.message.success(`Timed in at ${this.formatTime(now)}${statusMessage}`);
             this.calculateHoursWorked();
+            this.loadNotifications();
           },
           error: (error) => {
             console.error('Error timing in:', error);
@@ -409,7 +534,6 @@ export class UserHome implements OnInit, OnDestroy {
         this.timeOutTime = now;
         this.todayAttendance = updatedRecord;
         this.stopTotalHoursUpdate();
-        this.calculateHoursWorked();
         
         this.recentActivity.unshift({
           action: 'Time Out',
@@ -422,6 +546,7 @@ export class UserHome implements OnInit, OnDestroy {
         this.message.success(
           `Timed out at ${this.formatTime(now)}. Total hours worked: ${this.totalHoursWorked}`
         );
+        this.loadNotifications();
       },
       error: (error) => {
         console.error('Error timing out:', error);
@@ -449,19 +574,44 @@ export class UserHome implements OnInit, OnDestroy {
     }
   }
 
-  calculateHoursWorked(): void {
-    if (this.timeInTime) {
-      const endTime = this.timeOutTime || new Date();
-      this.totalHoursWorked = this.calculateHoursDifference(this.timeInTime, endTime);
+calculateHoursWorked(): void {
+  if (this.timeInTime) {
+    let endTime = this.timeOutTime ? new Date(this.timeOutTime) : new Date();
+    
+    // Fix the cross-day logic
+    if (this.timeInTime && endTime < this.timeInTime) {
+      // Instead of adding a full day, we need to set the endTime to the next day
+      // But preserve the actual time
+      const nextDay = new Date(this.timeInTime);
+      nextDay.setDate(nextDay.getDate() + 1);
+      nextDay.setHours(
+        endTime.getHours(),
+        endTime.getMinutes(),
+        endTime.getSeconds()
+      );
+      endTime = nextDay;
     }
+    
+    this.totalHoursWorked = this.calculateHoursDifference(this.timeInTime, endTime);
   }
+}
 
-  calculateHoursDifference(start: Date, end: Date): string {
-    const diffMs = end.getTime() - start.getTime();
-    const diffHrs = Math.floor(diffMs / 3600000);
-    const diffMins = Math.floor((diffMs % 3600000) / 60000);
-    return `${diffHrs}h ${diffMins}m`;
-  }
+calculateHoursDifference(start: Date, end: Date): string {
+  if (!start || !end) return '0h 0m';
+  
+  const diffMs = Math.abs(end.getTime() - start.getTime());
+  const diffHrs = Math.floor(diffMs / 3600000);
+  const diffMins = Math.floor((diffMs % 3600000) / 60000);
+  
+  // Add debug log to see the actual calculation
+  console.log('Start:', start.toLocaleString());
+  console.log('End:', end.toLocaleString());
+  console.log('Diff MS:', diffMs);
+  console.log('Diff Hours:', diffHrs);
+  console.log('Diff Minutes:', diffMins);
+  
+  return `${diffHrs}h ${diffMins}m`;
+}
 
   showLeaveModal(): void {
     this.isLeaveModalVisible = true;
@@ -530,6 +680,7 @@ export class UserHome implements OnInit, OnDestroy {
             this.message.success('Leave request submitted successfully');
             this.isLeaveModalVisible = false;
             this.resetLeaveForm();
+            this.loadNotifications();
           },
           error: (error) => {
             console.error('Error submitting leave:', error);
@@ -622,14 +773,9 @@ export class UserHome implements OnInit, OnDestroy {
     return colorMap[status] || 'default';
   }
 
-  openNotifications(): void {
-    console.log('Notifications opened');
-  }
-
-  // ========== EDIT PROFILE METHODS - Like Employee Table ==========
+  // ========== EDIT PROFILE METHODS ==========
 
   showEditProfileModal(): void {
-    // Initialize form with current user data
     this.editProfileData = {
       firstName: this.currentUser?.firstName || '',
       middleName: this.currentUser?.middleName || '',
@@ -652,10 +798,8 @@ export class UserHome implements OnInit, OnDestroy {
   }
 
   handleOkEditProfile(): void {
-    // Create a copy of the updated data
     const updatedData: any = {};
     
-    // Only include fields that were actually changed
     if (this.editProfileData.firstName !== this.currentUser?.firstName) {
       updatedData.firstName = this.editProfileData.firstName;
     }
@@ -681,7 +825,6 @@ export class UserHome implements OnInit, OnDestroy {
       updatedData.position = this.editProfileData.position;
     }
     
-    // Handle photo upload if there's a new photo
     if (this.editProfilePhotoFile) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -690,89 +833,78 @@ export class UserHome implements OnInit, OnDestroy {
       };
       reader.readAsDataURL(this.editProfilePhotoFile);
     } else {
-      // No new photo, just save text changes
       this.saveProfileChanges(updatedData);
     }
   }
 
   saveProfileChanges(updatedData: any): void {
-  // If no changes were made, just close the modal
-  if (Object.keys(updatedData).length === 0) {
-    this.message.info('No changes to save');
-    this.handleCancelEditProfile();
-    return;
-  }
-
-  this.message.loading('Updating profile...', { nzDuration: 0 });
-  
-  // Create a clean user object with ONLY the fields that exist in your database
-  // and should be updatable - EXCLUDING access, role, and phone
-  const userToUpdate: any = {
-    id: this.currentUser.id,
-    firstName: this.editProfileData.firstName || this.currentUser.firstName,
-    middleName: this.editProfileData.middleName || this.currentUser.middleName || '',
-    lastName: this.editProfileData.lastName || this.currentUser.lastName,
-    contact: this.editProfileData.phone || this.currentUser.contact, // Map phone to contact
-    department: this.editProfileData.department || this.currentUser.department,
-    position: this.editProfileData.position || this.currentUser.position,
-    username: this.editProfileData.username || this.currentUser.username,
-    email: this.editProfileData.email || this.currentUser.email,
-    password: this.currentUser.password // Keep existing password
-  };
-  
-  // Add photo if it exists
-  if (this.currentUser.photo) {
-    userToUpdate.photo = this.currentUser.photo;
-  }
-  
-  // Handle photo upload if there's a new one
-  if (this.editProfilePhotoFile) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      userToUpdate.photo = e.target?.result as string;
-      this.sendUpdateRequest(userToUpdate);
-    };
-    reader.readAsDataURL(this.editProfilePhotoFile);
-  } else {
-    this.sendUpdateRequest(userToUpdate);
-  }
-}
-
-private sendUpdateRequest(userToUpdate: any): void {
-  this.userService.updateUser(this.currentUser.id, userToUpdate).subscribe({
-    next: (response) => {
-      this.message.remove();
-      this.message.success('Profile updated successfully!');
-      window.location.reload();
-
-      
-      // Update current user with the response
-      this.currentUser = response;
-      this.userDisplayName = this.getDisplayName(this.currentUser);
+    if (Object.keys(updatedData).length === 0) {
+      this.message.info('No changes to save');
       this.handleCancelEditProfile();
-      
-      // Update localStorage
-      localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
-    },
-    error: (error) => {
-      this.message.remove();
-      this.message.error('Failed to update profile. Please try again.');
-      console.error('Error updating profile:', error);
+      return;
     }
-  });
-}
+
+    this.message.loading('Updating profile...', { nzDuration: 0 });
+    
+    const userToUpdate: any = {
+      id: this.currentUser.id,
+      firstName: this.editProfileData.firstName || this.currentUser.firstName,
+      middleName: this.editProfileData.middleName || this.currentUser.middleName || '',
+      lastName: this.editProfileData.lastName || this.currentUser.lastName,
+      contact: this.editProfileData.phone || this.currentUser.contact,
+      department: this.editProfileData.department || this.currentUser.department,
+      position: this.editProfileData.position || this.currentUser.position,
+      username: this.editProfileData.username || this.currentUser.username,
+      email: this.editProfileData.email || this.currentUser.email,
+      password: this.currentUser.password
+    };
+    
+    if (this.currentUser.photo) {
+      userToUpdate.photo = this.currentUser.photo;
+    }
+    
+    if (this.editProfilePhotoFile) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        userToUpdate.photo = e.target?.result as string;
+        this.sendUpdateRequest(userToUpdate);
+      };
+      reader.readAsDataURL(this.editProfilePhotoFile);
+    } else {
+      this.sendUpdateRequest(userToUpdate);
+    }
+  }
+
+  private sendUpdateRequest(userToUpdate: any): void {
+    this.userService.updateUser(this.currentUser.id, userToUpdate).subscribe({
+      next: (response) => {
+        this.message.remove();
+        this.message.success('Profile updated successfully!');
+        
+        this.currentUser = response;
+        this.userDisplayName = this.getDisplayName(this.currentUser);
+        this.handleCancelEditProfile();
+        
+        localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+      },
+      error: (error) => {
+        this.message.remove();
+        this.message.error('Failed to update profile. Please try again.');
+        console.error('Error updating profile:', error);
+      }
+    });
+  }
+
   onEditProfilePhotoSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       
-      // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         this.message.warning('File size must be less than 5MB');
         return;
       }
 
-      // Validate file type
       if (!file.type.startsWith('image/')) {
         this.message.warning('Please select an image file');
         return;
@@ -780,7 +912,6 @@ private sendUpdateRequest(userToUpdate: any): void {
 
       this.editProfilePhotoFile = file;
 
-      // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
         this.editProfilePhotoPreview = e.target?.result as string;
@@ -790,7 +921,6 @@ private sendUpdateRequest(userToUpdate: any): void {
   }
 
   isEditProfileFormValid(): boolean {
-    // All fields are optional, so form is always valid
     return true;
   }
 }
