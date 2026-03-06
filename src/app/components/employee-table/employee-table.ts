@@ -98,6 +98,14 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
       next: (data: User[]) => {
         // Convert User to Employee (number id to string id)
         this.employees = data.map(user => this.convertUserToEmployee(user));
+        
+        // Sort employees by ID numerically
+        this.employees.sort((a, b) => {
+          const idA = parseInt(a.id, 10);
+          const idB = parseInt(b.id, 10);
+          return idA - idB;
+        });
+        
         this.filteredEmployees = [...this.employees];
         this.updateEditCache();
         this.isLoading = false;
@@ -270,18 +278,23 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
   private registerNewEmployee(newEmployee: Employee, tempId: string): void {
     this.userService.getAllUsers().subscribe({
       next: (existingEmployees: User[]) => {
+        // Find the maximum numeric ID from existing users
         let maxId = 0;
         
         existingEmployees.forEach(user => {
-          if (user.id > maxId) {
-            maxId = user.id;
+          // Convert string ID to number to find the max
+          const numericId = parseInt(user.id.toString(), 10);
+          if (!isNaN(numericId) && numericId > maxId) {
+            maxId = numericId;
           }
         });
         
-        const nextId = maxId + 1;
+        // Next ID is maxId + 1 (as a number, then convert to string)
+        const nextId = (maxId + 1).toString();
         
-        // Use RegisterRequest interface for creating new user (no id needed)
-        const employeeToCreate: RegisterRequest = {
+        // Create user with the calculated ID
+        const userToCreate: any = {
+          id: nextId,  // Set the ID explicitly
           firstName: newEmployee.firstName,
           middleName: newEmployee.middleName,
           lastName: newEmployee.lastName,
@@ -291,10 +304,11 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
           username: newEmployee.username,
           email: newEmployee.email,
           password: newEmployee.password,
-           photo: newEmployee.photo || '' 
+          photo: newEmployee.photo || ''
         };
         
-        this.userService.register(employeeToCreate).subscribe({
+        // Use POST with the ID we calculated
+        this.userService.register(userToCreate).subscribe({
           next: (createdUser: User) => {
             const newEmployeeWithStringId = this.convertUserToEmployee(createdUser);
             
@@ -306,6 +320,16 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
               this.employees.unshift(newEmployeeWithStringId);
             }
             
+            // Sort employees by ID numerically (as numbers)
+            this.employees.sort((a, b) => {
+              const idA = parseInt(a.id, 10);
+              const idB = parseInt(b.id, 10);
+              return idA - idB;
+            });
+            
+            // Update filtered employees
+            this.filteredEmployees = [...this.employees];
+            
             // Update edit cache
             this.editCache[newEmployeeWithStringId.id] = {
               edit: false,
@@ -313,13 +337,14 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
             };
             delete this.editCache[tempId];
             
-            this.message.success(`Employee ${newEmployee.firstName} ${newEmployee.lastName} created successfully!`);
+            this.message.success(`Employee ${newEmployee.firstName} ${newEmployee.lastName} created successfully with ID: ${nextId}!`);
             this.filterEmployees(this.searchValue);
           },
           error: (error) => {
             console.error('Registration failed:', error);
             this.message.error('Failed to create employee. Please try again.');
             this.employees = this.employees.filter(e => e.id !== tempId);
+            this.filteredEmployees = [...this.employees];
             this.filterEmployees(this.searchValue);
           }
         });
@@ -358,6 +383,16 @@ export class EmployeeTableComponent implements OnInit, OnDestroy {
         if (originalIndex !== -1) {
           this.employees[originalIndex] = updatedEmployeeWithStringId;
         }
+        
+        // Sort employees by ID numerically
+        this.employees.sort((a, b) => {
+          const idA = parseInt(a.id, 10);
+          const idB = parseInt(b.id, 10);
+          return idA - idB;
+        });
+        
+        // Update filtered employees
+        this.filteredEmployees = [...this.employees];
         
         this.editCache[id] = {
           edit: false,

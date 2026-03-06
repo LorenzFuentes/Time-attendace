@@ -21,11 +21,12 @@
         Export PDF
       </button>
       <button class="csv-btn" (click)="exportTableToExcel()">
-        <nz-icon nzType="file-pdf" nzTheme="outline" class="pdf-icon" />
+        <nz-icon nzType="file-excel" nzTheme="outline" class="pdf-icon" />
         Export CSV
       </button>
     </div>
   </div>
+
   <!-- Modal for Adding New Attendance -->
   <nz-modal
     [(nzVisible)]="isAddModalVisible"
@@ -58,7 +59,6 @@
           </nz-form-control>
         </nz-form-item>
 
-
         <!-- Auto-filled Employee Info -->
         <nz-form-item *ngIf="selectedEmployee">
           <nz-form-label [nzSpan]="6">Position</nz-form-label>
@@ -67,14 +67,12 @@
           </nz-form-control>
         </nz-form-item>
 
-
         <nz-form-item *ngIf="selectedEmployee">
           <nz-form-label [nzSpan]="6">Department</nz-form-label>
           <nz-form-control [nzSpan]="18">
             <input nz-input [readonly]="true" [value]="selectedEmployee.department">
           </nz-form-control>
         </nz-form-item>
-
 
         <!-- Date -->
         <nz-form-item>
@@ -88,7 +86,6 @@
           </nz-form-control>
         </nz-form-item>
 
-
         <!-- Time In -->
         <nz-form-item>
           <nz-form-label [nzSpan]="6" nzRequired>Time In</nz-form-label>
@@ -101,7 +98,6 @@
           </nz-form-control>
         </nz-form-item>
 
-
         <!-- Time Out -->
         <nz-form-item>
           <nz-form-label [nzSpan]="6">Time Out</nz-form-label>
@@ -113,7 +109,6 @@
             </nz-time-picker>
           </nz-form-control>
         </nz-form-item>
-
 
         <!-- Status -->
         <nz-form-item>
@@ -131,7 +126,6 @@
       </form>
     </div>
   </nz-modal>
-
 
   <!-- Table for displaying and INLINE EDITING existing records -->
   <nz-table #attendanceTable nzBordered [nzData]="filteredData" nzTableLayout="fixed"
@@ -156,15 +150,14 @@
           <td>{{ record.firstName }} {{ record.lastName }}</td>
           <td>{{ record.position }}</td>
           <td>{{ record.department }}</td>
-          <td>{{ record['time-in'] }}</td>
-          <td>{{ record['time-out'] }}</td>
+          <td>{{ record.timeIn }}</td>
+          <td>{{ record.timeOut }}</td>
           <td>
             <nz-tag [nzColor]="getStatusColor(record.status)">
               {{ getStatusLabel(record.status) }}
             </nz-tag>
           </td>
           <td>
-            
             <button class="edit-btn" (click)="startEdit(record.id)">
               <nz-icon nzType="edit" nzTheme="outline" />
             </button>
@@ -179,12 +172,11 @@
         <!-- Inline Edit Template -->
         <ng-template #editTemplate>
           <td>
-            
             <input nz-input [(ngModel)]="editCache[record.id].data.date"
-                   placeholder="YYYY-MM-DD" [class.invalid]="!editCache[record.id].data.date.trim()"/>
+            placeholder="YYYY-MM-DD" 
+            [class.invalid]="!editCache[record.id].data.date || !editCache[record.id].data.date.trim()"/>
           </td>
           <td>
-            
             <nz-select [(ngModel)]="editCache[record.id].data.employeeId" style="width: 100%;"
                        nzPlaceHolder="Select Employee" nzShowSearch
                        (ngModelChange)="onEditEmployeeChange(record.id, $event)">
@@ -195,27 +187,22 @@
             </nz-select>
           </td>
           <td>
-            
             <input nz-input [value]="getEmployeePosition(editCache[record.id].data.employeeId) || editCache[record.id].data.position"
                    [readonly]="true" placeholder="Position"/>
           </td>
           <td>
-            
             <input nz-input [value]="getEmployeeDepartment(editCache[record.id].data.employeeId) || editCache[record.id].data.department"
                    [readonly]="true" placeholder="Department"/>
           </td>
           <td>
-            
-            <input nz-input [(ngModel)]="editCache[record.id].data['time-in']"
+            <input nz-input [(ngModel)]="editCache[record.id].data.timeIn"
                    placeholder="HH:MM"/>
           </td>
           <td>
-            
-            <input nz-input [(ngModel)]="editCache[record.id].data['time-out']"
+            <input nz-input [(ngModel)]="editCache[record.id].data.timeOut"
                    placeholder="HH:MM"/>
           </td>
           <td>
-            
             <nz-select [(ngModel)]="editCache[record.id].data.status" style="width: 100%;">
               <nz-option nzValue="present" nzLabel="Present"></nz-option>
               <nz-option nzValue="absent" nzLabel="Absent"></nz-option>
@@ -225,7 +212,6 @@
             </nz-select>
           </td>
           <td>
-            
             <button nz-button nzType="primary" size="small"
                     (click)="saveEdit(record.id)"
                     [disabled]="!isEditFormValid(record.id)">

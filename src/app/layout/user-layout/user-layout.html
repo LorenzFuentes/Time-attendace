@@ -4,14 +4,17 @@
         <h1>InTime</h1>
     </div>
     <ul nz-menu nzTheme="dark" nzMode="inline">
-        <li nz-submenu nzTitle="User" nzIcon="user">
-        <ul>
-            <li nz-menu-item (click)="logout()" style="color: #ff4d4f;"><nz-icon nzType="logout"></nz-icon>&nbsp;&nbsp;Logout</li>
-        </ul>
+        <li nz-menu-item (click)="getHome()">
+          <nz-icon nzType="home" />
+          <span>Home</span>
         </li>
         <li nz-menu-item (click)="getAnnouncement()">
           <nz-icon nzType="sound" />
           <span>Announcement</span>
+        </li>
+        <li nz-menu-item (click)="logout()">
+          <nz-icon nzType="logout" />
+          <span>Logout</span>
         </li>
     </ul>
   </nz-sider>

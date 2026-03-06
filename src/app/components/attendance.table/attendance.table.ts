@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AttendanceService } from '../../service/attendance-service/attendance';
 import { UserService } from '../../service/user-service/user';
 import { CommonModule } from '@angular/common';
@@ -51,25 +51,25 @@ interface AttendanceRecord {
   lastName: string;
   position: string;
   department: string;
-  'time-in': string;
-  'time-out': string;
+  timeIn: string;
+  timeOut: string;
   status: string;
 }
 
 @Component({
   selector: 'app-attendance.table',
   standalone: true,
-  imports: [CommonModule,FormsModule,ReactiveFormsModule,HttpClientModule,NzTableModule,NzTagModule,NzInputModule,NzButtonModule,
-    NzSelectModule,NzPopconfirmModule,NzIconModule,NzAlertModule,NzCalendarModule,NzModalModule,NzFormModule,NzDatePickerModule,NzTimePickerModule
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, NzTableModule, NzTagModule, NzInputModule, NzButtonModule,
+    NzSelectModule, NzPopconfirmModule, NzIconModule, NzAlertModule, NzCalendarModule, NzModalModule, NzFormModule, NzDatePickerModule, NzTimePickerModule
   ],
   templateUrl: './attendance.table.html',
   styleUrls: ['../../app.scss']
 })
-export class AttendanceTable implements OnInit {
-  attendanceData: any[] = [];
-  filteredData: any[] = [];
+export class AttendanceTable implements OnInit, OnDestroy {
+  attendanceData: AttendanceRecord[] = [];
+  filteredData: AttendanceRecord[] = [];
   isLoading = false;
-  editCache: { [key: string]: { edit: boolean; data: any } } = {};
+  editCache: { [key: string]: { edit: boolean; data: AttendanceRecord } } = {};
   currentDateTime: string = '';
   currentDate: string = '';
   searchValue: string = '';
@@ -107,6 +107,12 @@ export class AttendanceTable implements OnInit {
       .subscribe(searchTerm => {
         this.filterAttendance(searchTerm);
       });
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
 
   // ========== DATE PICKER METHODS ==========
@@ -158,10 +164,10 @@ export class AttendanceTable implements OnInit {
       const selectedEmp = this.employeeList.find(emp => emp.id === formValue.employeeId);
       
       if (selectedEmp) {
-        // Generate the next numerical ID as string
-        const nextId = this.generateNextId().toString();
+        // Generate the next ID as string
+        const nextId = this.generateNextId();
         
-        const newAttendance: any = {
+        const newAttendance: AttendanceRecord = {
           id: nextId,
           date: this.formatDate(formValue.date),
           employeeId: formValue.employeeId,
@@ -169,21 +175,24 @@ export class AttendanceTable implements OnInit {
           lastName: selectedEmp.lastName,
           position: selectedEmp.position,
           department: selectedEmp.department,
-          'time-in': this.formatTime(formValue.timeIn),
-          'time-out': formValue.timeOut ? this.formatTime(formValue.timeOut) : '--',
+          timeIn: this.formatTime(formValue.timeIn),
+          timeOut: formValue.timeOut ? this.formatTime(formValue.timeOut) : '--',
           status: formValue.status
         };
 
-        // Save to service
+        // Save to service - now with string ID
         this.saveAttendance(newAttendance);
       }
     }
   }
 
-  saveAttendance(newAttendance: any): void {
+  saveAttendance(newAttendance: AttendanceRecord): void {
+    // Send directly with string ID - NO CONVERSION NEEDED
     this.attendanceService.addAttendance(newAttendance).subscribe({
-      next: (response) => {
-        this.attendanceData.push(response);
+      next: (response: any) => {
+        // Use the response or our original data
+        const savedRecord = response || newAttendance;
+        this.attendanceData.push(savedRecord);
         this.filteredData = [...this.attendanceData];
         this.updateEditCache();
         
@@ -200,25 +209,36 @@ export class AttendanceTable implements OnInit {
     });
   }
 
-  generateNextId(): number {
+  generateNextId(): string {
     if (this.attendanceData.length === 0) {
-      return 1;
+      return '1';
     }
     
+    // Extract numeric values from string IDs
     const ids = this.attendanceData
-      .map(item => item.id)
-      .filter(id => id !== undefined && id !== null)
-      .map(id => {
-        const num = Number(id);
-        return isNaN(num) ? 0 : num;
-      });
+      .map(item => {
+        // Try to extract number from string ID
+        if (typeof item.id === 'string') {
+          // Check if it's a pure number string
+          if (/^\d+$/.test(item.id)) {
+            return parseInt(item.id, 10);
+          }
+          // If it has non-numeric characters, try to extract numbers
+          const matches = item.id.match(/\d+/g);
+          if (matches && matches.length > 0) {
+            return parseInt(matches.join(''), 10);
+          }
+        }
+        return 0;
+      })
+      .filter(id => id > 0);
     
     if (ids.length === 0) {
-      return 1;
+      return '1';
     }
     
     const maxId = Math.max(...ids);
-    return maxId + 1;
+    return (maxId + 1).toString();
   }
 
   onEmployeeChange(employeeId: string): void {
@@ -233,7 +253,6 @@ export class AttendanceTable implements OnInit {
   updateEditCache(): void {
     this.editCache = {};
     this.attendanceData.forEach(item => {
-      // Use ID as the key instead of date
       this.editCache[item.id] = {
         edit: false,
         data: { ...item }
@@ -270,25 +289,24 @@ export class AttendanceTable implements OnInit {
 
     const index = this.attendanceData.findIndex(item => item.id === id);
     if (index !== -1 && this.editCache[id]) {
-      const existingId = this.attendanceData[index].id?.toString() || '';
+      const existingId = this.attendanceData[index].id;
       
       // Get the edited data
-      const updatedData = {
+      const updatedData: AttendanceRecord = {
         ...this.editCache[id].data,
         id: existingId
       };
       
-      // Call service to update
+      // Call service to update with string ID - NO CONVERSION NEEDED
       this.attendanceService.updateAttendance(existingId, updatedData).subscribe({
         next: () => {
-          // Update local data
+          // Update local data with string ID
           Object.assign(this.attendanceData[index], updatedData);
           
-          // Update filtered data if not searching
+          // Update filtered data
           if (!this.searchValue.trim()) {
             this.filteredData = [...this.attendanceData];
           } else {
-            // Re-apply current search filter
             this.filterAttendance(this.searchValue);
           }
           
@@ -311,8 +329,9 @@ export class AttendanceTable implements OnInit {
   deleteRecord(id: string): void {
     const index = this.attendanceData.findIndex(item => item.id === id);
     if (index !== -1) {
-      const recordId = this.attendanceData[index].id?.toString() || '';
+      const recordId = this.attendanceData[index].id;
       
+      // Call service with string ID - NO CONVERSION NEEDED
       this.attendanceService.deleteAttendance(recordId).subscribe({
         next: () => {
           // Remove from local data
@@ -376,7 +395,7 @@ export class AttendanceTable implements OnInit {
       data.date?.trim() &&
       data.employeeId?.trim() &&
       data.status?.trim() &&
-      data['time-in']?.trim()
+      data.timeIn?.trim()
     );
   }
 
@@ -434,13 +453,26 @@ export class AttendanceTable implements OnInit {
     this.isLoading = true;
     this.attendanceService.getAttendance().subscribe({
       next: (data: any[]) => {
-        this.attendanceData = data;
-        this.filteredData = [...data];
+        // Ensure all IDs are strings in our local data
+        this.attendanceData = data.map(item => ({
+          id: item.id?.toString() || item._id?.toString() || '',
+          date: item.date || '',
+          employeeId: item.employeeId?.toString() || item.employeeId || '',
+          firstName: item.firstName || '',
+          lastName: item.lastName || '',
+          position: item.position || '',
+          department: item.department || '',
+          timeIn: item.timeIn || item['time-in'] || '',
+          timeOut: item.timeOut || item['time-out'] || '',
+          status: item.status || ''
+        }));
+        this.filteredData = [...this.attendanceData];
         this.updateEditCache();
         this.isLoading = false;
       },
       error: (error: any) => {
         console.error('Error loading attendance data:', error);
+        this.message.error('Failed to load attendance data');
         this.isLoading = false;
       }
     });
@@ -521,13 +553,13 @@ export class AttendanceTable implements OnInit {
 
     this.isLoading = true;
 
-    try{
+    try {
       const doc = new jsPDF('landscape');
       const currentDate = new Date();
 
       // Title
       doc.setFontSize(18);
-      doc.setTextColor(147,121,176);
+      doc.setTextColor(147, 121, 176);
       doc.text('Employee Attendance Report', 14, 20);
       
       // Subtitle
@@ -541,7 +573,7 @@ export class AttendanceTable implements OnInit {
       }
 
       const header = [
-        [ 'Date', 'First Name', 'Last Name', 'Position', 'Department', 'Time-in', 'Time-out', 'Status']
+        ['Date', 'First Name', 'Last Name', 'Position', 'Department', 'Time-in', 'Time-out', 'Status']
       ];
 
       const data = this.filteredData.map(item => [
@@ -550,8 +582,8 @@ export class AttendanceTable implements OnInit {
         item.lastName || 'N/A',
         item.position || 'N/A',
         item.department || 'N/A',
-        item['time-in'] || 'N/A',
-        item['time-out'] || 'N/A',
+        item.timeIn || 'N/A',
+        item.timeOut || 'N/A',
         this.getStatusLabel(item.status) || 'N/A'
       ]);
 
@@ -569,7 +601,7 @@ export class AttendanceTable implements OnInit {
           halign: 'left'
         },
         headStyles: {
-          fillColor: [147,121,176],
+          fillColor: [147, 121, 176],
           textColor: [255, 255, 255],
           fontStyle: 'bold',
           lineWidth: 0.1
@@ -590,7 +622,8 @@ export class AttendanceTable implements OnInit {
         margin: { top: this.searchValue.trim() ? 50 : 45 }
       });
 
-      const pageCount = (doc as any).internal.getNumberOfPages();
+      // Add page numbers
+      const pageCount = doc.getNumberOfPages();
       for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
         doc.setFontSize(10);
@@ -614,7 +647,7 @@ export class AttendanceTable implements OnInit {
     }
   }
 
-  exportTableToExcel() {
+  exportTableToExcel(): void {
     if (!this.filteredData || this.filteredData.length === 0) {
       this.message.warning('No attendance data to export');
       return;
@@ -622,22 +655,20 @@ export class AttendanceTable implements OnInit {
 
     this.isLoading = true;
 
-    const currentDate = new Date();
-
-    const exportData = this.filteredData.map(item => ({
-      Date: item.date || 'N/A',
-      'First Name': item.firstName || 'N/A',
-      'Last Name': item.lastName || 'N/A',
-      Position: item.position || 'N/A',
-      Department: item.department || 'N/A',
-      'Time-in': item['time-in'] || 'N/A',
-      'Time-out': item['time-out'] || 'N/A',
-      Status: this.getStatusLabel(item.status) || 'N/A'
-    }));
-
-    const fileName = `attendance-report-${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${new Date().getDate().toString().padStart(2, '0')}.xlsx`;
-
     try {
+      const exportData = this.filteredData.map(item => ({
+        Date: item.date || 'N/A',
+        'First Name': item.firstName || 'N/A',
+        'Last Name': item.lastName || 'N/A',
+        Position: item.position || 'N/A',
+        Department: item.department || 'N/A',
+        'Time-in': item.timeIn || 'N/A',
+        'Time-out': item.timeOut || 'N/A',
+        Status: this.getStatusLabel(item.status) || 'N/A'
+      }));
+
+      const fileName = `attendance-report-${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${new Date().getDate().toString().padStart(2, '0')}`;
+
       const csv = Papa.unparse(exportData, {
         delimiter: ",",
         header: true,
