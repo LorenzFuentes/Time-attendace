@@ -744,7 +744,17 @@ calculateHoursDifference(start: Date, end: Date): string {
   formatDate(date: any): string {
     if (!date) return '';
     if (typeof date === 'string') return date;
-    return date.toISOString().split('T')[0];
+
+    // Create a new date object to avoid mutating the original
+    const d = new Date(date);
+
+    // Get local date components to preserve the selected date
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+
+    // Return in YYYY-MM-DD format using LOCAL date (not UTC)
+    return `${year}-${month}-${day}`;
   }
 
   getApplyTypeLabel(type: string): string {

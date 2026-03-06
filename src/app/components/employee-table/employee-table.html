@@ -176,6 +176,14 @@
                     <td>
                         <input nz-input type="email" [(ngModel)]="editCache[employee.id].data.email" placeholder="Email" [class.invalid]="!editCache[employee.id].data.email.trim()" />
                     </td>
+                    <!-- ADD THIS PASSWORD FIELD FOR NEW EMPLOYEES -->
+                    <td *ngIf="employee.id.startsWith('temp_')">
+                        <input nz-input type="password" [(ngModel)]="editCache[employee.id].data.password" 
+                            placeholder="Password" [class.invalid]="!editCache[employee.id].data.password.trim()" />
+                    </td>
+                    <td *ngIf="!employee.id.startsWith('temp_')">
+                        <!-- Empty cell for existing employees to maintain column count -->
+                    </td>
                     <td>
                         <div class="action-buttons">
                             <button nz-button nzType="primary" size="small" 

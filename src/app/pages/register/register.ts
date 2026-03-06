@@ -7,11 +7,12 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule,NzButtonModule,NzFormModule,NzInputModule,NzSelectModule ],
+  imports: [CommonModule, ReactiveFormsModule, NzButtonModule, NzFormModule, NzInputModule, NzSelectModule],
   templateUrl: './register.html',
   styleUrls: ['./register.scss']
 })
@@ -25,7 +26,8 @@ export class RegisterComponent {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private message: NzMessageService
   ) {
     this.registerForm = this.fb.group({
       firstName: ['', Validators.required],
@@ -52,13 +54,13 @@ export class RegisterComponent {
   }
 
   onSubmit(): void {
-  if (this.registerForm.invalid) {
-      alert('Please fill all required fields correctly!');
+    if (this.registerForm.invalid) {
+      this.message.error('Please fill all required fields correctly!');
       return;
     }
 
     if (!this.checkPasswordMatch()) {
-      alert('Passwords do not match!');
+      this.message.error('Passwords do not match!');
       return;
     }
 
@@ -76,39 +78,50 @@ export class RegisterComponent {
       username: formData.username,
       email: formData.email,
       password: formData.password,
-      photo: this.photoPreview || null // Add photo preview (base64) to user data
+      photo: this.photoPreview || null
     };
-    this.registerUserWithManualId(newUser);
+    
+    this.registerUserWithStringId(newUser);
   }
 
-  private registerUserWithManualId(newUser: any): void {
+  private registerUserWithStringId(newUser: any): void {
     // Get all existing users to find the highest ID
     this.http.get('http://localhost:3000/users').subscribe({
       next: (existingUsers: any) => {
-        // Find the maximum ID from existing users
+        // Find the maximum numeric ID from existing users (convert strings to numbers)
         let maxId = 0;
         if (existingUsers && existingUsers.length > 0) {
-          maxId = Math.max(...existingUsers.map((user: any) => user.id));
+          existingUsers.forEach((user: any) => {
+            // Convert string ID to number to find the max
+            const numericId = parseInt(user.id, 10);
+            if (!isNaN(numericId) && numericId > maxId) {
+              maxId = numericId;
+            }
+          });
         }
-        // Calculate next ID
-        const nextId = maxId + 1;
         
-        // Add the calculated ID to the user object
+        // Calculate next ID and convert to string
+        const nextId = (maxId + 1).toString();
+        
+        // Add the string ID to the user object
         const userWithId = {
           id: nextId,
           ...newUser
         };
-        // Send POST request with the calculated ID
+
+        // Send POST request with the string ID
         this.http.post('http://localhost:3000/users', userWithId).subscribe({
           next: (response: any) => {
-            alert(`User ${newUser.firstName} ${newUser.lastName} registered successfully!\nID: ${nextId}`);
+            this.message.success(`User ${newUser.firstName} ${newUser.lastName} registered successfully!`);
             
             this.registerForm.reset();
-            this.router.navigate(['']);
+            this.removePhoto(); // Clear photo preview
+            this.router.navigate(['login']); // Navigate to login page
           },
           error: (error) => {
             console.error('Registration failed:', error);
-            alert('Registration failed. Please try again.');
+            this.message.error('Registration failed. Please try again.');
+            this.isLoading = false;
           },
           complete: () => {
             this.isLoading = false;
@@ -117,26 +130,26 @@ export class RegisterComponent {
       },
       error: (error) => {
         console.error('Failed to get existing users:', error);
-        alert('Failed to connect to server. Please try again.');
+        this.message.error('Failed to connect to server. Please try again.');
         this.isLoading = false;
       }
     });
   }
 
-   onPhotoSelected(event: Event): void {
+  onPhotoSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert('File size must be less than 5MB');
+        this.message.error('File size must be less than 5MB');
         return;
       }
 
       // Validate file type
       if (!file.type.startsWith('image/')) {
-        alert('Please select an image file');
+        this.message.error('Please select an image file');
         return;
       }
 

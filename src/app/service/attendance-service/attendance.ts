@@ -14,7 +14,7 @@ export class AttendanceService {
   }
 
   // Get attendance by employee ID
-  getAttendanceByEmployeeId(employeeId: any): Observable<any[]> {
+  getAttendanceByEmployeeId(employeeId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.attendanceApi}?employeeId=${employeeId}`);
   }
 
@@ -23,13 +23,13 @@ export class AttendanceService {
     return this.http.post(this.attendanceApi, data);
   }
 
-  // Update attendance record
-  updateAttendance(id: number, data: any): Observable<any> {
+  // Update attendance record - NOW ACCEPTS STRING ID
+  updateAttendance(id: string, data: any): Observable<any> {
     return this.http.put(`${this.attendanceApi}/${id}`, data);
   }
 
-  // Delete attendance record
-  deleteAttendance(id: number): Observable<any> {
+  // Delete attendance record - NOW ACCEPTS STRING ID
+  deleteAttendance(id: string): Observable<any> {
     return this.http.delete(`${this.attendanceApi}/${id}`);
   }
 }
