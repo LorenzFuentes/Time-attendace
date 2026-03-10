@@ -1,0 +1,17 @@
+services:
+  - type: static
+    name: angular-project
+    runtime: static
+    repo: https://github.com/LorenzFuentes/Time-attendace  
+    branch: main
+    buildCommand: yarn --frozen-lockfile install && yarn build
+    staticPublishPath: ./dist/project/browser
+    pullRequestPreviewsEnabled: true
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
