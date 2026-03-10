@@ -25,57 +25,6 @@
       "username": "zapt",
       "email": "zap@gmail.com",
       "password": "admin123"
-    },
-    {
-      "id": "3",
-      "photo": "",
-      "firstName": "Jonathan",
-      "middleName": "",
-      "lastName": "Dela Cruz",
-      "contact": "09123456789",
-      "department": "Finance",
-      "position": "Intern",
-      "username": "jon",
-      "email": "jonathan@gmail.com",
-      "password": "admin123"
-    },
-    {
-      "id": "4",
-      "firstName": "Ronaldo",
-      "middleName": "",
-      "lastName": "Salcedo",
-      "contact": "09123456789",
-      "department": "Backend Developer",
-      "position": "Junior Backend Developer",
-      "username": "rncs",
-      "email": "rncs@gmail.com",
-      "password": "tanyaa",
-      "photo": null
-    },
-    {
-      "id": "5",
-      "firstName": "Ralph",
-      "middleName": "",
-      "lastName": "Cruz",
-      "contact": "09123456789",
-      "department": "Frontend Developer",
-      "position": "Intern",
-      "username": "bap",
-      "email": "bap@gmail.com",
-      "password": "bapsilog",
-      "photo": null
-    },
-    {
-      "id": "6",
-      "firstName": "Fitter",
-      "middleName": "",
-      "lastName": "Abig",
-      "contact": "09123456789",
-      "department": "Backend Developer",
-      "position": "Intern",
-      "username": "abig",
-      "email": "lyzza@gmail.com",
-      "password": "lyzzaa"
     }
   ],
   "admin": [
@@ -87,261 +36,13 @@
       "email": "lorenz@gmail.com",
       "fullname": "Lorenz ",
       "access": "admin"
-    },
-    {
-      "id": "5",
-      "username": "sindel",
-      "password": "bapsilog",
-      "email": "rc@gmail.com",
-      "fullname": "Ralph Cruz",
-      "access": "admin"
-    },
-    {
-      "id": "6",
-      "username": "jai",
-      "password": "warupaypay",
-      "email": "jai@gmail.com",
-      "fullname": "Jairo Garcia",
-      "access": "admin"
-    },
-    {
-      "id": "7",
-      "photo": "",
-      "username": "test",
-      "password": "admin123",
-      "email": "test",
-      "fullname": "test",
-      "access": "admin"
     }
   ],
   "leave": [
-    {
-      "id": "1",
-      "userId": "1",
-      "firstName": "Lorenz",
-      "lastName": "Fuentes",
-      "position": "Frontend Developer",
-      "department": "CEU",
-      "apply": "sick",
-      "date-from": "2026-02-13",
-      "date-to": "2026-02-20",
-      "reason": "asd",
-      "approval": "Rejected",
-      "date-of-approval": "2026-03-06"
-    },
-    {
-      "id": "2",
-      "userId": "2",
-      "firstName": "marc",
-      "lastName": "zapata",
-      "position": "Intern",
-      "department": "Backend Developer",
-      "apply": "emergency",
-      "date-from": "2026-02-13",
-      "date-to": "2026-02-16",
-      "reason": "asd",
-      "approval": "Approved",
-      "date-of-approval": "2026-02-18"
-    },
-    {
-      "id": "3",
-      "userId": "1",
-      "firstName": "Lorenz",
-      "lastName": "Fuentes",
-      "position": "Frontend Developer",
-      "department": "CEU",
-      "apply": "sick",
-      "date-from": "2026-02-22",
-      "date-to": "2026-02-26",
-      "reason": "test",
-      "approval": "Approved",
-      "date-of-approval": "2026-03-04"
-    },
-    {
-      "id": "7",
-      "userId": "4",
-      "firstName": "maria",
-      "lastName": "reyes",
-      "position": "Manager",
-      "department": "Project Manager",
-      "apply": "vacation",
-      "date-from": "2026-02-22",
-      "date-to": "2026-02-26",
-      "reason": "Going to South Korea",
-      "approval": "Approved",
-      "date-of-approval": "2026-02-19"
-    },
-    {
-      "id": "8",
-      "userId": 4,
-      "firstName": "Ronaldo",
-      "lastName": "Salcedo",
-      "position": "Junior Backend Developer",
-      "department": "Backend Developer",
-      "apply": "personal",
-      "date-from": "2026-03-18",
-      "date-to": "2026-03-20",
-      "reason": "School event",
-      "approval": "Rejected",
-      "date-of-approval": "2026-03-06"
-    },
-    {
-      "id": "9",
-      "userId": "6",
-      "firstName": "Fitter",
-      "lastName": "Abig",
-      "position": "Intern",
-      "department": "Backend Developer",
-      "apply": "personal",
-      "date-from": "2026-03-10",
-      "date-to": "2026-03-13",
-      "reason": "Sportsfest",
-      "approval": "Rejected",
-      "date-of-approval": "2026-03-06"
-    },
-    {
-      "id": "10",
-      "userId": "4",
-      "firstName": "Ronaldo",
-      "lastName": "Salcedo",
-      "position": "Junior Backend Developer",
-      "department": "Backend Developer",
-      "apply": "sick",
-      "date-from": "2026-03-22",
-      "date-to": "2026-03-26",
-      "reason": "Hospital",
-      "approval": "Approved",
-      "date-of-approval": "2026-03-06"
-    },
-    {
-      "id": "11",
-      "userId": "5",
-      "firstName": "Ralph",
-      "lastName": "Cruz",
-      "position": "Intern",
-      "department": "Frontend Developer",
-      "apply": "personal",
-      "date-from": "2026-03-23",
-      "date-to": "2026-03-25",
-      "reason": "test",
-      "approval": "Approved",
-      "date-of-approval": ""
-    },
-    {
-      "id": "12",
-      "userId": "1",
-      "firstName": "Lorenz",
-      "lastName": "Fuentes",
-      "position": "Frontend Developer",
-      "department": "IT",
-      "apply": "vacation",
-      "date-from": "2026-03-24",
-      "date-to": "2026-03-26",
-      "reason": "test",
-      "approval": "Approved",
-      "date-of-approval": "2026-03-06"
-    }
+    
   ],
   "attendance": [
-    {
-      "id": "1",
-      "date": "2026-02-12",
-      "employeeId": "1",
-      "firstName": "lorenz",
-      "lastName": "fuentes",
-      "position": "Frontend Developer",
-      "department": "CEU",
-      "timeIn": "09:00",
-      "timeOut": "07:00",
-      "status": "present"
-    },
-    {
-      "id": "2",
-      "date": "2026-02-12",
-      "employeeId": "2",
-      "firstName": "marc",
-      "lastName": "zapata",
-      "position": "Intern",
-      "department": "Backend Developer",
-      "time-in": "21:00",
-      "time-out": "01:00",
-      "status": "half-day"
-    },
-    {
-      "id": "3",
-      "date": "2026-02-01",
-      "employeeId": "3",
-      "firstName": "john",
-      "lastName": "dela cruz",
-      "position": "Project Manager",
-      "department": "Xentra",
-      "time-in": "02:59",
-      "time-out": "14:58",
-      "status": "late"
-    },
-    {
-      "id": "4",
-      "date": "2026-02-03",
-      "employeeId": "1",
-      "firstName": "lorenz",
-      "lastName": "fuentes",
-      "position": "Frontend Developer",
-      "department": "CEU",
-      "timeIn": "00:00",
-      "timeOut": "00:00",
-      "status": "absent"
-    },
-    {
-      "id": "5",
-      "userId": "1",
-      "firstName": "Lorenz",
-      "lastName": "Fuentes",
-      "position": "Frontend Developer",
-      "department": "IT",
-      "date": "2026-03-05",
-      "timeIn": "00:28:31",
-      "timeOut": "00:30:23",
-      "status": "Present",
-      "totalHours": "0h 1m"
-    },
-    {
-      "id": "7",
-      "userId": "4",
-      "firstName": "Ronaldo",
-      "lastName": "Salcedo",
-      "position": "Junior Backend Developer",
-      "department": "Backend Developer",
-      "date": "2026-03-06",
-      "timeIn": "22:19:01",
-      "timeOut": "22:20:51",
-      "status": "Late",
-      "totalHours": "0h 1m"
-    },
-    {
-      "id": "8",
-      "date": "2026-03-07",
-      "employeeId": "6",
-      "firstName": "Fitter",
-      "lastName": "Abig",
-      "position": "Intern",
-      "department": "Backend Developer",
-      "timeIn": "01:02",
-      "timeOut": "--",
-      "status": "half-day"
-    },
-    {
-      "id": "9",
-      "userId": "1",
-      "firstName": "Lorenz",
-      "lastName": "Fuentes",
-      "position": "Frontend Developer",
-      "department": "IT",
-      "date": "2026-03-06",
-      "timeIn": "02:28:31",
-      "timeOut": "02:28:35",
-      "status": "Present",
-      "totalHours": "0h 0m"
-    }
+    
   ],
   "events": [
     {
@@ -378,62 +79,6 @@
       "date": "2026-03-02",
       "time": "02:00",
       "description": "MonkSearch Meeting"
-    },
-    {
-      "id": "6",
-      "eventType": "activity",
-      "date": "2026-02-06",
-      "time": "07:00",
-      "description": "Team Building"
-    },
-    {
-      "id": "7",
-      "eventType": "meeting",
-      "date": "2026-03-29",
-      "time": "03:06",
-      "description": "MonkSearch Meeting"
-    },
-    {
-      "id": "8",
-      "eventType": "activity",
-      "date": "2026-03-18",
-      "time": "03:07",
-      "description": "Xbank UI/UX Kickoff"
-    },
-    {
-      "id": "9",
-      "eventType": "meeting",
-      "date": "2026-03-02",
-      "time": "07:11",
-      "description": "HRS "
-    },
-    {
-      "id": "10",
-      "eventType": "meeting",
-      "date": "2026-03-18",
-      "time": "07:00",
-      "description": "ROPA signing"
-    },
-    {
-      "id": "11",
-      "eventType": "activity",
-      "date": "2026-03-19",
-      "time": "09:00",
-      "description": "Toga Claiming"
-    },
-    {
-      "id": "12",
-      "eventType": "activity",
-      "date": "2026-03-10",
-      "time": "21:00",
-      "description": "Intime Deployment"
-    },
-    {
-      "id": "13",
-      "eventType": "meeting",
-      "date": "2026-03-24",
-      "time": "02:26",
-      "description": "test"
     }
   ],
   "announcement": [
@@ -450,28 +95,16 @@
       "date": "2026-03-20"
     },
     {
-      "id": "6",
+      "id": "3",
       "title": "test",
       "content": "test",
-      "date": "2026-03-04"
+      "date": "2026-03-21"
     },
     {
-      "id": "7",
+      "id": "4",
       "title": "End of the Month",
       "content": "testing announcement",
-      "date": "2026-03-05"
-    },
-    {
-      "id": "8",
-      "title": "InTime Deployment",
-      "content": "Time attendance website for Xentra",
-      "date": "2026-03-07"
-    },
-    {
-      "id": "9",
-      "title": "test",
-      "content": "test",
-      "date": "2026-03-07"
+      "date": "2026-03-22"
     }
   ]
 }
