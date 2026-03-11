@@ -25,6 +25,19 @@
       "username": "zapt",
       "email": "zap@gmail.com",
       "password": "admin123"
+    },
+    {
+      "id": "3",
+      "firstName": "Ralph",
+      "middleName": "",
+      "lastName": "Cruz",
+      "contact": "09123456789",
+      "department": "Backend Developer",
+      "position": "Senior Backend Developer",
+      "username": "bap",
+      "email": "bap@gmail.com",
+      "password": "bapbap",
+      "photo": null
     }
   ],
   "admin": [
@@ -34,16 +47,12 @@
       "username": "Lorenz",
       "password": "admin123",
       "email": "lorenz@gmail.com",
-      "fullname": "Lorenz ",
+      "fullname": "Lorenz",
       "access": "admin"
     }
   ],
-  "leave": [
-    
-  ],
-  "attendance": [
-    
-  ],
+  "leave": [],
+  "attendance": [],
   "events": [
     {
       "id": "1",

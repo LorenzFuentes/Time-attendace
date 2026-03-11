@@ -1,8 +1,21 @@
+<!-- Mobile overlay -->
+<div class="mobile-overlay" *ngIf="isMobileView" [class.show]="isMobileMenuOpen" (click)="closeMobileMenu()"></div>
+
 <nz-layout>
-  <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+  <!-- Sidebar -->
+  <nz-sider 
+    nzCollapsible 
+    [(nzCollapsed)]="isCollapsed" 
+    [nzTrigger]="null"
+    [class.mobile-show]="isMobileMenuOpen"
+  >
     <div class="logo">
         <h1>InTime</h1>
     </div>
+    
+    <!-- Mobile close button -->
+    <button *ngIf="isMobileView" class="mobile-close" (click)="closeMobileMenu()">✕</button>
+    
     <ul nz-menu nzTheme="dark" nzMode="inline">
         <li nz-submenu nzTitle="User" nzIcon="user">
         <ul>
@@ -27,18 +40,22 @@
         </li>
     </ul>
   </nz-sider>
+  
   <nz-layout>
     <nz-header class="main-header">
         <div class="header-content">
+          <!-- Updated trigger - works for both desktop and mobile -->
           <nz-icon
             class="trigger"
-            [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
-            (click)="isCollapsed = !isCollapsed"
+            [nzType]="isMobileView ? 'menu' : (isCollapsed ? 'menu-unfold' : 'menu-fold')"
+            (click)="isMobileView ? toggleMobileMenu() : (isCollapsed = !isCollapsed)"
           />
+          
          <div class="header-right">
-            <span class="welcome-text">Welcome, {{ getDisplayName(currentUser) }}</span>
+            <!-- Hide welcome text on mobile -->
+            <span class="welcome-text" *ngIf="!isMobileView">Welcome, {{ getDisplayName(currentUser) }}</span>
             <nz-avatar 
-              [nzSize]="50" 
+              [nzSize]="isMobileView ? 40 : 50" 
               [nzSrc]="getUserPhoto(currentUser) || undefined" 
               [nzText]="!getUserPhoto(currentUser) ? getInitials(currentUser) : ''" 
               [ngStyle]="{'background': !getUserPhoto(currentUser) ? '#a588be' : 'transparent'}"

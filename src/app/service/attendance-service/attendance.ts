@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AttendanceService {
-  private attendanceApi = 'http://localhost:3000/attendance';
+  private attendanceApi = 'https://intime-data.onrender.com/attendance';
 
   constructor(private http: HttpClient) {}
 

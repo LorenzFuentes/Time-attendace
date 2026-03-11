@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router } from '@angular/router'; 
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -20,6 +20,8 @@ import { UserService } from '../../service/user-service/user';
 })
 export class MainLayout implements OnInit, OnDestroy {
   isCollapsed = true;
+  isMobileMenuOpen = false;
+  isMobileView = false;
   protected readonly date = new Date();
 
   currentUser: any = null;
@@ -37,6 +39,7 @@ export class MainLayout implements OnInit, OnDestroy {
     private userService: UserService 
   ) {
     this.updateDateTime();
+    this.isMobileView = window.innerWidth <= 768;
   }
 
   ngOnInit() {
@@ -54,6 +57,22 @@ export class MainLayout implements OnInit, OnDestroy {
     if (this.timer) {
       clearInterval(this.timer);
     }
+  }
+
+    // Add this method
+  @HostListener('window:resize')
+  onResize() {
+    this.isMobileView = window.innerWidth <= 768;
+    if (!this.isMobileView) this.isMobileMenuOpen = false;
+  }
+
+  // Add these methods
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
   }
 
   private loadCurrentUser(): void {

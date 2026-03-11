@@ -6,8 +6,8 @@ import { map, tap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private adminApi = 'http://localhost:3000/admin';
-  private userApi = 'http://localhost:3000/users';
+  private adminApi = 'https://intime-data.onrender.com/admin';
+  private userApi = 'https://intime-data.onrender.com/users';
   
   private currentUserSubject = new BehaviorSubject<any>(null);
   public currentUser$ = this.currentUserSubject.asObservable();

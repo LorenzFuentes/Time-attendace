@@ -12,7 +12,7 @@ export interface CalendarEvent {
 
 @Injectable({ providedIn: 'root' })
 export class EventService {
-  private eventsApi = 'http://localhost:3000/events';
+  private eventsApi = 'https://intime-data.onrender.com/events';
 
   constructor(private http: HttpClient) {}
 
