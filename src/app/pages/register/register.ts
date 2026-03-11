@@ -86,7 +86,7 @@ export class RegisterComponent {
 
   private registerUserWithStringId(newUser: any): void {
     // Get all existing users to find the highest ID
-    this.http.get('http://localhost:3000/users').subscribe({
+    this.http.get('https://intime-data.onrender.com/users').subscribe({
       next: (existingUsers: any) => {
         // Find the maximum numeric ID from existing users (convert strings to numbers)
         let maxId = 0;
@@ -110,7 +110,7 @@ export class RegisterComponent {
         };
 
         // Send POST request with the string ID
-        this.http.post('http://localhost:3000/users', userWithId).subscribe({
+        this.http.post('https://intime-data.onrender.com/users', userWithId).subscribe({
           next: (response: any) => {
             this.message.success(`User ${newUser.firstName} ${newUser.lastName} registered successfully!`);
             
