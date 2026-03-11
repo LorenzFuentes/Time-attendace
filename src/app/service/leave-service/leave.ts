@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class LeaveService {
-  private leaveApi = 'http://localhost:3000/leave';
+  private leaveApi = 'https://intime-data.onrender.com/leave';
 
   constructor(private http: HttpClient) {}
 

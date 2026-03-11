@@ -6,7 +6,7 @@ import { map, tap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
-  private adminApi = 'http://localhost:3000/admin';
+  private adminApi = 'https://intime-data.onrender.com/admin';
 
   constructor(private http: HttpClient) {}
 

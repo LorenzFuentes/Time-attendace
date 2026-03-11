@@ -6,7 +6,7 @@ import { User } from '../../model/post';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private userApi = 'http://localhost:3000/users';
+  private userApi = 'https://intime-data.onrender.com/users';
 
   constructor(private http: HttpClient) {}
 

@@ -13,7 +13,7 @@ export interface Announcement {
   providedIn: 'root',
 })
 export class AnnouncementService {
-  private announcementApi = 'http://localhost:3000/announcement';
+  private announcementApi = 'https://intime-data.onrender.com/announcement';
 
   constructor(private http: HttpClient) { }
 
